@@ -698,9 +698,11 @@
             const filtered = products.filter(p => {
                 const productName = (p.name || '').toLowerCase();
                 const productDesc = (p.cleanDesc || '').toLowerCase();
-                const matchQuery = productName.includes(query) || productDesc.includes(query);
+                const productCat = (p.parsedCategory || '').trim();
                 
-                const matchCat = (cat === 'all' || p.parsedCategory === cat);
+                const matchQuery = productName.includes(query) || productDesc.includes(query);
+                const matchCat = (cat === 'all' || productCat === cat.trim());
+                
                 return matchQuery && matchCat;
             });
             renderProducts(filtered);
