@@ -345,7 +345,7 @@
             let videoUrl = '';
 
             if (editingId) {
-                const existingProd = products.find(p => p.id === Number(editingId));
+                const existingProd = products.find(p => p.id == editingId);
                 if (existingProd) {
                     imageUrl = existingProd.parsedImage;
                     videoUrl = existingProd.parsedVideo;
@@ -368,11 +368,10 @@
             const packedDesc = `JFDATA|${category}|${imageUrl}|${videoUrl}|${desc}`;
 
             if(editingId) {
-                const targetId = Number(editingId);
                 const { error } = await supabaseClient
                     .from(TABLE_NAME)
                     .update({ name, price, desc: packedDesc })
-                    .eq('id', targetId);
+                    .eq('id', editingId);
                 
                 if(error) {
                     alert('فشل التحديث: ' + error.message);
@@ -403,8 +402,7 @@
 
         async function deleteProduct(id) {
             if(confirm('هل أنت متأكد من حذف هذا المنتج نهائياً من قاعدة البيانات السحابية؟')) {
-                const targetId = Number(id);
-                const { error } = await supabaseClient.from(TABLE_NAME).delete().eq('id', targetId);
+                const { error } = await supabaseClient.from(TABLE_NAME).delete().eq('id', id);
                 if(error) {
                     alert('فشل الحذف من السحابة: ' + error.message);
                 } else {
@@ -415,7 +413,7 @@
         }
 
         function editProduct(id) {
-            const prod = products.find(p => p.id === Number(id));
+            const prod = products.find(p => p.id == id);
             if(!prod) return;
 
             document.getElementById('editing-product-id').value = prod.id;
@@ -480,7 +478,7 @@
         }
 
         function addToCart(id) {
-            const product = products.find(p => p.id === Number(id));
+            const product = products.find(p => p.id == id);
             cart.push(product);
             updateCartUI();
             alert('تمت إضافة المنتج للسلة بنجاح! 🛒');
@@ -512,11 +510,10 @@
         }
 
         function toggleFavorite(id) {
-            const targetId = Number(id);
-            if(favorites.includes(targetId)) {
-                favorites = favorites.filter(fav => fav !== targetId);
+            if(favorites.includes(id)) {
+                favorites = favorites.filter(fav => fav != id);
             } else {
-                favorites.push(targetId);
+                favorites.push(id);
             }
             document.getElementById('fav-count').innerText = favorites.length;
             renderProducts();
@@ -608,8 +605,8 @@
                 if(isAdmin) {
                     adminActionsHtml = `
                         <div class="mt-4 pt-3 border-t border-black flex gap-2">
-                            <button onclick="editProduct(${p.id})" class="vintage-btn bg-yellow-400 text-black px-3 py-1.5 text-xs cursor-pointer flex-1">✏️ تعديل</button>
-                            <button onclick="deleteProduct(${p.id})" class="vintage-btn bg-red-600 text-white px-3 py-1.5 text-xs cursor-pointer flex-1">🗑️ حذف</button>
+                            <button onclick="editProduct('${p.id}')" class="vintage-btn bg-yellow-400 text-black px-3 py-1.5 text-xs cursor-pointer flex-1">✏️ تعديل</button>
+                            <button onclick="deleteProduct('${p.id}')" class="vintage-btn bg-red-600 text-white px-3 py-1.5 text-xs cursor-pointer flex-1">🗑️ حذف</button>
                         </div>
                     `;
                 }
@@ -619,7 +616,7 @@
                         <div>
                             <div class="relative">
                                 <img src="${displayImg}" alt="${p.name}" class="w-full h-52 object-cover rounded-xl border-3 border-[#111] mb-2 shadow">
-                                <button onclick="toggleFavorite(${p.id})" class="absolute top-3 left-3 bg-white p-2.5 rounded-full border-3 border-[#111] text-lg hover:scale-110 shadow cursor-pointer">${isFav ? '❤️' : '🤍'}</button>
+                                <button onclick="toggleFavorite('${p.id}')" class="absolute top-3 left-3 bg-white p-2.5 rounded-full border-3 border-[#111] text-lg hover:scale-110 shadow cursor-pointer">${isFav ? '❤️' : '🤍'}</button>
                             </div>
                             ${videoHtml}
                             <span class="bg-[#111] text-[#f4ebd0] text-xs px-2.5 py-1 rounded-md font-black inline-block mt-2">${p.parsedCategory}</span>
@@ -629,7 +626,7 @@
                         <div>
                             <div class="mt-4 flex justify-between items-center pt-3 border-t-2 border-dashed border-black">
                                 <span class="font-black text-xl text-green-900">${Number(p.price).toLocaleString()} د.ع</span>
-                                <button onclick="addToCart(${p.id})" class="vintage-btn px-5 py-2.5 text-sm cursor-pointer">أضف للسلة 🛒</button>
+                                <button onclick="addToCart('${p.id}')" class="vintage-btn px-5 py-2.5 text-sm cursor-pointer">أضف للسلة 🛒</button>
                             </div>
                             ${adminActionsHtml}
                         </div>
