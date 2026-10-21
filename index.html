@@ -224,8 +224,8 @@
                 <input type="text" id="new-desc" placeholder="وصف المنتج..." class="vintage-input p-3 font-bold md:col-span-3">
                 
                 <div class="vintage-box p-3 bg-white">
-                    <label class="block text-xs font-black mb-1">📷 اختر صورة من الاستوديو:</label>
-                    <input type="file" id="image-file" accept="image/*" class="w-full text-xs font-bold cursor-pointer">
+                    <label class="block text-xs font-black mb-1">📷 اختر أكثر من صورة (تگدر تحدد صور متعددة):</label>
+                    <input type="file" id="image-files" accept="image/*" multiple class="w-full text-xs font-bold cursor-pointer">
                 </div>
 
                 <div class="vintage-box p-3 bg-white">
@@ -292,20 +292,25 @@
                 products = (data || []).map(p => {
                     let realDesc = p.desc || '';
                     let cat = 'منوعات';
-                    let img = 'https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=500';
+                    let imgs = ['https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=500'];
                     let vid = '';
 
                     try {
                         if (realDesc.startsWith('JFDATA|')) {
                             let parts = realDesc.split('|');
                             cat = parts[1] || 'منوعات';
-                            img = parts[2] || img;
+                            let rawImages = parts[2] || '';
+                            if (rawImages.includes(',')) {
+                                imgs = rawImages.split(',');
+                            } else if (rawImages) {
+                                imgs = [rawImages];
+                            }
                             vid = parts[3] || '';
                             realDesc = parts[4] || '';
                         }
                     } catch(e) {}
 
-                    return { ...p, parsedCategory: cat, parsedImage: img, parsedVideo: vid, cleanDesc: realDesc };
+                    return { ...p, parsedCategory: cat, parsedImages: imgs, parsedVideo: vid, cleanDesc: realDesc };
                 });
                 renderProducts();
             } catch (err) {
@@ -330,7 +335,7 @@
             const price = Number(document.getElementById('new-price').value);
             const category = document.getElementById('new-cat').value;
             const desc = document.getElementById('new-desc').value;
-            const imageFile = document.getElementById('image-file').files[0];
+            const imageFiles = document.getElementById('image-files').files;
             const videoFile = document.getElementById('video-file').files[0];
 
             if(!name || !price) {
@@ -340,20 +345,24 @@
 
             document.getElementById('upload-status').innerText = 'جاري الحفظ والنشر... ⏳';
 
-            let imageUrl = 'https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=500';
+            let imageUrls = ['https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=500'];
             let videoUrl = '';
 
             if (editingId) {
                 const existingProd = products.find(p => p.id == editingId);
                 if (existingProd) {
-                    imageUrl = existingProd.parsedImage;
+                    imageUrls = existingProd.parsedImages;
                     videoUrl = existingProd.parsedVideo;
                 }
             }
 
             try {
-                if (imageFile) {
-                    imageUrl = await convertFileToBase64(imageFile);
+                if (imageFiles && imageFiles.length > 0) {
+                    imageUrls = [];
+                    for (let i = 0; i < imageFiles.length; i++) {
+                        let base64Img = await convertFileToBase64(imageFiles[i]);
+                        imageUrls.push(base64Img);
+                    }
                 }
                 if (videoFile) {
                     videoUrl = await convertFileToBase64(videoFile);
@@ -364,7 +373,8 @@
                 return;
             }
 
-            const packedDesc = `JFDATA|${category}|${imageUrl}|${videoUrl}|${desc}`;
+            const imagesJoined = imageUrls.join(',');
+            const packedDesc = `JFDATA|${category}|${imagesJoined}|${videoUrl}|${desc}`;
 
             if(editingId) {
                 const targetId = Number(editingId);
@@ -391,7 +401,7 @@
                     document.getElementById('new-name').value = '';
                     document.getElementById('new-price').value = '';
                     document.getElementById('new-desc').value = '';
-                    document.getElementById('image-file').value = '';
+                    document.getElementById('image-files').value = '';
                     document.getElementById('video-file').value = '';
                 }
             }
@@ -435,7 +445,7 @@
             document.getElementById('new-name').value = '';
             document.getElementById('new-price').value = '';
             document.getElementById('new-desc').value = '';
-            document.getElementById('image-file').value = '';
+            document.getElementById('image-files').value = '';
             document.getElementById('video-file').value = '';
             document.getElementById('admin-panel-title').innerHTML = `<span>👑</span> لوحة تحكم الأدمن (نشر وحذف وتعديل فوري 🚀)`;
             document.getElementById('save-btn').innerText = 'نشر في قاعدة البيانات 🚀';
@@ -452,10 +462,9 @@
             }, 3000);
         }
 
-        // سلايدر إعلانات مرتب بالصورة الحقيقية والقلب والاسم بدون عبارة إعلان
         function updateAdContent(product) {
             const container = document.getElementById('ads-content');
-            const displayImg = product.parsedImage || 'https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=500';
+            const displayImg = (product.parsedImages && product.parsedImages.length > 0) ? product.parsedImages[0] : 'https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=500';
             const isFav = favorites.includes(product.id);
 
             container.innerHTML = `
@@ -485,7 +494,6 @@
             document.getElementById('ship-arrow').innerText = list.classList.contains('hidden') ? '▼' : '▲';
         }
 
-        // دالة إظهار وإخفاء وصف المنتج بكل أناقة
         function toggleProductDesc(id) {
             const descEl = document.getElementById(`product-desc-${id}`);
             const arrowEl = document.getElementById(`desc-arrow-${id}`);
@@ -496,6 +504,12 @@
                 descEl.classList.add('hidden');
                 arrowEl.innerText = '▼';
             }
+        }
+
+        // تبديل الصور المتعددة للمنتج عند النقر على الصور المصغرة
+        function changeProductMainImage(productId, imgUrl) {
+            const mainImgEl = document.getElementById(`main-img-${productId}`);
+            if(mainImgEl) mainImgEl.src = imgUrl;
         }
 
         function addToCart(id) {
@@ -609,7 +623,17 @@
 
             list.forEach(p => {
                 const isFav = favorites.includes(p.id);
-                const displayImg = p.parsedImage || 'https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=500';
+                const images = (p.parsedImages && p.parsedImages.length > 0) ? p.parsedImages : ['https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=500'];
+                const mainImg = images[0];
+
+                let thumbsHtml = '';
+                if(images.length > 1) {
+                    thumbsHtml = `<div class="flex gap-1.5 mt-2 overflow-x-auto pb-1">`;
+                    images.forEach((imgUrl, idx) => {
+                        thumbsHtml += `<img src="${imgUrl}" onclick="changeProductMainImage(${p.id}, '${imgUrl}')" class="w-10 h-10 object-cover rounded-md border-2 border-black cursor-pointer hover:scale-105 shadow">`;
+                    });
+                    thumbsHtml += `</div>`;
+                }
 
                 let videoHtml = '';
                 if(p.parsedVideo) {
@@ -637,9 +661,10 @@
                     <div class="vintage-box p-3 sm:p-5 flex flex-col justify-between" id="product-card-${p.id}">
                         <div>
                             <div class="relative">
-                                <img src="${displayImg}" alt="${p.name}" class="w-full h-36 sm:h-52 object-cover rounded-xl border-3 border-[#111] mb-2 shadow">
+                                <img id="main-img-${p.id}" src="${mainImg}" alt="${p.name}" class="w-full h-36 sm:h-52 object-cover rounded-xl border-3 border-[#111] mb-2 shadow">
                                 <button onclick="toggleFavorite(${p.id})" class="absolute top-2 left-2 sm:top-3 sm:left-3 bg-white p-2 sm:p-2.5 rounded-full border-2 border-[#111] text-sm sm:text-lg hover:scale-110 shadow cursor-pointer">${isFav ? '❤️' : '🤍'}</button>
                             </div>
+                            ${thumbsHtml}
                             ${videoHtml}
                             <span class="bg-[#111] text-[#f4ebd0] text-[10px] sm:text-xs px-2 py-0.5 rounded-md font-black inline-block mt-2">${p.parsedCategory}</span>
                             <h4 class="font-black text-sm sm:text-xl mt-1.5 text-[#111] leading-snug">${p.name}</h4>
