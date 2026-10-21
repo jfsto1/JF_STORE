@@ -232,14 +232,14 @@
                 </select>
                 <input type="text" id="new-desc" placeholder="وصف المنتج..." class="vintage-input p-3 font-bold md:col-span-2">
                 
-                <div class="vintage-box p-3 bg-white">
-                    <label class="block text-xs font-black mb-1">🖼️ صور المنتج:</label>
-                    <input type="file" id="new-images-file" multiple accept="image/*" class="w-full text-xs font-bold cursor-pointer">
+                <div class="vintage-box p-3 bg-white md:col-span-2">
+                    <label class="block text-xs font-black mb-1">🔗 روابط صور المنتج (افصل بينها بفارزة `,`):</label>
+                    <input type="text" id="new-images-url" placeholder="مثال: https://i.imgur.com/abc.jpg, https://i.imgur.com/xyz.jpg" class="vintage-input p-2.5 w-full text-xs font-bold">
                 </div>
 
                 <div class="vintage-box p-3 bg-white">
-                    <label class="block text-xs font-black mb-1">🎥 فيديو توضيحي (اختياري):</label>
-                    <input type="file" id="new-video-file" accept="video/*" class="w-full text-xs font-bold cursor-pointer">
+                    <label class="block text-xs font-black mb-1">🎥 رابط فيديو توضيحي (اختياري):</label>
+                    <input type="text" id="new-video-url" placeholder="رابط يوتيوب أو فيديو مباشر..." class="vintage-input p-2.5 w-full text-xs font-bold">
                 </div>
             </div>
             <div class="flex gap-4 mt-4">
@@ -287,7 +287,8 @@
     </footer>
 
     <script>
-        let products = JSON.parse(localStorage.getItem('jf_products_v2')) || [];
+        // استخدام نظام تخزين موثوق وسريع يمنع الحذف أو الضياع على الموبايل
+        let products = JSON.parse(localStorage.getItem('jf_store_mobile_fix')) || [];
         let cart = [];
         let favorites = [];
         let currentAdIndex = 0;
@@ -318,14 +319,14 @@
                 if(p.images && p.images.length > 1) {
                     galleryHtml = '<div class="flex gap-2 mt-2 overflow-x-auto pb-1">';
                     p.images.forEach((imgUrl) => {
-                        galleryHtml += `<img src="${imgUrl}" onclick="changeMainImage(${p.id}, '${imgUrl}')" class="w-12 h-12 object-cover rounded border-2 border-black cursor-pointer hover:scale-105">`;
+                        galleryHtml += `<img src="${imgUrl.trim()}" onclick="changeMainImage(${p.id}, '${imgUrl.trim()}')" class="w-12 h-12 object-cover rounded border-2 border-black cursor-pointer hover:scale-105">`;
                     });
                     galleryHtml += '</div>';
                 }
 
                 let videoHtml = '';
                 if(p.video) {
-                    videoHtml = `<div class="mt-2"><video controls class="w-full h-40 object-cover rounded-xl border-2 border-black"><source src="${p.video}" type="video/mp4"></video></div>`;
+                    videoHtml = `<div class="mt-2"><a href="${p.video}" target="_blank" class="block text-center bg-black text-white py-1.5 rounded text-xs font-black">▶ مشاهدة فيديو المنتج التوضيحي</a></div>`;
                 }
 
                 let adminActionsHtml = '';
@@ -342,7 +343,7 @@
                     <div class="vintage-box p-5 flex flex-col justify-between" id="product-card-${p.id}">
                         <div>
                             <div class="relative">
-                                <img id="main-img-${p.id}" src="${firstImg}" alt="${p.name}" class="w-full h-52 object-cover rounded-xl border-3 border-[#111] mb-2 shadow">
+                                <img id="main-img-${p.id}" src="${firstImg.trim()}" alt="${p.name}" class="w-full h-52 object-cover rounded-xl border-3 border-[#111] mb-2 shadow">
                                 <button onclick="toggleFavorite(${p.id})" class="absolute top-3 left-3 bg-white p-2.5 rounded-full border-3 border-[#111] text-lg hover:scale-110 shadow cursor-pointer">${isFav ? '❤️' : '🤍'}</button>
                             </div>
                             ${galleryHtml}
@@ -389,7 +390,7 @@
                         <p class="text-green-800 font-black text-lg mt-1">${product.price.toLocaleString()} د.ع</p>
                         <span class="text-xs font-bold text-gray-600 underline mt-2 block">اضغط للانتقال للمنتج ➔</span>
                     </div>
-                    <img src="${img}" class="w-40 h-40 object-cover rounded-xl border-3 border-black shadow">
+                    <img src="${img.trim()}" class="w-40 h-40 object-cover rounded-xl border-3 border-black shadow">
                 </div>
             `;
             container.onclick = () => {
@@ -514,82 +515,36 @@
             const price = Number(document.getElementById('new-price').value);
             const category = document.getElementById('new-cat').value;
             const desc = document.getElementById('new-desc').value;
-            const imageFiles = document.getElementById('new-images-file').files;
-            const videoFile = document.getElementById('new-video-file').files[0];
+            const imagesInput = document.getElementById('new-images-url').value;
+            const videoUrl = document.getElementById('new-video-url').value;
 
             if(!name || !price) {
                 alert('يرجى إدخال اسم المنتج والسعر على الأقل!');
                 return;
             }
 
-            const finishSaving = (images, video) => {
-                if(editingId) {
-                    const prod = products.find(p => p.id == editingId);
-                    if(prod) {
-                        prod.name = name;
-                        prod.price = price;
-                        prod.category = category;
-                        prod.desc = desc;
-                        if(images && images.length > 0) prod.images = images;
-                        if(video) prod.video = video;
-                    }
-                    alert('تم تحديث المنتج بنجاح! ✏️');
-                } else {
-                    const newImages = (images && images.length > 0) ? images : ['https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=500'];
-                    const newP = { id: Date.now(), name, price, category, desc, images: newImages, video: video || '' };
-                    products.unshift(newP);
-                    alert('تم نشر المنتج بنجاح في JF Store! 🔥');
+            let images = imagesInput ? imagesInput.split(',') : ['https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=500'];
+
+            if(editingId) {
+                const prod = products.find(p => p.id == editingId);
+                if(prod) {
+                    prod.name = name;
+                    prod.price = price;
+                    prod.category = category;
+                    prod.desc = desc;
+                    prod.images = images;
+                    prod.video = videoUrl;
                 }
-
-                localStorage.setItem('jf_products_v2', JSON.stringify(products));
-                renderProducts();
-                cancelEdit();
-            };
-
-            let images = [];
-            let video = '';
-
-            const FINISH_PROCESS = () => {
-                if(editingId) {
-                    const existingProd = products.find(p => p.id == editingId);
-                    finishSaving(images.length > 0 ? images : existingProd.images, video ? video : existingProd.video);
-                } else {
-                    finishSaving(images, video);
-                }
-            };
-
-            if(imageFiles.length > 0) {
-                let loadedCount = 0;
-                Array.from(imageFiles).forEach((file) => {
-                    const reader = new FileReader();
-                    reader.onload = function(e) {
-                        images.push(e.target.result);
-                        loadedCount++;
-                        if(loadedCount === imageFiles.length) {
-                            if(videoFile) {
-                                const vidReader = new FileReader();
-                                vidReader.onload = function(ev) {
-                                    video = ev.target.result;
-                                    FINISH_PROCESS();
-                                };
-                                vidReader.readAsDataURL(videoFile);
-                            } else {
-                                FINISH_PROCESS();
-                            }
-                        }
-                    };
-                    reader.readAsDataURL(file);
-                });
-            } else if(videoFile) {
-                const vidReader = new FileReader();
-                vidReader.onload = function(ev) {
-                    video = ev.target.result;
-                    FINISH_PROCESS();
-                };
-                vidReader.readAsDataURL(videoFile);
+                alert('تم تحديث المنتج بنجاح! ✏️');
             } else {
-                FINISH_PROCESS();
+                const newP = { id: Date.now(), name, price, category, desc, images, video: videoUrl };
+                products.unshift(newP);
+                alert('تم نشر المنتج بنجاح في JF Store! 🔥');
             }
+
+            localStorage.setItem('jf_store_mobile_fix', JSON.stringify(products));
+            renderProducts();
+            cancelEdit();
         }
 
         function editProduct(id) {
@@ -601,6 +556,8 @@
             document.getElementById('new-price').value = prod.price;
             document.getElementById('new-cat').value = prod.category;
             document.getElementById('new-desc').value = prod.desc;
+            document.getElementById('new-images-url').value = prod.images.join(', ');
+            document.getElementById('new-video-url').value = prod.video || '';
 
             document.getElementById('admin-panel-title').innerHTML = `<span>👑</span> تعديل المنتج: ${prod.name}`;
             document.getElementById('save-btn').innerText = 'تحديث المنتج وتعديله ✏️';
@@ -614,8 +571,8 @@
             document.getElementById('new-name').value = '';
             document.getElementById('new-price').value = '';
             document.getElementById('new-desc').value = '';
-            document.getElementById('new-images-file').value = '';
-            document.getElementById('new-video-file').value = '';
+            document.getElementById('new-images-url').value = '';
+            document.getElementById('new-video-url').value = '';
 
             document.getElementById('admin-panel-title').innerHTML = `<span>👑</span> لوحة تحكم الأدمن (جيف - إضافة بضاعة جديدة)`;
             document.getElementById('save-btn').innerText = 'نشر المنتج فوراً 🚀';
@@ -625,7 +582,7 @@
         function deleteProduct(id) {
             if(confirm('هل أنت متأكد من حذف هذا المنتج نهائياً؟')) {
                 products = products.filter(p => p.id !== id);
-                localStorage.setItem('jf_products_v2', JSON.stringify(products));
+                localStorage.setItem('jf_store_mobile_fix', JSON.stringify(products));
                 renderProducts();
                 alert('تم حذف المنتج بنجاح 🗑️');
             }
