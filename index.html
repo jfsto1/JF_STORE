@@ -191,10 +191,10 @@
             </select>
         </div>
 
-        <!-- لوحة تحكم الأدمن المتوافقة مع أعمدة Supabase -->
+        <!-- لوحة تحكم الأدمن المطابقة لجدول products JPG -->
         <div id="admin-panel" class="vintage-box p-6 mb-8 hidden bg-[#fff3d6]">
             <h3 id="admin-panel-title" class="font-black text-xl mb-4 text-[#111] flex items-center gap-2">
-                <span>👑</span> لوحة تحكم الأدمن (نشر سحابي متوافق 🚀)
+                <span>👑</span> لوحة تحكم الأدمن (نشر سحابي بجدول products JPG 🚀)
             </h3>
             <input type="hidden" id="editing-product-id" value="">
             <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -261,6 +261,7 @@
         const SUPABASE_ANON_KEY = 'sb_publishable_TySRw16o2RLuSxAfsWZ3Sw_JLvpv3OB';
         
         const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+        const TABLE_NAME = 'products JPG'; // اسم الجدول الفعلي في Supabase
 
         let products = [];
         let cart = [];
@@ -273,7 +274,7 @@
 
         async function fetchProductsFromSupabase() {
             try {
-                let { data, error } = await supabaseClient.from('products').select('*').order('id', { ascending: false });
+                let { data, error } = await supabaseClient.from(TABLE_NAME).select('*').order('id', { ascending: false });
                 if (error) throw error;
                 products = data || [];
                 renderProducts();
@@ -298,7 +299,7 @@
 
             if(editingId) {
                 const { error } = await supabaseClient
-                    .from('products')
+                    .from(TABLE_NAME)
                     .update({ name, price, category, desc })
                     .eq('id', editingId);
                 
@@ -310,7 +311,7 @@
                 }
             } else {
                 const { error } = await supabaseClient
-                    .from('products')
+                    .from(TABLE_NAME)
                     .insert([{ name, price, category, desc }]);
                 
                 if(error) {
@@ -360,7 +361,7 @@
                                 <img src="${firstImg}" alt="${p.name}" class="w-full h-52 object-cover rounded-xl border-3 border-[#111] mb-2 shadow">
                                 <button onclick="toggleFavorite(${p.id})" class="absolute top-3 left-3 bg-white p-2.5 rounded-full border-3 border-[#111] text-lg hover:scale-110 shadow cursor-pointer">${isFav ? '❤️' : '🤍'}</button>
                             </div>
-                            <span class="bg-[#111] text-[#f4ebd0] text-xs px-2.5 py-1 rounded-md font-black inline-block mt-2">${p.category}</span>
+                            <span class="bg-[#111] text-[#f4ebd0] text-xs px-2.5 py-1 rounded-md font-black inline-block mt-2">${p.category || 'منوعات'}</span>
                             <h4 class="font-black text-xl mt-2 text-[#111]">${p.name}</h4>
                             <p class="text-gray-700 text-sm mt-1.5 font-bold leading-relaxed">${p.desc || 'لا يوجد وصف'}</p>
                         </div>
@@ -378,7 +379,7 @@
 
         async function deleteProduct(id) {
             if(confirm('هل أنت متأكد من حذف هذا المنتج من قاعدة البيانات السحابية؟')) {
-                const { error } = await supabaseClient.from('products').delete().eq('id', id);
+                const { error } = await supabaseClient.from(TABLE_NAME).delete().eq('id', id);
                 if(error) {
                     alert('فشل الحذف: ' + error.message);
                 } else {
@@ -395,7 +396,7 @@
             document.getElementById('editing-product-id').value = prod.id;
             document.getElementById('new-name').value = prod.name;
             document.getElementById('new-price').value = prod.price;
-            document.getElementById('new-cat').value = prod.category;
+            document.getElementById('new-cat').value = prod.category || 'منوعات';
             document.getElementById('new-desc').value = prod.desc || '';
 
             document.getElementById('admin-panel-title').innerHTML = `<span>👑</span> تعديل المنتج سحابياً: ${prod.name}`;
@@ -410,7 +411,7 @@
             document.getElementById('new-name').value = '';
             document.getElementById('new-price').value = '';
             document.getElementById('new-desc').value = '';
-            document.getElementById('admin-panel-title').innerHTML = `<span>👑</span> لوحة تحكم الأدمن (نشر سحابي متوافق 🚀)`;
+            document.getElementById('admin-panel-title').innerHTML = `<span>👑</span> لوحة تحكم الأدمن (نشر سحابي بجدول products JPG 🚀)`;
             document.getElementById('save-btn').innerText = 'نشر في قاعدة البيانات 🚀';
             document.getElementById('cancel-edit-btn').classList.add('hidden');
         }
