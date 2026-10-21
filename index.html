@@ -56,7 +56,7 @@
     <!-- شريط علوي كلاسيكي -->
     <div class="bg-[#111111] text-[#f4ebd0] text-xs py-2 px-4 flex justify-around items-center font-black tracking-widest border-b-4 border-[#111111]">
         <span>✨ توصيل سريع 24-48 ساعة ✨</span>
-        <span>🛡️ دفع آمن عند الاستلاستلام 🛡️</span>
+        <span>🛡️ دفع آمن عند الاستلام 🛡️</span>
     </div>
 
     <!-- الهيدر الرئيسي مع الشعار -->
@@ -287,7 +287,7 @@
     </footer>
 
     <script>
-        let products = [];
+        let products = JSON.parse(localStorage.getItem('jf_products_v2')) || [];
         let cart = [];
         let favorites = [];
         let currentAdIndex = 0;
@@ -295,33 +295,6 @@
 
         const ADMIN_EMAIL = "mrskull33442@gmail.com";
         const ADMIN_PASS = "aloxgame4";
-        const BIN_ID = "66f3531ead19cb34f8a1835b"; // معرف التخزين السحابي العام لمتجرك
-
-        async function fetchProductsFromCloud() {
-            try {
-                const res = await fetch(`https://api.jsonbin.io/v3/b/66f3531ead19cb34f8a1835b/latest`, {
-                    headers: { 'X-Master-Key': '$2a$10$7Qx... (public)' }
-                });
-                const data = await res.json();
-                if(data && data.record) {
-                    products = data.record.products || [];
-                }
-            } catch(e) {
-                products = JSON.parse(localStorage.getItem('jf_products')) || [];
-            }
-            renderProducts();
-        }
-
-        async function saveProductsToCloud() {
-            localStorage.setItem('jf_products', JSON.stringify(products));
-            try {
-                await fetch(`https://api.jsonbin.io/v3/b/66f3531ead19cb34f8a1835b`, {
-                    method: 'PUT',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ products: products })
-                });
-            } catch(e) {}
-        }
 
         function renderProducts(list = products) {
             const grid = document.getElementById('products-grid');
@@ -549,7 +522,7 @@
                 return;
             }
 
-            const finishSaving = async (images, video) => {
+            const finishSaving = (images, video) => {
                 if(editingId) {
                     const prod = products.find(p => p.id == editingId);
                     if(prod) {
@@ -568,7 +541,7 @@
                     alert('تم نشر المنتج بنجاح في JF Store! 🔥');
                 }
 
-                await saveProductsToCloud();
+                localStorage.setItem('jf_products_v2', JSON.stringify(products));
                 renderProducts();
                 cancelEdit();
             };
@@ -649,10 +622,10 @@
             document.getElementById('cancel-edit-btn').classList.add('hidden');
         }
 
-        async function deleteProduct(id) {
+        function deleteProduct(id) {
             if(confirm('هل أنت متأكد من حذف هذا المنتج نهائياً؟')) {
                 products = products.filter(p => p.id !== id);
-                await saveProductsToCloud();
+                localStorage.setItem('jf_products_v2', JSON.stringify(products));
                 renderProducts();
                 alert('تم حذف المنتج بنجاح 🗑️');
             }
@@ -694,7 +667,7 @@
                 document.getElementById('user-name').value = savedName;
                 checkAdminStatus(savedEmail, savedName);
             }
-            fetchProductsFromCloud();
+            renderProducts();
         }
     </script>
 </body>
