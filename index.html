@@ -23,10 +23,12 @@
             background-color: #fffdf6;
             border-radius: 12px;
             transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            perspective: 1000px;
         }
+        /* أنيميشن Flip وتكبير أسطوري للبطاقات */
         .vintage-box:hover {
-            transform: translateY(-4px) scale(1.02);
-            box-shadow: 7px 7px 0px #111111;
+            transform: translateY(-5px) scale(1.02) rotateX(2deg);
+            box-shadow: 8px 8px 0px #111111;
         }
         .vintage-btn { 
             background-color: #111111; 
@@ -48,7 +50,17 @@
             border-radius: 8px;
             box-shadow: inset 2px 2px 0px rgba(0,0,0,0.1);
         }
-        #side-menu, #product-modal {
+        /* أنيميشن تلاشي الإعلانات */
+        @keyframes fadeInOut {
+            0% { opacity: 0; transform: scale(0.98); }
+            20% { opacity: 1; transform: scale(1); }
+            80% { opacity: 1; transform: scale(1); }
+            100% { opacity: 0; transform: scale(0.98); }
+        }
+        .fade-slide {
+            animation: fadeInOut 4s ease-in-out infinite;
+        }
+        #side-menu, #product-modal, #cart-popup {
             transition: all 0.3s ease-in-out;
         }
     </style>
@@ -61,7 +73,7 @@
         <span>🛡️ دفع آمن عند الاستلام 🛡️</span>
     </div>
 
-    <!-- الهيدر الرئيسي مع الشعار -->
+    <!-- الهيدر الرئيسي مع الشعار وزر البحث فوق على اليسار -->
     <header class="bg-[#fffdf6] border-b-4 border-[#111111] sticky top-0 z-40 px-4 py-2.5 flex justify-between items-center shadow-lg">
         <div class="flex items-center gap-2">
             <button onclick="toggleMenu()" class="vintage-box px-2.5 py-1 text-xl font-black bg-[#f4ebd0] hover:scale-105 cursor-pointer">☰</button>
@@ -76,12 +88,20 @@
                 <h1 class="text-lg sm:text-2xl font-black tracking-wider uppercase underline decoration-wavy decoration-2">JF STORE 🖤</h1>
             </div>
         </div>
-        <div class="flex items-center gap-3">
-            <button onclick="toggleCart()" class="vintage-btn px-3 py-1.5 text-xs sm:text-sm flex items-center gap-1.5 cursor-pointer">
-                🛒 السلة (<span id="cart-count">0</span>)
-            </button>
+        
+        <!-- زر البحث فوق على اليسار بجانب الشعار أو بالهيدر -->
+        <div class="flex items-center gap-2">
+            <div class="relative">
+                <input type="text" id="search-input" oninput="filterProducts()" placeholder="🔍 ابحث عن منتج..." class="vintage-input py-1.5 px-3 text-xs sm:text-sm font-bold w-36 sm:w-60">
+            </div>
         </div>
     </header>
+
+    <!-- زر السلة الدائري العائم أسفل اليمين -->
+    <button onclick="toggleCart()" class="fixed bottom-6 right-6 z-40 w-16 h-16 bg-[#111111] text-[#f4ebd0] rounded-full border-4 border-[#f4ebd0] shadow-2xl flex flex-col items-center justify-center font-black hover:scale-110 cursor-pointer transition-transform">
+        <span class="text-xl">🛒</span>
+        <span id="cart-count" class="absolute -top-1 -right-1 bg-red-600 text-white text-xs w-6 h-6 rounded-full flex items-center justify-center border-2 border-black">0</span>
+    </button>
 
     <!-- القائمة الجانبية -->
     <div id="side-menu" class="fixed inset-y-0 right-0 w-80 bg-[#fffdf6] border-l-4 border-[#111111] shadow-2xl z-50 transform translate-x-full flex flex-col">
@@ -156,16 +176,14 @@
     <!-- محتوى الموقع الرئيسي -->
     <main class="flex-1 max-w-7xl mx-auto px-2 sm:px-4 py-4 w-full">
         
-        <!-- سلايدر الإعلانات -->
+        <!-- سلايدر الإعلانات مع أنيميشن التلاشي -->
         <div id="ads-banner" class="vintage-box mb-6 p-3 bg-white relative overflow-hidden h-52 flex items-center justify-center text-center hidden">
-            <div id="ads-content" class="w-full h-full flex items-center justify-center cursor-pointer transition-all duration-500"></div>
+            <div id="ads-content" class="w-full h-full flex items-center justify-center cursor-pointer fade-slide"></div>
         </div>
 
-        <!-- شريط البحث والأصناف للزبائن -->
-        <div class="mb-6 flex flex-col md:flex-row gap-3 justify-between items-center">
-            <input type="text" id="search-input" oninput="filterProducts()" placeholder="🔍 ابحث عن أي منتج ببالك..." class="vintage-input w-full md:w-1/2 p-3 font-bold text-xs sm:text-sm">
-            
-            <select id="category-filter" onchange="filterProducts()" class="vintage-input w-full md:w-1/3 p-3 font-black bg-[#fffdf6] text-xs sm:text-sm">
+        <!-- فلاتر الأصناف -->
+        <div class="mb-6 flex justify-end items-center">
+            <select id="category-filter" onchange="filterProducts()" class="vintage-input w-full sm:w-1/3 p-3 font-black bg-[#fffdf6] text-xs sm:text-sm">
                 <option value="all">📁 كل الأصناف</option>
                 <option value="سماعات وصوتيات">سماعات وصوتيات</option>
                 <option value="إلكترونيات واكسسوارات">إلكترونيات واكسسوارات</option>
@@ -252,6 +270,23 @@
         <div class="vintage-box bg-[#fffdf6] max-w-lg w-full max-h-[90vh] overflow-y-auto p-5 relative mt-6">
             <button onclick="closeProductModal()" class="absolute top-3 right-3 text-sm font-black bg-red-600 text-white px-3 py-1 rounded-full border-2 border-black hover:bg-black cursor-pointer shadow-lg z-10">✕ إغلاق</button>
             <div id="modal-content" class="space-y-4 pt-4"></div>
+        </div>
+    </div>
+
+    <!-- نافذة نجاح الإضافة للسلة بتصميم البيج والخيارين -->
+    <div id="cart-popup" class="fixed inset-0 bg-black/70 z-50 flex items-center justify-center p-4 hidden">
+        <div class="vintage-box bg-[#fffdf6] max-w-sm w-full p-6 text-center space-y-4 relative">
+            <div class="w-16 h-16 bg-green-700 text-white rounded-full flex items-center justify-center text-3xl mx-auto border-3 border-black shadow">✓</div>
+            <h3 class="font-black text-xl text-[#111]">تمت الإضافة بنجاح! 🛒</h3>
+            <p class="text-xs font-bold text-gray-700">تمت إضافة المنتج إلى سلة المشتريات بنجاح. ماذا تريد أن تفعل الآن؟</p>
+            <div class="flex flex-col gap-2.5 pt-2">
+                <button onclick="closeCartPopupAndContinue()" class="vintage-btn py-2.5 text-xs bg-[#f4ebd0] text-[#111] hover:bg-[#e3d5b8] cursor-pointer">
+                    متابعة التسوق (رجوع للمسواق) 🛍️
+                </button>
+                <button onclick="openCartFromPopup()" class="vintage-btn py-2.5 text-xs bg-green-700 text-white hover:bg-green-800 cursor-pointer">
+                    عرض السلة 🛒
+                </button>
+            </div>
         </div>
     </div>
 
@@ -457,7 +492,7 @@
             adInterval = setInterval(() => {
                 currentAdIndex = (currentAdIndex + 1) % list.length;
                 updateAdContent(list[currentAdIndex]);
-            }, 3000);
+            }, 4000);
         }
 
         function updateAdContent(product) {
@@ -546,7 +581,17 @@
             const product = products.find(p => p.id == id);
             cart.push(product);
             updateCartUI();
-            alert('تمت إضافة المنتج للسلة بنجاح! 🛒');
+            // إظهار نافذة تم الإضافة بنجاح بدزاين البيج
+            document.getElementById('cart-popup').classList.remove('hidden');
+        }
+
+        function closeCartPopupAndContinue() {
+            document.getElementById('cart-popup').classList.add('hidden');
+        }
+
+        function openCartFromPopup() {
+            document.getElementById('cart-popup').classList.add('hidden');
+            toggleCart();
         }
 
         function updateCartUI() {
@@ -558,8 +603,8 @@
                 total += Number(item.price);
                 container.innerHTML += `
                     <div class="flex justify-between items-center border-b-2 border-black pb-2.5">
-                        <div>
-                            <p class="font-black text-sm">${item.name}</p>
+                        <div class="cursor-pointer flex-1" onclick="closeCart(); openProductModal(${item.id});">
+                            <p class="font-black text-sm hover:underline">${item.name}</p>
                             <p class="text-xs text-green-800 font-black">${Number(item.price).toLocaleString()} د.ع</p>
                         </div>
                         <button onclick="removeFromCart(${index})" class="text-red-600 font-black text-xs vintage-box px-2 py-1 bg-white cursor-pointer">حذف</button>
@@ -567,6 +612,10 @@
                 `;
             });
             document.getElementById('cart-total').innerText = total.toLocaleString() + ' د.ع';
+        }
+
+        function closeCart() {
+            document.getElementById('cart-drawer').classList.add('-translate-x-full');
         }
 
         function removeFromCart(index) {
@@ -700,7 +749,6 @@
             
             renderProducts(filtered);
 
-            // إدارة السلايدر بناءً على المنتجات الظاهرة
             if(filtered.length > 0 && query === '' && cat === 'all') {
                 document.getElementById('ads-banner').classList.remove('hidden');
                 startAdsSlider(filtered);
