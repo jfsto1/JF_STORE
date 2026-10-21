@@ -91,13 +91,13 @@
         </div>
 
         <div class="flex-1 overflow-y-auto p-4 space-y-4">
-            <!-- حساب الأدمن -->
+            <!-- ادخل الحساب -->
             <div class="vintage-box p-4">
-                <h3 class="font-black text-lg mb-2">👤 حساب الأدمن</h3>
+                <h3 class="font-black text-lg mb-2">👤 ادخل الحساب</h3>
                 <div id="user-auth-section">
                     <input type="email" id="user-email" placeholder="البريد الإلكتروني..." class="vintage-input w-full p-2.5 mb-2 text-sm">
                     <input type="text" id="user-name" placeholder="اسمك الكريم..." class="vintage-input w-full p-2.5 mb-2 text-sm">
-                    <button onclick="loginAccount()" class="vintage-btn w-full py-2.5 text-sm cursor-pointer">دخول الأدمن</button>
+                    <button onclick="loginAccount()" class="vintage-btn w-full py-2.5 text-sm cursor-pointer">دخول الحساب</button>
                 </div>
                 <div id="user-info-display" class="hidden text-sm">
                     <p>أهلاً بك، <span id="display-name" class="font-black"></span></p>
@@ -154,12 +154,11 @@
     </div>
 
     <!-- محتوى الموقع الرئيسي -->
-    <main class="flex-1 max-w-7xl mx-auto px-4 py-6 w-full">
+    <main class="flex-1 max-w-7xl mx-auto px-2 sm:px-4 py-6 w-full">
         
-        <!-- سلايدر الإعلانات -->
+        <!-- سلايدر الإعلانات المحدث -->
         <div id="ads-banner" class="vintage-box mb-8 p-4 bg-white relative overflow-hidden h-64 flex items-center justify-center text-center hidden">
-            <div id="ads-content" class="w-full h-full flex flex-col justify-center items-center cursor-pointer transition-all duration-500"></div>
-            <div class="absolute bottom-2 right-4 bg-black text-white text-xs px-2 py-0.5 rounded font-black">إعلانات JF Store 📢</div>
+            <div id="ads-content" class="w-full h-full flex items-center justify-center cursor-pointer transition-all duration-500"></div>
         </div>
 
         <!-- شريط البحث والأصناف للزبائن -->
@@ -244,8 +243,8 @@
             </div>
         </div>
 
-        <!-- شبكة عرض المنتجات -->
-        <div id="products-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8"></div>
+        <!-- شبكة عرض المنتجات (كارتين جنب بعض Grid) -->
+        <div id="products-grid" class="grid grid-cols-2 gap-3 sm:gap-6"></div>
     </main>
 
     <!-- سلة المشتريات -->
@@ -401,7 +400,6 @@
             fetchProductsFromSupabase();
         }
 
-        // دالة الحذف السحابي الحقيقية والمضبوطة برقم صحيح (Number)
         async function deleteProduct(id) {
             if(confirm('هل أنت متأكد من حذف هذا المنتج نهائياً من قاعدة البيانات السحابية؟')) {
                 const targetId = Number(id);
@@ -454,14 +452,21 @@
             }, 3000);
         }
 
+        // سلايدر إعلانات مرتب بالصورة الحقيقية والقلب والاسم بدون عبارة إعلان
         function updateAdContent(product) {
             const container = document.getElementById('ads-content');
+            const displayImg = product.parsedImage || 'https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=500';
+            const isFav = favorites.includes(product.id);
+
             container.innerHTML = `
-                <div class="flex items-center justify-between w-full h-full px-6">
-                    <div class="text-right">
-                        <span class="bg-red-600 text-white text-xs px-2 py-1 rounded font-black">🔥 عرض مميز / إعلان</span>
-                        <h3 class="font-black text-2xl mt-2 text-[#111]">${product.name}</h3>
-                        <p class="text-green-800 font-black text-lg mt-1">${Number(product.price).toLocaleString()} د.ع</p>
+                <div class="flex items-center justify-between w-full h-full px-4 sm:px-8 gap-4">
+                    <img src="${displayImg}" class="w-32 h-32 sm:w-44 sm:h-44 object-cover rounded-xl border-3 border-black shadow">
+                    <div class="text-right flex-1">
+                        <div class="flex items-center justify-end gap-2">
+                            <h3 class="font-black text-lg sm:text-2xl text-[#111]">${product.name}</h3>
+                            <span class="text-xl">${isFav ? '❤️' : '🤍'}</span>
+                        </div>
+                        <p class="text-green-900 font-black text-base sm:text-xl mt-1">${Number(product.price).toLocaleString()} د.ع</p>
                         <span class="text-xs font-bold text-gray-600 underline mt-2 block">اضغط للانتقال للمنتج ➔</span>
                     </div>
                 </div>
@@ -478,6 +483,19 @@
             const list = document.getElementById('shipping-list');
             list.classList.toggle('hidden');
             document.getElementById('ship-arrow').innerText = list.classList.contains('hidden') ? '▼' : '▲';
+        }
+
+        // دالة إظهار وإخفاء وصف المنتج بكل أناقة
+        function toggleProductDesc(id) {
+            const descEl = document.getElementById(`product-desc-${id}`);
+            const arrowEl = document.getElementById(`desc-arrow-${id}`);
+            if(descEl.classList.contains('hidden')) {
+                descEl.classList.remove('hidden');
+                arrowEl.innerText = '▲';
+            } else {
+                descEl.classList.add('hidden');
+                arrowEl.innerText = '▼';
+            }
         }
 
         function addToCart(id) {
@@ -597,7 +615,7 @@
                 if(p.parsedVideo) {
                     videoHtml = `
                         <div class="mt-2">
-                            <video controls class="w-full h-36 object-cover rounded-xl border-2 border-black">
+                            <video controls class="w-full h-28 sm:h-36 object-cover rounded-xl border-2 border-black">
                                 <source src="${p.parsedVideo}" type="video/mp4">
                                 متصفحك لا يدعم عرض الفيديو
                             </video>
@@ -608,29 +626,39 @@
                 let adminActionsHtml = '';
                 if(isAdmin) {
                     adminActionsHtml = `
-                        <div class="mt-4 pt-3 border-t border-black flex gap-2">
-                            <button onclick="editProduct(${p.id})" class="vintage-btn bg-yellow-400 text-black px-3 py-1.5 text-xs cursor-pointer flex-1">✏️ تعديل</button>
-                            <button onclick="deleteProduct(${p.id})" class="vintage-btn bg-red-600 text-white px-3 py-1.5 text-xs cursor-pointer flex-1">🗑️ حذف</button>
+                        <div class="mt-3 pt-2 border-t border-black flex gap-1.5">
+                            <button onclick="editProduct(${p.id})" class="vintage-btn bg-yellow-400 text-black px-2 py-1 text-xs cursor-pointer flex-1">✏️ تعديل</button>
+                            <button onclick="deleteProduct(${p.id})" class="vintage-btn bg-red-600 text-white px-2 py-1 text-xs cursor-pointer flex-1">🗑️ حذف</button>
                         </div>
                     `;
                 }
 
                 grid.innerHTML += `
-                    <div class="vintage-box p-5 flex flex-col justify-between" id="product-card-${p.id}">
+                    <div class="vintage-box p-3 sm:p-5 flex flex-col justify-between" id="product-card-${p.id}">
                         <div>
                             <div class="relative">
-                                <img src="${displayImg}" alt="${p.name}" class="w-full h-52 object-cover rounded-xl border-3 border-[#111] mb-2 shadow">
-                                <button onclick="toggleFavorite(${p.id})" class="absolute top-3 left-3 bg-white p-2.5 rounded-full border-3 border-[#111] text-lg hover:scale-110 shadow cursor-pointer">${isFav ? '❤️' : '🤍'}</button>
+                                <img src="${displayImg}" alt="${p.name}" class="w-full h-36 sm:h-52 object-cover rounded-xl border-3 border-[#111] mb-2 shadow">
+                                <button onclick="toggleFavorite(${p.id})" class="absolute top-2 left-2 sm:top-3 sm:left-3 bg-white p-2 sm:p-2.5 rounded-full border-2 border-[#111] text-sm sm:text-lg hover:scale-110 shadow cursor-pointer">${isFav ? '❤️' : '🤍'}</button>
                             </div>
                             ${videoHtml}
-                            <span class="bg-[#111] text-[#f4ebd0] text-xs px-2.5 py-1 rounded-md font-black inline-block mt-2">${p.parsedCategory}</span>
-                            <h4 class="font-black text-xl mt-2 text-[#111]">${p.name}</h4>
-                            <p class="text-gray-700 text-sm mt-1.5 font-bold leading-relaxed">${p.cleanDesc || 'لا يوجد وصف'}</p>
+                            <span class="bg-[#111] text-[#f4ebd0] text-[10px] sm:text-xs px-2 py-0.5 rounded-md font-black inline-block mt-2">${p.parsedCategory}</span>
+                            <h4 class="font-black text-sm sm:text-xl mt-1.5 text-[#111] leading-snug">${p.name}</h4>
+                            
+                            <!-- خانة وصف المنتج المنسدلة بالسهم -->
+                            <div class="mt-2">
+                                <button onclick="toggleProductDesc(${p.id})" class="w-full text-right font-black text-xs sm:text-sm bg-[#fcf8ec] border-2 border-black px-2.5 py-1.5 rounded-lg flex justify-between items-center cursor-pointer hover:bg-[#f4ebd0]">
+                                    <span>وصف المنتج</span>
+                                    <span id="desc-arrow-${p.id}">▼</span>
+                                </button>
+                                <div id="product-desc-${p.id}" class="hidden mt-1.5 p-2 bg-white border-2 border-black rounded-lg text-xs font-bold text-gray-800 leading-relaxed">
+                                    ${p.cleanDesc || 'لا يوجد وصف مضاف'}
+                                </div>
+                            </div>
                         </div>
                         <div>
-                            <div class="mt-4 flex justify-between items-center pt-3 border-t-2 border-dashed border-black">
-                                <span class="font-black text-xl text-green-900">${Number(p.price).toLocaleString()} د.ع</span>
-                                <button onclick="addToCart(${p.id})" class="vintage-btn px-5 py-2.5 text-sm cursor-pointer">أضف للسلة 🛒</button>
+                            <div class="mt-3 flex flex-col sm:flex-row justify-between items-start sm:items-center pt-2.5 border-t-2 border-dashed border-black gap-2">
+                                <span class="font-black text-sm sm:text-xl text-green-900">${Number(p.price).toLocaleString()} د.ع</span>
+                                <button onclick="addToCart(${p.id})" class="vintage-btn w-full sm:w-auto px-3 sm:px-5 py-2 text-xs sm:text-sm cursor-pointer">أضف للسلة 🛒</button>
                             </div>
                             ${adminActionsHtml}
                         </div>
