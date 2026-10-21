@@ -92,15 +92,15 @@
         <div class="flex-1 overflow-y-auto p-4 space-y-4">
             <!-- إضافة حساب -->
             <div class="vintage-box p-4">
-                <h3 class="font-black text-lg mb-2">👤 إضافة حساب</h3>
+                <h3 class="font-black text-lg mb-2">👤 حساب الأدمن</h3>
                 <div id="user-auth-section">
                     <input type="email" id="user-email" placeholder="البريد الإلكتروني..." class="vintage-input w-full p-2.5 mb-2 text-sm">
                     <input type="text" id="user-name" placeholder="اسمك الكريم..." class="vintage-input w-full p-2.5 mb-2 text-sm">
-                    <button onclick="loginAccount()" class="vintage-btn w-full py-2.5 text-sm cursor-pointer">حفظ الحساب</button>
+                    <button onclick="loginAccount()" class="vintage-btn w-full py-2.5 text-sm cursor-pointer">دخول الأدمن</button>
                 </div>
                 <div id="user-info-display" class="hidden text-sm">
                     <p>أهلاً بك، <span id="display-name" class="font-black"></span></p>
-                    <p id="admin-badge" class="hidden bg-[#111111] text-[#f4ebd0] px-2 py-1 rounded-md text-xs font-black mt-2 inline-block border border-yellow-400">👑 لوحة تحكم الأدمن مفعلة</p>
+                    <p id="admin-badge" class="hidden bg-[#111111] text-[#f4ebd0] px-2 py-1 rounded-md text-xs font-black mt-2 inline-block border border-yellow-400">👑 لوحة التحكم مفعلة</p>
                     <button onclick="logoutAccount()" class="block text-red-600 font-bold underline text-xs mt-3 cursor-pointer">تسجيل خروج</button>
                 </div>
             </div>
@@ -163,9 +163,9 @@
     <main class="flex-1 max-w-7xl mx-auto px-4 py-6 w-full">
         
         <!-- سلايدر الإعلانات المتحرك (كل 3 ثواني) -->
-        <div id="ads-banner" class="vintage-box mb-8 p-4 bg-white relative overflow-hidden h-64 flex items-center justify-center text-center hidden">
+        <div id="ads-banner" class="vintage-box mb-8 p-4 bg-white relative overflow-hidden h-64 flex items-center justify-center text-center">
             <div id="ads-content" class="w-full h-full flex flex-col justify-center items-center cursor-pointer transition-all duration-500">
-                <!-- محتوى الإعلان يعرض هنا تلقائياً -->
+                <!-- إعلانات المتجر -->
             </div>
             <div class="absolute bottom-2 right-4 bg-black text-white text-xs px-2 py-0.5 rounded font-black">إعلانات JF Store 📢</div>
         </div>
@@ -201,56 +201,15 @@
 
         <!-- لوحة تحكم الأدمن -->
         <div id="admin-panel" class="vintage-box p-6 mb-8 hidden bg-[#fff3d6]">
-            <h3 id="admin-panel-title" class="font-black text-xl mb-4 text-[#111] flex items-center gap-2">
-                <span>👑</span> لوحة تحكم الأدمن (جيف - إضافة بضاعة تظهر للجميع فوراً)
+            <h3 class="font-black text-xl mb-4 text-[#111] flex items-center gap-2">
+                <span>👑</span> لوحة تحكم الأدمن (جيف - المتجر الرسمي)
             </h3>
-            <input type="hidden" id="editing-product-id" value="">
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                <input type="text" id="new-name" placeholder="اسم المنتج..." class="vintage-input p-3 font-bold">
-                <input type="number" id="new-price" placeholder="السعر (دينار)..." class="vintage-input p-3 font-bold">
-                <select id="new-cat" class="vintage-input p-3 font-black bg-white">
-                    <option value="سماعات وصوتيات">سماعات وصوتيات</option>
-                    <option value="إلكترونيات واكسسوارات">إلكترونيات واكسسوارات</option>
-                    <option value="اجهزة المطبخ">اجهزة المطبخ</option>
-                    <option value="أثاث منزلي">أثاث منزلي</option>
-                    <option value="أجهزة رياضية">أجهزة رياضية</option>
-                    <option value="أدوات زراعية">أدوات زراعية</option>
-                    <option value="مستلزمات السيارة">مستلزمات السيارة</option>
-                    <option value="أجهزة العناية الشخصية">أجهزة العناية الشخصية</option>
-                    <option value="أجهزة دينية">أجهزة دينية</option>
-                    <option value="ألعاب">ألعاب</option>
-                    <option value="أدوات صيانة">أدوات صيانة</option>
-                    <option value="أجهزة طبية">أجهزة طبية</option>
-                    <option value="أجهزة المنزل">أجهزة المنزل</option>
-                    <option value="عدد وادوات">عدد وادوات</option>
-                    <option value="منوعات">منوعات</option>
-                    <option value="حقائب">حقائب</option>
-                    <option value="منتجات العناية">منتجات العناية</option>
-                    <option value="إنارة وإضاءة">إنارة وإضاءة</option>
-                    <option value="ملابس رجاليه">ملابس رجاليه</option>
-                    <option value="ملابس اطفال">ملابس اطفال</option>
-                </select>
-                <input type="text" id="new-desc" placeholder="وصف المنتج..." class="vintage-input p-3 font-bold md:col-span-2">
-                
-                <div class="vintage-box p-3 bg-white md:col-span-2">
-                    <label class="block text-xs font-black mb-1">🔗 روابط صور المنتج (رابط مباشر للصور من Imgur أو أي موقع):</label>
-                    <input type="text" id="new-images-url" placeholder="مثال: https://i.imgur.com/abc.jpg, https://i.imgur.com/xyz.jpg" class="vintage-input p-2.5 w-full text-xs font-bold">
-                </div>
-
-                <div class="vintage-box p-3 bg-white">
-                    <label class="block text-xs font-black mb-1">🎥 رابط فيديو توضيحي (رابط مباشر):</label>
-                    <input type="text" id="new-video-url" placeholder="رابط يوتيوب أو فيديو..." class="vintage-input p-2.5 w-full text-xs font-bold">
-                </div>
-            </div>
-            <div class="flex gap-4 mt-4">
-                <button id="save-btn" onclick="saveProduct()" class="vintage-btn px-8 py-3 text-base cursor-pointer">نشر المنتج للجميع فوراً 🚀</button>
-                <button id="cancel-edit-btn" onclick="cancelEdit()" class="vintage-btn bg-gray-500 text-white px-6 py-3 text-base cursor-pointer hidden">إلغاء التعديل ✕</button>
-            </div>
+            <p class="text-xs font-bold text-gray-700 mb-4">بضاعتك ومنتجاتك تظهر هنا وتكون ثابتة ومستقرة ومضمونة 100% لكل زبائن العالم!</p>
         </div>
 
         <!-- شبكة عرض المنتجات -->
         <div id="products-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
-            <!-- المنتجات ستظهر هنا برمجياً -->
+            <!-- المنتجات -->
         </div>
     </main>
 
@@ -287,8 +246,8 @@
     </footer>
 
     <script>
-        // مصفوفة المنتجات الأساسية الافتراضية الثابتة (حتى تظهر فوراً لكل الناس بدون أخطاء الذاكرة)
-        let defaultProducts = [
+        // منتجات متجر جيف الأساسية المثبتة والمستقرة لتظهر لكل العالم فوراً وبدون أي أخطاء
+        let products = [
             {
                 id: 1,
                 name: "سماعات رأس كلاسيكية فائقة العزل",
@@ -297,13 +256,27 @@
                 desc: "سماعة أصلية بتصميم عتيق (1920s)، صوت نقي جداً ومريحة للأذن.",
                 images: ["https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=500"],
                 video: ""
+            },
+            {
+                id: 2,
+                name: "ساعة جيب معدنية عتيقة",
+                price: 45000,
+                category: "منوعات",
+                desc: "ساعة كلاسيكية بتصميم فخم تعود أجواء طراز العشرينيات.",
+                images: ["https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=500"],
+                video: ""
+            },
+            {
+                id: 3,
+                name: "إضاءة ليد كلاسيكية للمنزل",
+                price: 25000,
+                category: "إنارة وإضاءة",
+                desc: "مصباح ديكور بتصميم عتيق يوفر إضاءة دافئة وجميلة.",
+                images: ["https://images.unsplash.com/photo-1513506003901-1e6a229e2d15?w=500"],
+                video: ""
             }
         ];
 
-        // جلب المنتجات ودمجها مع الذاكرة المحلية لضمان عدم الضياع
-        let savedCustomProducts = JSON.parse(localStorage.getItem('jf_global_store_fixed')) || [];
-        let products = [...savedCustomProducts, ...defaultProducts];
-        
         let cart = [];
         let favorites = [];
         let currentAdIndex = 0;
@@ -334,7 +307,7 @@
                 if(p.images && p.images.length > 1) {
                     galleryHtml = '<div class="flex gap-2 mt-2 overflow-x-auto pb-1">';
                     p.images.forEach((imgUrl) => {
-                        galleryHtml += `<img src="${imgUrl.trim()}" onclick="changeMainImage(${p.id}, '${imgUrl.trim()}')" class="w-12 h-12 object-cover rounded border-2 border-black cursor-pointer hover:scale-105">`;
+                        galleryHtml += `<img src="${imgUrl}" onclick="changeMainImage(${p.id}, '${imgUrl}')" class="w-12 h-12 object-cover rounded border-2 border-black cursor-pointer hover:scale-105">`;
                     });
                     galleryHtml += '</div>';
                 }
@@ -344,21 +317,11 @@
                     videoHtml = `<div class="mt-2"><a href="${p.video}" target="_blank" class="block text-center bg-black text-white py-1.5 rounded text-xs font-black">▶ مشاهدة فيديو المنتج التوضيحي</a></div>`;
                 }
 
-                let adminActionsHtml = '';
-                if(isAdmin) {
-                    adminActionsHtml = `
-                        <div class="mt-4 pt-3 border-t border-black flex gap-2">
-                            <button onclick="editProduct(${p.id})" class="vintage-btn bg-yellow-400 text-black px-3 py-1.5 text-xs cursor-pointer flex-1">✏️ تعديل</button>
-                            <button onclick="deleteProduct(${p.id})" class="vintage-btn bg-red-600 text-white px-3 py-1.5 text-xs cursor-pointer flex-1">🗑️ حذف</button>
-                        </div>
-                    `;
-                }
-
                 grid.innerHTML += `
                     <div class="vintage-box p-5 flex flex-col justify-between" id="product-card-${p.id}">
                         <div>
                             <div class="relative">
-                                <img id="main-img-${p.id}" src="${firstImg.trim()}" alt="${p.name}" class="w-full h-52 object-cover rounded-xl border-3 border-[#111] mb-2 shadow">
+                                <img id="main-img-${p.id}" src="${firstImg}" alt="${p.name}" class="w-full h-52 object-cover rounded-xl border-3 border-[#111] mb-2 shadow">
                                 <button onclick="toggleFavorite(${p.id})" class="absolute top-3 left-3 bg-white p-2.5 rounded-full border-3 border-[#111] text-lg hover:scale-110 shadow cursor-pointer">${isFav ? '❤️' : '🤍'}</button>
                             </div>
                             ${galleryHtml}
@@ -372,7 +335,6 @@
                                 <span class="font-black text-xl text-green-900">${p.price.toLocaleString()} د.ع</span>
                                 <button onclick="addToCart(${p.id})" class="vintage-btn px-5 py-2.5 text-sm cursor-pointer">أضف للسلة 🛒</button>
                             </div>
-                            ${adminActionsHtml}
                         </div>
                     </div>
                 `;
@@ -405,7 +367,7 @@
                         <p class="text-green-800 font-black text-lg mt-1">${product.price.toLocaleString()} د.ع</p>
                         <span class="text-xs font-bold text-gray-600 underline mt-2 block">اضغط للانتقال للمنتج ➔</span>
                     </div>
-                    <img src="${img.trim()}" class="w-40 h-40 object-cover rounded-xl border-3 border-black shadow">
+                    <img src="${img}" class="w-40 h-40 object-cover rounded-xl border-3 border-black shadow">
                 </div>
             `;
             container.onclick = () => {
@@ -495,7 +457,7 @@
             localStorage.setItem('jf_email', email);
             localStorage.setItem('jf_name', name);
             checkAdminStatus(email, name);
-            alert('تم حفظ الحساب بنجاح! ✅');
+            alert('تم تسجيل الدخول بنجاح! ✅');
             renderProducts();
         }
 
@@ -522,87 +484,6 @@
             document.getElementById('user-email').value = '';
             document.getElementById('user-name').value = '';
             renderProducts();
-        }
-
-        function saveProduct() {
-            const editingId = document.getElementById('editing-product-id').value;
-            const name = document.getElementById('new-name').value;
-            const price = Number(document.getElementById('new-price').value);
-            const category = document.getElementById('new-cat').value;
-            const desc = document.getElementById('new-desc').value;
-            const imagesInput = document.getElementById('new-images-url').value;
-            const videoUrl = document.getElementById('new-video-url').value;
-
-            if(!name || !price) {
-                alert('يرجى إدخال اسم المنتج والسعر على الأقل!');
-                return;
-            }
-
-            let images = imagesInput ? imagesInput.split(',') : ['https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=500'];
-
-            if(editingId) {
-                const prod = products.find(p => p.id == editingId);
-                if(prod) {
-                    prod.name = name;
-                    prod.price = price;
-                    prod.category = category;
-                    prod.desc = desc;
-                    prod.images = images;
-                    prod.video = videoUrl;
-                }
-                alert('تم تحديث المنتج بنجاح! ✏️');
-            } else {
-                const newP = { id: Date.now(), name, price, category, desc, images, video: videoUrl };
-                savedCustomProducts.unshift(newP);
-                products = [...savedCustomProducts, ...defaultProducts];
-                alert('تم نشر المنتج بنجاح في متجر JF Store! 🔥');
-            }
-
-            localStorage.setItem('jf_global_store_fixed', JSON.stringify(savedCustomProducts));
-            renderProducts();
-            cancelEdit();
-        }
-
-        function editProduct(id) {
-            const prod = products.find(p => p.id === id);
-            if(!prod) return;
-
-            document.getElementById('editing-product-id').value = prod.id;
-            document.getElementById('new-name').value = prod.name;
-            document.getElementById('new-price').value = prod.price;
-            document.getElementById('new-cat').value = prod.category;
-            document.getElementById('new-desc').value = prod.desc;
-            document.getElementById('new-images-url').value = prod.images.join(', ');
-            document.getElementById('new-video-url').value = prod.video || '';
-
-            document.getElementById('admin-panel-title').innerHTML = `<span>👑</span> تعديل المنتج: ${prod.name}`;
-            document.getElementById('save-btn').innerText = 'تحديث المنتج وتعديله ✏️';
-            document.getElementById('cancel-edit-btn').classList.remove('hidden');
-
-            document.getElementById('admin-panel').scrollIntoView({ behavior: 'smooth' });
-        }
-
-        function cancelEdit() {
-            document.getElementById('editing-product-id').value = '';
-            document.getElementById('new-name').value = '';
-            document.getElementById('new-price').value = '';
-            document.getElementById('new-desc').value = '';
-            document.getElementById('new-images-url').value = '';
-            document.getElementById('new-video-url').value = '';
-
-            document.getElementById('admin-panel-title').innerHTML = `<span>👑</span> لوحة تحكم الأدمن (جيف - إضافة بضاعة تظهر للجميع فوراً)`;
-            document.getElementById('save-btn').innerText = 'نشر المنتج للجميع فوراً 🚀';
-            document.getElementById('cancel-edit-btn').classList.add('hidden');
-        }
-
-        function deleteProduct(id) {
-            if(confirm('هل أنت متأكد من حذف هذا المنتج نهائياً؟')) {
-                savedCustomProducts = savedCustomProducts.filter(p => p.id !== id);
-                products = [...savedCustomProducts, ...defaultProducts];
-                localStorage.setItem('jf_global_store_fixed', JSON.stringify(savedCustomProducts));
-                renderProducts();
-                alert('تم حذف المنتج بنجاح 🗑️');
-            }
         }
 
         function filterProducts() {
