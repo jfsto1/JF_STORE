@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>JF Store - متجر جيف الكلاسيكي</title>
+    <title>JF Store - متجر </title>
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- Supabase JS Client CDN -->
@@ -14,51 +14,47 @@
             font-family: 'Cairo', sans-serif; 
             background-color: #f4ebd0; 
             color: #111111;
-            background-image: radial-gradient(#e3d5b8 1px, transparent 1px);
-            background-size: 20px 20px;
+            background-image: radial-gradient(#e3d5b8 1.5px, transparent 1.5px);
+            background-size: 22px 22px;
             overflow-x: hidden;
         }
 
-        /* تهيئة منظور ثلاثي الأبعاد للبطاقات */
         .grid-container {
             perspective: 1200px;
         }
 
-        /* تصميم البطاقات الكلاسيكية مع أنيميشن 3D Flip أسطوري */
+        /* تصميم الصناديق والبطاقات الكلاسيكية */
         .vintage-box { 
-            border: 3px solid #111111; 
+            border: 3.5px solid #111111; 
             box-shadow: 5px 5px 0px #111111;
             background-color: #fffdf6;
             border-radius: 14px;
-            transition: transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.35s ease;
+            transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.30s ease;
             transform-style: preserve-3d;
-            backface-visibility: hidden;
         }
 
-        /* حركة انقلاب وتكبير 3D احترافية عند التحويم */
         .vintage-box:hover {
-            transform: translateY(-8px) rotateY(10deg) rotateX(4deg) scale(1.03);
-            box-shadow: 12px 12px 0px #111111;
+            transform: translateY(-6px) rotateY(6deg) rotateX(3deg) scale(1.02);
+            box-shadow: 10px 10px 0px #111111;
         }
 
-        /* حركة الانغمار عند النقرة */
         .vintage-box:active {
-            transform: scale(0.95) rotateY(-8deg);
+            transform: scale(0.96) rotateY(-4deg);
             box-shadow: 2px 2px 0px #111111;
         }
 
         .vintage-btn { 
             background-color: #111111; 
             color: #f4ebd0; 
-            border: 2px solid #111111;
-            box-shadow: 3px 3px 0px #d4a373;
+            border: 3px solid #111111;
+            box-shadow: 3.5px 3.5px 0px #d4a373;
             font-weight: 900;
-            border-radius: 8px;
+            border-radius: 10px;
             transition: all 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
         }
 
         .vintage-btn:hover { 
-            background-color: #333333; 
+            background-color: #2b2b2b; 
             transform: translate(-2px, -2px) scale(1.02); 
             box-shadow: 6px 6px 0px #111111;
         }
@@ -69,50 +65,61 @@
         }
 
         .vintage-input {
-            border: 2px solid #111111;
+            border: 3px solid #111111;
             background-color: #fffdf6;
-            border-radius: 8px;
-            box-shadow: inset 2px 2px 0px rgba(0,0,0,0.1);
+            border-radius: 10px;
+            box-shadow: inset 2px 2px 0px rgba(0,0,0,0.12);
         }
 
-        /* أنيميشن انزلاق السلة القوي */
+        /* أنيميشن شخصيات Rubber Hose المطاطية الجانبية */
+        @keyframes rubberHoseWiggle {
+            0%, 100% { transform: translateY(0) rotate(0deg) scale(1, 1); }
+            25% { transform: translateY(-8px) rotate(-5deg) scale(1.05, 0.95); }
+            50% { transform: translateY(0) rotate(3deg) scale(0.95, 1.05); }
+            75% { transform: translateY(-4px) rotate(-2deg) scale(1.02, 0.98); }
+        }
+
+        .rubber-sticker-right {
+            animation: rubberHoseWiggle 2.8s ease-in-out infinite;
+            transform-origin: bottom center;
+        }
+
+        .rubber-sticker-left {
+            animation: rubberHoseWiggle 3.2s ease-in-out infinite 0.5s;
+            transform-origin: bottom center;
+        }
+
+        /* أنيميشن انزلاق السلة */
         #cart-drawer {
-            transition: transform 0.45s cubic-bezier(0.16, 1, 0.3, 1);
+            transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
         }
 
-        /* أنيميشن انقلاب وانبثاق النافذة المنبثقة للمنتج (3D Modal Flip) */
-        @keyframes modalFlipIn {
-            0% {
-                opacity: 0;
-                transform: scale(0.6) rotateY(-40deg) translateY(50px);
-            }
-            100% {
-                opacity: 1;
-                transform: scale(1) rotateY(0deg) translateY(0);
-            }
-        }
-
-        .modal-animate-content {
-            animation: modalFlipIn 0.45s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
-        }
-
-        /* أنيميشن ناطط ومرن لنافذة إضافة السلة */
-        @keyframes popupBounce {
-            0% { opacity: 0; transform: scale(0.4) translateY(-30px); }
-            70% { transform: scale(1.08) translateY(5px); }
+        /* أنيميشن القائمة المخصصة للاصناف */
+        @keyframes menuPop {
+            0% { opacity: 0; transform: scale(0.85) translateY(-10px); }
             100% { opacity: 1; transform: scale(1) translateY(0); }
         }
 
-        .popup-animate-content {
-            animation: popupBounce 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+        .custom-menu-anim {
+            animation: menuPop 0.25s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+        }
+
+        /* أنيميشن النافذة المنبثقة 3D */
+        @keyframes modalFlipIn {
+            0% { opacity: 0; transform: scale(0.6) rotateY(-30deg) translateY(40px); }
+            100% { opacity: 1; transform: scale(1) rotateY(0deg) translateY(0); }
+        }
+
+        .modal-animate-content {
+            animation: modalFlipIn 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
         }
 
         /* أنيميشن الإعلانات */
         @keyframes fadeInOut {
-            0% { opacity: 0; transform: scale(0.95) rotateX(10deg); }
+            0% { opacity: 0; transform: scale(0.96) rotateX(8deg); }
             15% { opacity: 1; transform: scale(1) rotateX(0deg); }
             85% { opacity: 1; transform: scale(1) rotateX(0deg); }
-            100% { opacity: 0; transform: scale(0.95) rotateX(-10deg); }
+            100% { opacity: 0; transform: scale(0.96) rotateX(-8deg); }
         }
 
         .fade-slide {
@@ -122,11 +129,11 @@
         /* أنيميشن زر السلة العائم */
         @keyframes floatPulse {
             0%, 100% { transform: translateY(0) scale(1); }
-            50% { transform: translateY(-6px) scale(1.05); }
+            50% { transform: translateY(-7px) scale(1.06); }
         }
 
         .cart-float-btn {
-            animation: floatPulse 3s ease-in-out infinite;
+            animation: floatPulse 2.8s ease-in-out infinite;
         }
 
         #side-menu {
@@ -134,7 +141,48 @@
         }
     </style>
 </head>
-<body class="min-h-screen flex flex-col relative pb-16">
+<body class="min-h-screen flex flex-col relative pb-20">
+
+    <!-- شخصية كارتونية جانبية شفافة (Rubber Hose Mascot - جهة اليمين) -->
+    <div class="fixed top-1/3 -right-3 z-30 pointer-events-none hidden lg:block rubber-sticker-right">
+        <svg class="w-24 h-28 filter drop-shadow-[3px_3px_0px_rgba(0,0,0,1)]" viewBox="0 0 100 120" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <!-- الجسم والقبعة القديمة -->
+            <path d="M30 60 C30 35, 70 35, 70 60 C70 90, 30 90, 30 60 Z" fill="#fffdf6" stroke="#111" stroke-width="4"/>
+            <!-- عيون Pie-Eyes العشرينيات -->
+            <ellipse cx="43" cy="52" rx="5" ry="9" fill="#111"/>
+            <polygon points="45,50 50,52 45,54" fill="#fffdf6"/>
+            <ellipse cx="57" cy="52" rx="5" ry="9" fill="#111"/>
+            <polygon points="59,50 64,52 59,54" fill="#fffdf6"/>
+            <!-- الابتسامة العريضة -->
+            <path d="M38 70 Q50 85 62 70" stroke="#111" stroke-width="4" stroke-linecap="round" fill="none"/>
+            <!-- الذراع المطاطي والقفاز الأيمن -->
+            <path d="M30 65 Q10 70 18 85" stroke="#111" stroke-width="5" stroke-linecap="round" fill="none"/>
+            <circle cx="18" cy="88" r="7" fill="#fffdf6" stroke="#111" stroke-width="3"/>
+            <!-- الذراع المطاطي والقفاز الأيسر (يؤشر للمتجر) -->
+            <path d="M70 65 Q90 55 82 40" stroke="#111" stroke-width="5" stroke-linecap="round" fill="none"/>
+            <circle cx="82" cy="36" r="7" fill="#fffdf6" stroke="#111" stroke-width="3"/>
+            <!-- قبعة كلاسيكية 1920s -->
+            <path d="M32 40 L68 40 L60 25 L40 25 Z" fill="#111"/>
+            <ellipse cx="50" cy="40" rx="22" ry="4" fill="#111"/>
+        </svg>
+    </div>
+
+    <!-- شخصية كارتونية جانبية شفافة (Rubber Hose Mascot - جهة اليسار) -->
+    <div class="fixed top-2/3 -left-2 z-30 pointer-events-none hidden lg:block rubber-sticker-left">
+        <svg class="w-24 h-28 filter drop-shadow-[3px_3px_0px_rgba(0,0,0,1)]" viewBox="0 0 100 120" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M35 55 C35 30, 65 30, 65 55 C65 85, 35 85, 35 55 Z" fill="#fffdf6" stroke="#111" stroke-width="4"/>
+            <ellipse cx="45" cy="50" rx="4" ry="8" fill="#111"/>
+            <ellipse cx="55" cy="50" rx="4" ry="8" fill="#111"/>
+            <path d="M42 66 Q50 76 58 66" stroke="#111" stroke-width="4" stroke-linecap="round" fill="none"/>
+            <!-- الأذرع المطاطية المتلوية -->
+            <path d="M35 60 Q15 50 22 35" stroke="#111" stroke-width="5" fill="none"/>
+            <circle cx="22" cy="31" r="6" fill="#fffdf6" stroke="#111" stroke-width="3"/>
+            <path d="M65 60 Q85 70 78 85" stroke="#111" stroke-width="5" fill="none"/>
+            <circle cx="78" cy="88" r="6" fill="#fffdf6" stroke="#111" stroke-width="3"/>
+            <!-- فيونكة قديمة -->
+            <path d="M43 78 L50 82 L57 78 L50 85 Z" fill="#111"/>
+        </svg>
+    </div>
 
     <!-- شريط علوي كلاسيكي -->
     <div class="bg-[#111111] text-[#f4ebd0] text-[10px] sm:text-xs py-1.5 px-2 flex justify-around items-center font-black tracking-widest border-b-4 border-[#111111]">
@@ -142,7 +190,7 @@
         <span>🛡️ دفع آمن عند الاستلام 🛡️</span>
     </div>
 
-    <!-- الهيدر الرئيسي مع الشعار وزر البحث فوق على اليسار -->
+    <!-- الهيدر الرئيسي مع الشعار وزر البحث -->
     <header class="bg-[#fffdf6] border-b-4 border-[#111111] sticky top-0 z-40 px-4 py-2.5 flex justify-between items-center shadow-lg">
         <div class="flex items-center gap-2">
             <button onclick="toggleMenu()" class="vintage-box px-2.5 py-1 text-xl font-black bg-[#f4ebd0] hover:scale-105 cursor-pointer">☰</button>
@@ -158,7 +206,7 @@
             </div>
         </div>
         
-        <!-- زر البحث فوق على اليسار -->
+        <!-- حقل البحث الأنيق فوق على اليسار -->
         <div class="flex items-center gap-2">
             <div class="relative">
                 <input type="text" id="search-input" oninput="filterProducts()" placeholder="🔍 ابحث عن منتج..." class="vintage-input py-1.5 px-3 text-xs sm:text-sm font-bold w-36 sm:w-60">
@@ -166,7 +214,7 @@
         </div>
     </header>
 
-    <!-- زر السلة الدائري العائم أسفل اليمين مع أنيميشن التكبير والنبض -->
+    <!-- زر السلة الدائري العائم أسفل اليمين -->
     <button onclick="toggleCart()" class="cart-float-btn fixed bottom-6 right-6 z-40 w-16 h-16 bg-[#111111] text-[#f4ebd0] rounded-full border-4 border-[#f4ebd0] shadow-2xl flex flex-col items-center justify-center font-black hover:scale-115 cursor-pointer transition-all duration-300">
         <span class="text-xl">🛒</span>
         <span id="cart-count" class="absolute -top-1 -right-1 bg-red-600 text-white text-xs w-6 h-6 rounded-full flex items-center justify-center border-2 border-black font-black">0</span>
@@ -250,31 +298,44 @@
             <div id="ads-content" class="w-full h-full flex items-center justify-center cursor-pointer fade-slide"></div>
         </div>
 
-        <!-- فلاتر الأصناف -->
-        <div class="mb-6 flex justify-end items-center">
-            <select id="category-filter" onchange="filterProducts()" class="vintage-input w-full sm:w-1/3 p-3 font-black bg-[#fffdf6] text-xs sm:text-sm cursor-pointer">
-                <option value="all">📁 كل الأصناف</option>
-                <option value="سماعات وصوتيات">سماعات وصوتيات</option>
-                <option value="إلكترونيات واكسسوارات">إلكترونيات واكسسوارات</option>
-                <option value="اجهزة المطبخ">اجهزة المطبخ</option>
-                <option value="أثاث منزلي">أثاث منزلي</option>
-                <option value="أجهزة رياضية">أجهزة رياضية</option>
-                <option value="أدوات زراعية">أدوات زراعية</option>
-                <option value="مستلزمات السيارة">مستلزمات السيارة</option>
-                <option value="أجهزة العناية الشخصية">أجهزة العناية الشخصية</option>
-                <option value="أجهزة دينية">أجهزة دينية</option>
-                <option value="ألعاب">ألعاب</option>
-                <option value="أدوات صيانة">أدوات صيانة</option>
-                <option value="أجهزة طبية">أجهزة طبية</option>
-                <option value="أجهزة المنزل">أجهزة المنزل</option>
-                <option value="عدد وادوات">عدد وادوات</option>
-                <option value="منوعات">منوعات</option>
-                <option value="حقائب">حقائب</option>
-                <option value="منتجات العناية">منتجات العناية</option>
-                <option value="إنارة وإضاءة">إنارة وإضاءة</option>
-                <option value="ملابس رجاليه">ملابس رجاليه</option>
-                <option value="ملابس اطفال">ملابس اطفال</option>
-            </select>
+        <!-- قائمة اختيار الأصناف الكلاسيكية المخصصة (Custom Rubber Hose Category Selector) -->
+        <div class="mb-6 flex justify-between items-center relative z-30">
+            <h2 class="font-black text-sm sm:text-lg text-[#111] flex items-center gap-1.5">
+                <span>🏷️</span> تصفح الأصناف:
+            </h2>
+            
+            <div class="relative w-48 sm:w-72">
+                <!-- زر فتح قائمة الأصناف الخيالي -->
+                <button id="custom-cat-trigger" onclick="toggleCustomCatMenu()" class="vintage-btn w-full py-2.5 px-3.5 flex justify-between items-center text-xs sm:text-sm bg-[#fffdf6] text-[#111] cursor-pointer hover:bg-[#f4ebd0]">
+                    <span id="selected-cat-label" class="font-black truncate">📁 كل الأصناف</span>
+                    <span id="cat-arrow" class="text-xs transition-transform">▼</span>
+                </button>
+
+                <!-- القائمة المنبثقة المصممة بنفس ستايل المتجر الـ Rubber Hose -->
+                <div id="custom-cat-dropdown" class="hidden absolute right-0 top-full mt-2 w-full bg-[#fffdf6] border-4 border-[#111111] shadow-[6px_6px_0px_#111111] rounded-xl z-50 max-h-72 overflow-y-auto p-2 space-y-1 custom-menu-anim">
+                    <div onclick="selectCategory('all', '📁 كل الأصناف')" class="p-2.5 font-black text-xs sm:text-sm rounded-lg hover:bg-[#111111] hover:text-[#f4ebd0] cursor-pointer transition-colors border-b border-black/10">📁 كل الأصناف</div>
+                    <div onclick="selectCategory('سماعات وصوتيات', '🎧 سماعات وصوتيات')" class="p-2.5 font-black text-xs sm:text-sm rounded-lg hover:bg-[#111111] hover:text-[#f4ebd0] cursor-pointer transition-colors border-b border-black/10">🎧 سماعات وصوتيات</div>
+                    <div onclick="selectCategory('إلكترونيات واكسسوارات', '📱 إلكترونيات واكسسوارات')" class="p-2.5 font-black text-xs sm:text-sm rounded-lg hover:bg-[#111111] hover:text-[#f4ebd0] cursor-pointer transition-colors border-b border-black/10">📱 إلكترونيات واكسسوارات</div>
+                    <div onclick="selectCategory('اجهزة المطبخ', '🍳 اجهزة المطبخ')" class="p-2.5 font-black text-xs sm:text-sm rounded-lg hover:bg-[#111111] hover:text-[#f4ebd0] cursor-pointer transition-colors border-b border-black/10">🍳 اجهزة المطبخ</div>
+                    <div onclick="selectCategory('أثاث منزلي', '🛋️ أثاث منزلي')" class="p-2.5 font-black text-xs sm:text-sm rounded-lg hover:bg-[#111111] hover:text-[#f4ebd0] cursor-pointer transition-colors border-b border-black/10">🛋️ أثاث منزلي</div>
+                    <div onclick="selectCategory('أجهزة رياضية', '⚽ أجهزة رياضية')" class="p-2.5 font-black text-xs sm:text-sm rounded-lg hover:bg-[#111111] hover:text-[#f4ebd0] cursor-pointer transition-colors border-b border-black/10">⚽ أجهزة رياضية</div>
+                    <div onclick="selectCategory('أدوات زراعية', '🌱 أدوات زراعية')" class="p-2.5 font-black text-xs sm:text-sm rounded-lg hover:bg-[#111111] hover:text-[#f4ebd0] cursor-pointer transition-colors border-b border-black/10">🌱 أدوات زراعية</div>
+                    <div onclick="selectCategory('مستلزمات السيارة', '🚗 مستلزمات السيارة')" class="p-2.5 font-black text-xs sm:text-sm rounded-lg hover:bg-[#111111] hover:text-[#f4ebd0] cursor-pointer transition-colors border-b border-black/10">🚗 مستلزمات السيارة</div>
+                    <div onclick="selectCategory('أجهزة العناية الشخصية', '💈 أجهزة العناية الشخصية')" class="p-2.5 font-black text-xs sm:text-sm rounded-lg hover:bg-[#111111] hover:text-[#f4ebd0] cursor-pointer transition-colors border-b border-black/10">💈 أجهزة العناية الشخصية</div>
+                    <div onclick="selectCategory('أجهزة دينية', '🕌 أجهزة دينية')" class="p-2.5 font-black text-xs sm:text-sm rounded-lg hover:bg-[#111111] hover:text-[#f4ebd0] cursor-pointer transition-colors border-b border-black/10">🕌 أجهزة دينية</div>
+                    <div onclick="selectCategory('ألعاب', '🎮 ألعاب')" class="p-2.5 font-black text-xs sm:text-sm rounded-lg hover:bg-[#111111] hover:text-[#f4ebd0] cursor-pointer transition-colors border-b border-black/10">🎮 ألعاب</div>
+                    <div onclick="selectCategory('أدوات صيانة', '🛠️ أدوات صيانة')" class="p-2.5 font-black text-xs sm:text-sm rounded-lg hover:bg-[#111111] hover:text-[#f4ebd0] cursor-pointer transition-colors border-b border-black/10">🛠️ أدوات صيانة</div>
+                    <div onclick="selectCategory('أجهزة طبية', '🩺 أجهزة طبية')" class="p-2.5 font-black text-xs sm:text-sm rounded-lg hover:bg-[#111111] hover:text-[#f4ebd0] cursor-pointer transition-colors border-b border-black/10">🩺 أجهزة طبية</div>
+                    <div onclick="selectCategory('أجهزة المنزل', '🏠 أجهزة المنزل')" class="p-2.5 font-black text-xs sm:text-sm rounded-lg hover:bg-[#111111] hover:text-[#f4ebd0] cursor-pointer transition-colors border-b border-black/10">🏠 أجهزة المنزل</div>
+                    <div onclick="selectCategory('عدد وادوات', '⚙️ عدد وادوات')" class="p-2.5 font-black text-xs sm:text-sm rounded-lg hover:bg-[#111111] hover:text-[#f4ebd0] cursor-pointer transition-colors border-b border-black/10">⚙️ عدد وادوات</div>
+                    <div onclick="selectCategory('منوعات', '📦 منوعات')" class="p-2.5 font-black text-xs sm:text-sm rounded-lg hover:bg-[#111111] hover:text-[#f4ebd0] cursor-pointer transition-colors border-b border-black/10">📦 منوعات</div>
+                    <div onclick="selectCategory('حقائب', '🎒 حقائب')" class="p-2.5 font-black text-xs sm:text-sm rounded-lg hover:bg-[#111111] hover:text-[#f4ebd0] cursor-pointer transition-colors border-b border-black/10">🎒 حقائب</div>
+                    <div onclick="selectCategory('منتجات العناية', '✨ منتجات العناية')" class="p-2.5 font-black text-xs sm:text-sm rounded-lg hover:bg-[#111111] hover:text-[#f4ebd0] cursor-pointer transition-colors border-b border-black/10">✨ منتجات العناية</div>
+                    <div onclick="selectCategory('إنارة وإضاءة', '💡 إنارة وإضاءة')" class="p-2.5 font-black text-xs sm:text-sm rounded-lg hover:bg-[#111111] hover:text-[#f4ebd0] cursor-pointer transition-colors border-b border-black/10">💡 إنارة وإضاءة</div>
+                    <div onclick="selectCategory('ملابس رجاليه', '👔 ملابس رجاليه')" class="p-2.5 font-black text-xs sm:text-sm rounded-lg hover:bg-[#111111] hover:text-[#f4ebd0] cursor-pointer transition-colors border-b border-black/10">👔 ملابس رجاليه</div>
+                    <div onclick="selectCategory('ملابس اطفال', '🧸 ملابس اطفال')" class="p-2.5 font-black text-xs sm:text-sm rounded-lg hover:bg-[#111111] hover:text-[#f4ebd0] cursor-pointer transition-colors">🧸 ملابس اطفال</div>
+                </div>
+            </div>
         </div>
 
         <!-- لوحة تحكم الأدمن -->
@@ -330,11 +391,11 @@
             </div>
         </div>
 
-        <!-- شبكة عرض المنتجات المغلفة بمنظور ثلاثي الأبعاد -->
+        <!-- شبكة عرض المنتجات -->
         <div id="products-grid" class="grid-container grid grid-cols-3 sm:grid-cols-2 lg:grid-cols-4 gap-2 sm:gap-6"></div>
     </main>
 
-    <!-- نافذة تفاصيل المنتج المنبثقة مع أنيميشن 3D Flip Pop -->
+    <!-- نافذة تفاصيل المنتج المنبثقة -->
     <div id="product-modal" class="fixed inset-0 bg-black/70 z-50 flex items-center justify-center p-4 hidden backdrop-blur-xs">
         <div id="modal-container-box" class="vintage-box bg-[#fffdf6] max-w-lg w-full max-h-[90vh] overflow-y-auto p-5 relative mt-6 border-4 border-black shadow-2xl">
             <button onclick="closeProductModal()" class="absolute top-3 right-3 text-sm font-black bg-red-600 text-white px-3 py-1 rounded-full border-2 border-black hover:bg-black cursor-pointer shadow-lg z-10 transition-transform hover:scale-110">✕ إغلاق</button>
@@ -342,7 +403,7 @@
         </div>
     </div>
 
-    <!-- نافذة نجاح الإضافة للسلة بتصميم مرن وناطط -->
+    <!-- نافذة نجاح الإضافة للسلة -->
     <div id="cart-popup" class="fixed inset-0 bg-black/70 z-50 flex items-center justify-center p-4 hidden backdrop-blur-xs">
         <div id="cart-popup-box" class="vintage-box bg-[#fffdf6] max-w-sm w-full p-6 text-center space-y-4 relative border-4 border-black shadow-2xl">
             <div class="w-16 h-16 bg-green-700 text-white rounded-full flex items-center justify-center text-3xl mx-auto border-3 border-black shadow">✓</div>
@@ -359,12 +420,29 @@
         </div>
     </div>
 
-    <!-- سلة المشتريات المنزلقة بمرونة وفخامة -->
+    <!-- سلة المشتريات المنزلقة مع شخصية Rubber Hose الكارتونية بالداخل -->
     <div id="cart-drawer" class="fixed inset-y-0 left-0 w-80 sm:w-96 bg-[#fffdf6] border-r-4 border-[#111111] shadow-2xl z-50 transform -translate-x-full flex flex-col p-5">
-        <div class="flex justify-between items-center border-b-4 border-[#111111] pb-3 mb-4">
+        <div class="flex justify-between items-center border-b-4 border-[#111111] pb-3 mb-2">
             <h2 class="font-black text-2xl flex items-center gap-2">🛒 <span>سلة الشراء</span></h2>
             <button onclick="toggleCart()" class="text-2xl font-black hover:text-red-500 cursor-pointer transition-transform hover:scale-125">✕</button>
         </div>
+
+        <!-- شخصية Rubber Hose Mascot داخل السلة -->
+        <div class="flex items-center gap-3 p-3 mb-3 bg-[#f4ebd0] border-2 border-black rounded-xl">
+            <svg class="w-12 h-12 flex-shrink-0" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <circle cx="50" cy="50" r="40" fill="#fffdf6" stroke="#111" stroke-width="4"/>
+                <ellipse cx="40" cy="45" rx="4" ry="8" fill="#111"/>
+                <ellipse cx="60" cy="45" rx="4" ry="8" fill="#111"/>
+                <path d="M38 62 Q50 75 62 62" stroke="#111" stroke-width="4" stroke-linecap="round" fill="none"/>
+                <!-- سلة المسواق بأيده -->
+                <path d="M20 75 H80 L75 92 H25 Z" stroke="#111" stroke-width="3" fill="#111"/>
+            </svg>
+            <div class="text-right">
+                <p class="font-black text-xs text-[#111]">أهلاً بك بسلة JF Store 🖤</p>
+                <p class="text-[10px] font-bold text-gray-700">تأكد من أغراضك قبل تثبيت الطلب!</p>
+            </div>
+        </div>
+
         <div id="cart-items" class="flex-1 overflow-y-auto space-y-3"></div>
         <div class="border-t-4 border-[#111111] pt-4 mt-2">
             <div class="flex justify-between font-black text-lg mb-4">
@@ -391,6 +469,7 @@
         let products = [];
         let cart = [];
         let favorites = [];
+        let currentCategory = 'all';
         let currentAdIndex = 0;
         let adInterval = null;
 
@@ -426,6 +505,31 @@
                 renderProducts([]);
             }
         }
+
+        /* التحكم بقائمة الأصناف الكلاسيكية المخصصة */
+        function toggleCustomCatMenu() {
+            const menu = document.getElementById('custom-cat-dropdown');
+            const arrow = document.getElementById('cat-arrow');
+            menu.classList.toggle('hidden');
+            arrow.style.transform = menu.classList.contains('hidden') ? 'rotate(0deg)' : 'rotate(180deg)';
+        }
+
+        function selectCategory(catVal, catLabel) {
+            currentCategory = catVal;
+            document.getElementById('selected-cat-label').innerText = catLabel;
+            toggleCustomCatMenu();
+            filterProducts();
+        }
+
+        // إغلاق القائمة عند النقر خارجها
+        window.addEventListener('click', function(e) {
+            const trigger = document.getElementById('custom-cat-trigger');
+            const dropdown = document.getElementById('custom-cat-dropdown');
+            if (trigger && dropdown && !trigger.contains(e.target) && !dropdown.contains(e.target)) {
+                dropdown.classList.add('hidden');
+                document.getElementById('cat-arrow').style.transform = 'rotate(0deg)';
+            }
+        });
 
         function convertFileToBase64(file) {
             return new Promise((resolve, reject) => {
@@ -634,7 +738,7 @@
 
             modal.classList.remove('hidden');
             modalBox.classList.remove('modal-animate-content');
-            void modalBox.offsetWidth; // إعادة تهيئة الأنيميشن
+            void modalBox.offsetWidth;
             modalBox.classList.add('modal-animate-content');
         }
 
@@ -644,7 +748,6 @@
 
         function toggleMenu() { document.getElementById('side-menu').classList.toggle('translate-x-full'); }
         
-        /* دالة فتح وإغلاق السلة بأنيميشن انزلاق احترافي */
         function toggleCart() { 
             const drawer = document.getElementById('cart-drawer');
             drawer.classList.toggle('-translate-x-full'); 
@@ -819,7 +922,6 @@
 
         function filterProducts() {
             const query = document.getElementById('search-input').value.toLowerCase().trim();
-            const cat = document.getElementById('category-filter').value;
             
             const filtered = products.filter(p => {
                 const productName = (p.name || '').toLowerCase();
@@ -827,14 +929,14 @@
                 const productCat = (p.parsedCategory || '').trim();
                 
                 const matchQuery = productName.includes(query) || productDesc.includes(query);
-                const matchCat = (cat === 'all' || productCat === cat.trim());
+                const matchCat = (currentCategory === 'all' || productCat === currentCategory.trim());
                 
                 return matchQuery && matchCat;
             });
             
             renderProducts(filtered);
 
-            if(filtered.length > 0 && query === '' && cat === 'all') {
+            if(filtered.length > 0 && query === '' && currentCategory === 'all') {
                 document.getElementById('ads-banner').classList.remove('hidden');
                 startAdsSlider(filtered);
             } else {
@@ -848,7 +950,7 @@
                 alert('السلة فارغة يا بطل!');
                 return;
             }
-            let msg = "مرحباً جيف، أود طلب المنتجات الآتية من JF Store:\n\n";
+            let msg = "مرحباً ، أود طلب المنتجات الآتية من JF Store:\n\n";
             let total = 0;
             cart.forEach((item, i) => {
                 msg += `${i+1}. ${item.name} - ${Number(item.price).toLocaleString()} د.ع\n`;
