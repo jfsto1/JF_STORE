@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>JF Store - متجر </title>
+    <title>JF Store - متجر</title>
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- Supabase JS Client CDN -->
@@ -23,7 +23,7 @@
             perspective: 1200px;
         }
 
-        /* تصميم الصناديق والبطاقات الكلاسيكية بستايل الرسوم المتحركة القديمة */
+        /* تصميم البطاقات الصندوقية بستايل الكارتون الكلاسيكي */
         .vintage-box { 
             border: 3.5px solid #111111; 
             box-shadow: 5px 5px 0px #111111;
@@ -43,7 +43,7 @@
             box-shadow: 2px 2px 0px #111111;
         }
 
-        /* تصميم إطار الإعلانات Rubber Hose الكارتوني */
+        /* تصميم إطار الإعلانات Rubber Hose */
         .rubber-banner-frame {
             border: 4px solid #111111;
             box-shadow: 7px 7px 0px #111111;
@@ -81,7 +81,7 @@
             box-shadow: inset 2px 2px 0px rgba(0,0,0,0.12);
         }
 
-        /* أنيميشن شخصيات Rubber Hose المطاطية الجانبية للموبايل والحاسبة */
+        /* أنيميشن شخصيات Rubber Hose المطاطية */
         @keyframes rubberHoseWiggle {
             0%, 100% { transform: translateY(0) rotate(0deg) scale(1, 1); }
             25% { transform: translateY(-7px) rotate(-6deg) scale(1.06, 0.94); }
@@ -148,7 +148,7 @@
 </head>
 <body class="min-h-screen flex flex-col relative pb-20">
 
-    <!-- شخصية كارتونية جانبية (Rubber Hose Mascot - جهة اليمين - طالعة بالموبايل والحاسبة) -->
+    <!-- شخصية كارتونية جانبية جهة اليمين -->
     <div class="fixed top-1/3 -right-1 sm:-right-2 z-30 pointer-events-none rubber-sticker-right">
         <svg class="w-16 h-20 sm:w-24 sm:h-28 filter drop-shadow-[2px_2px_0px_rgba(0,0,0,1)]" viewBox="0 0 100 120" fill="none" xmlns="http://www.w3.org/2000/svg">
             <path d="M30 60 C30 35, 70 35, 70 60 C70 90, 30 90, 30 60 Z" fill="#fffdf6" stroke="#111" stroke-width="4"/>
@@ -166,7 +166,7 @@
         </svg>
     </div>
 
-    <!-- شخصية كارتونية جانبية (Rubber Hose Mascot - جهة اليسار - طالعة بالموبايل والحاسبة) -->
+    <!-- شخصية كارتونية جانبية جهة اليسار -->
     <div class="fixed top-2/3 -left-1 sm:-left-2 z-30 pointer-events-none rubber-sticker-left">
         <svg class="w-16 h-20 sm:w-24 sm:h-28 filter drop-shadow-[2px_2px_0px_rgba(0,0,0,1)]" viewBox="0 0 100 120" fill="none" xmlns="http://www.w3.org/2000/svg">
             <path d="M35 55 C35 30, 65 30, 65 55 C65 85, 35 85, 35 55 Z" fill="#fffdf6" stroke="#111" stroke-width="4"/>
@@ -187,7 +187,7 @@
         <span>🛡️ دفع آمن عند الاستلام 🛡️</span>
     </div>
 
-    <!-- الهيدر الرئيسي مع الشعار وزر البحث -->
+    <!-- الهيدر الرئيسي -->
     <header class="bg-[#fffdf6] border-b-4 border-[#111111] sticky top-0 z-40 px-4 py-2.5 flex justify-between items-center shadow-lg">
         <div class="flex items-center gap-2">
             <button onclick="toggleMenu()" class="vintage-box px-2.5 py-1 text-xl font-black bg-[#f4ebd0] hover:scale-105 cursor-pointer">☰</button>
@@ -203,7 +203,7 @@
             </div>
         </div>
         
-        <!-- حقل البحث الأنيق فوق على اليسار -->
+        <!-- حقل البحث -->
         <div class="flex items-center gap-2">
             <div class="relative">
                 <input type="text" id="search-input" oninput="filterProducts()" placeholder="🔍 ابحث عن منتج..." class="vintage-input py-1.5 px-3 text-xs sm:text-sm font-bold w-36 sm:w-60">
@@ -225,13 +225,19 @@
         </div>
 
         <div class="flex-1 overflow-y-auto p-4 space-y-4">
-            <!-- ادخل الحساب -->
+            <!-- ادخل الحساب مع حقل كلمة السر المباشر الخاص بالحاسبة والموبايل -->
             <div class="vintage-box p-4">
                 <h3 class="font-black text-lg mb-2">👤 ادخل الحساب</h3>
                 <div id="user-auth-section">
-                    <input type="email" id="user-email" placeholder="البريد الإلكتروني..." class="vintage-input w-full p-2.5 mb-2 text-sm">
+                    <input type="email" id="user-email" oninput="checkAdminEmailInput()" placeholder="البريد الإلكتروني..." class="vintage-input w-full p-2.5 mb-2 text-sm">
                     <input type="text" id="user-name" placeholder="اسمك الكريم..." class="vintage-input w-full p-2.5 mb-2 text-sm">
-                    <button onclick="loginAccount()" class="vintage-btn w-full py-2.5 text-sm cursor-pointer">دخول الحساب</button>
+                    
+                    <!-- حقل الباسورد ينفتح تلقائياً عند كتابة إيميل الأدمن -->
+                    <div id="password-field-container" class="hidden">
+                        <input type="password" id="user-password" placeholder="🔑 كلمة سر الأدمن..." class="vintage-input w-full p-2.5 mb-2 text-sm border-yellow-500 bg-yellow-50">
+                    </div>
+
+                    <button onclick="loginAccount()" class="vintage-btn w-full py-2.5 text-sm cursor-pointer mt-1">دخول الحساب</button>
                 </div>
                 <div id="user-info-display" class="hidden text-sm">
                     <p>أهلاً بك، <span id="display-name" class="font-black"></span></p>
@@ -290,21 +296,18 @@
     <!-- محتوى الموقع الرئيسي -->
     <main class="flex-1 max-w-7xl mx-auto px-2 sm:px-4 py-4 w-full">
         
-        <!-- بنر الإعلانات المطاطي المصمم بالكامل بستايل Rubber Hose الكارتوني -->
+        <!-- بنر الإعلانات المطاطي -->
         <div id="ads-banner" class="rubber-banner-frame mb-6 p-4 relative overflow-visible flex items-center justify-center text-center hidden">
-            <!-- شارة إعلان كرتونية علوية -->
             <div class="absolute -top-4 right-6 bg-[#111111] text-[#f4ebd0] text-[11px] sm:text-xs font-black px-3 py-1 rounded-full border-2 border-[#fffdf6] shadow-md tracking-wider">
                 ✨ إعلان كلاسيكي خاص ✨
             </div>
             
-            <!-- شخصية Rubber Hose Mascot ماسك مكبر الصوت داخل البنر -->
             <div class="absolute -bottom-2 -left-2 z-10 pointer-events-none hidden sm:block">
                 <svg class="w-16 h-20 filter drop-shadow-[2px_2px_0px_rgba(0,0,0,1)]" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <circle cx="45" cy="45" r="30" fill="#fffdf6" stroke="#111" stroke-width="4"/>
                     <ellipse cx="38" cy="40" rx="4" ry="7" fill="#111"/>
                     <ellipse cx="52" cy="40" rx="4" ry="7" fill="#111"/>
                     <path d="M35 55 Q45 68 55 55" stroke="#111" stroke-width="4" fill="none"/>
-                    <!-- مكبر صوت كارتوني قديم -->
                     <path d="M60 45 L85 30 L85 60 Z" fill="#111"/>
                     <ellipse cx="85" cy="45" rx="4" ry="15" fill="#f4ebd0" stroke="#111" stroke-width="2"/>
                 </svg>
@@ -837,20 +840,35 @@
             toggleMenu();
         }
 
+        /* فحص إيميل الأدمن وإظهار حقل الباسورد تلقائياً */
+        function checkAdminEmailInput() {
+            const email = document.getElementById('user-email').value.trim();
+            const passContainer = document.getElementById('password-field-container');
+            if (email.toLowerCase() === ADMIN_EMAIL.toLowerCase()) {
+                passContainer.classList.remove('hidden');
+            } else {
+                passContainer.classList.add('hidden');
+            }
+        }
+
+        /* تسجيل الدخول المباشر المضمون 100% للحاسبة والموبايل */
         function loginAccount() {
             const email = document.getElementById('user-email').value.trim();
             const name = document.getElementById('user-name').value.trim();
+            const passInput = document.getElementById('user-password').value;
+
             if(!email || !name) {
                 alert('يرجى إدخال البريد الإلكتروني والاسم يا غالي!');
                 return;
             }
+
             if(email.toLowerCase() === ADMIN_EMAIL.toLowerCase()) {
-                const pass = prompt("أدخل كلمة سر الأدمن:");
-                if(pass !== ADMIN_PASS) {
-                    alert('كلمة المرور غير صحيحة!');
+                if(passInput !== ADMIN_PASS) {
+                    alert('كلمة سر الأدمن غير صحيحة!');
                     return;
                 }
             }
+
             localStorage.setItem('jf_email', email);
             localStorage.setItem('jf_name', name);
             checkAdminStatus(email, name);
@@ -880,6 +898,8 @@
             document.getElementById('admin-panel').classList.add('hidden');
             document.getElementById('user-email').value = '';
             document.getElementById('user-name').value = '';
+            document.getElementById('user-password').value = '';
+            document.getElementById('password-field-container').classList.add('hidden');
             filterProducts();
         }
 
@@ -976,6 +996,7 @@
             if(savedEmail && savedName) {
                 document.getElementById('user-email').value = savedEmail;
                 document.getElementById('user-name').value = savedName;
+                checkAdminEmailInput();
                 checkAdminStatus(savedEmail, savedName);
             }
             fetchProductsFromSupabase();
