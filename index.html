@@ -16,20 +16,37 @@
             color: #111111;
             background-image: radial-gradient(#e3d5b8 1px, transparent 1px);
             background-size: 20px 20px;
+            overflow-x: hidden;
         }
+
+        /* تهيئة منظور ثلاثي الأبعاد للبطاقات */
+        .grid-container {
+            perspective: 1200px;
+        }
+
+        /* تصميم البطاقات الكلاسيكية مع أنيميشن 3D Flip أسطوري */
         .vintage-box { 
             border: 3px solid #111111; 
-            box-shadow: 4px 4px 0px #111111;
+            box-shadow: 5px 5px 0px #111111;
             background-color: #fffdf6;
-            border-radius: 12px;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            perspective: 1000px;
+            border-radius: 14px;
+            transition: transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.35s ease;
+            transform-style: preserve-3d;
+            backface-visibility: hidden;
         }
-        /* أنيميشن Flip وتكبير أسطوري للبطاقات */
+
+        /* حركة انقلاب وتكبير 3D احترافية عند التحويم */
         .vintage-box:hover {
-            transform: translateY(-5px) scale(1.02) rotateX(2deg);
-            box-shadow: 8px 8px 0px #111111;
+            transform: translateY(-8px) rotateY(10deg) rotateX(4deg) scale(1.03);
+            box-shadow: 12px 12px 0px #111111;
         }
+
+        /* حركة الانغمار عند النقرة */
+        .vintage-box:active {
+            transform: scale(0.95) rotateY(-8deg);
+            box-shadow: 2px 2px 0px #111111;
+        }
+
         .vintage-btn { 
             background-color: #111111; 
             color: #f4ebd0; 
@@ -37,31 +54,83 @@
             box-shadow: 3px 3px 0px #d4a373;
             font-weight: 900;
             border-radius: 8px;
-            transition: all 0.1s ease;
+            transition: all 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
         }
+
         .vintage-btn:hover { 
             background-color: #333333; 
-            transform: translate(-1px, -1px); 
-            box-shadow: 5px 5px 0px #111111;
+            transform: translate(-2px, -2px) scale(1.02); 
+            box-shadow: 6px 6px 0px #111111;
         }
+
+        .vintage-btn:active {
+            transform: translate(1px, 1px) scale(0.97);
+            box-shadow: 1px 1px 0px #111111;
+        }
+
         .vintage-input {
             border: 2px solid #111111;
             background-color: #fffdf6;
             border-radius: 8px;
             box-shadow: inset 2px 2px 0px rgba(0,0,0,0.1);
         }
-        /* أنيميشن تلاشي الإعلانات */
+
+        /* أنيميشن انزلاق السلة القوي */
+        #cart-drawer {
+            transition: transform 0.45s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        /* أنيميشن انقلاب وانبثاق النافذة المنبثقة للمنتج (3D Modal Flip) */
+        @keyframes modalFlipIn {
+            0% {
+                opacity: 0;
+                transform: scale(0.6) rotateY(-40deg) translateY(50px);
+            }
+            100% {
+                opacity: 1;
+                transform: scale(1) rotateY(0deg) translateY(0);
+            }
+        }
+
+        .modal-animate-content {
+            animation: modalFlipIn 0.45s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+        }
+
+        /* أنيميشن ناطط ومرن لنافذة إضافة السلة */
+        @keyframes popupBounce {
+            0% { opacity: 0; transform: scale(0.4) translateY(-30px); }
+            70% { transform: scale(1.08) translateY(5px); }
+            100% { opacity: 1; transform: scale(1) translateY(0); }
+        }
+
+        .popup-animate-content {
+            animation: popupBounce 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+        }
+
+        /* أنيميشن الإعلانات */
         @keyframes fadeInOut {
-            0% { opacity: 0; transform: scale(0.98); }
-            20% { opacity: 1; transform: scale(1); }
-            80% { opacity: 1; transform: scale(1); }
-            100% { opacity: 0; transform: scale(0.98); }
+            0% { opacity: 0; transform: scale(0.95) rotateX(10deg); }
+            15% { opacity: 1; transform: scale(1) rotateX(0deg); }
+            85% { opacity: 1; transform: scale(1) rotateX(0deg); }
+            100% { opacity: 0; transform: scale(0.95) rotateX(-10deg); }
         }
+
         .fade-slide {
-            animation: fadeInOut 4s ease-in-out infinite;
+            animation: fadeInOut 4s cubic-bezier(0.4, 0, 0.2, 1) infinite;
         }
-        #side-menu, #product-modal, #cart-popup {
-            transition: all 0.3s ease-in-out;
+
+        /* أنيميشن زر السلة العائم */
+        @keyframes floatPulse {
+            0%, 100% { transform: translateY(0) scale(1); }
+            50% { transform: translateY(-6px) scale(1.05); }
+        }
+
+        .cart-float-btn {
+            animation: floatPulse 3s ease-in-out infinite;
+        }
+
+        #side-menu {
+            transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
         }
     </style>
 </head>
@@ -89,7 +158,7 @@
             </div>
         </div>
         
-        <!-- زر البحث فوق على اليسار بجانب الشعار أو بالهيدر -->
+        <!-- زر البحث فوق على اليسار -->
         <div class="flex items-center gap-2">
             <div class="relative">
                 <input type="text" id="search-input" oninput="filterProducts()" placeholder="🔍 ابحث عن منتج..." class="vintage-input py-1.5 px-3 text-xs sm:text-sm font-bold w-36 sm:w-60">
@@ -97,10 +166,10 @@
         </div>
     </header>
 
-    <!-- زر السلة الدائري العائم أسفل اليمين -->
-    <button onclick="toggleCart()" class="fixed bottom-6 right-6 z-40 w-16 h-16 bg-[#111111] text-[#f4ebd0] rounded-full border-4 border-[#f4ebd0] shadow-2xl flex flex-col items-center justify-center font-black hover:scale-110 cursor-pointer transition-transform">
+    <!-- زر السلة الدائري العائم أسفل اليمين مع أنيميشن التكبير والنبض -->
+    <button onclick="toggleCart()" class="cart-float-btn fixed bottom-6 right-6 z-40 w-16 h-16 bg-[#111111] text-[#f4ebd0] rounded-full border-4 border-[#f4ebd0] shadow-2xl flex flex-col items-center justify-center font-black hover:scale-115 cursor-pointer transition-all duration-300">
         <span class="text-xl">🛒</span>
-        <span id="cart-count" class="absolute -top-1 -right-1 bg-red-600 text-white text-xs w-6 h-6 rounded-full flex items-center justify-center border-2 border-black">0</span>
+        <span id="cart-count" class="absolute -top-1 -right-1 bg-red-600 text-white text-xs w-6 h-6 rounded-full flex items-center justify-center border-2 border-black font-black">0</span>
     </button>
 
     <!-- القائمة الجانبية -->
@@ -183,7 +252,7 @@
 
         <!-- فلاتر الأصناف -->
         <div class="mb-6 flex justify-end items-center">
-            <select id="category-filter" onchange="filterProducts()" class="vintage-input w-full sm:w-1/3 p-3 font-black bg-[#fffdf6] text-xs sm:text-sm">
+            <select id="category-filter" onchange="filterProducts()" class="vintage-input w-full sm:w-1/3 p-3 font-black bg-[#fffdf6] text-xs sm:text-sm cursor-pointer">
                 <option value="all">📁 كل الأصناف</option>
                 <option value="سماعات وصوتيات">سماعات وصوتيات</option>
                 <option value="إلكترونيات واكسسوارات">إلكترونيات واكسسوارات</option>
@@ -261,21 +330,21 @@
             </div>
         </div>
 
-        <!-- شبكة عرض المنتجات -->
-        <div id="products-grid" class="grid grid-cols-3 sm:grid-cols-2 lg:grid-cols-4 gap-2 sm:gap-6"></div>
+        <!-- شبكة عرض المنتجات المغلفة بمنظور ثلاثي الأبعاد -->
+        <div id="products-grid" class="grid-container grid grid-cols-3 sm:grid-cols-2 lg:grid-cols-4 gap-2 sm:gap-6"></div>
     </main>
 
-    <!-- نافذة تفاصيل المنتج المنبثقة -->
-    <div id="product-modal" class="fixed inset-0 bg-black/70 z-50 flex items-center justify-center p-4 hidden">
-        <div class="vintage-box bg-[#fffdf6] max-w-lg w-full max-h-[90vh] overflow-y-auto p-5 relative mt-6">
-            <button onclick="closeProductModal()" class="absolute top-3 right-3 text-sm font-black bg-red-600 text-white px-3 py-1 rounded-full border-2 border-black hover:bg-black cursor-pointer shadow-lg z-10">✕ إغلاق</button>
+    <!-- نافذة تفاصيل المنتج المنبثقة مع أنيميشن 3D Flip Pop -->
+    <div id="product-modal" class="fixed inset-0 bg-black/70 z-50 flex items-center justify-center p-4 hidden backdrop-blur-xs">
+        <div id="modal-container-box" class="vintage-box bg-[#fffdf6] max-w-lg w-full max-h-[90vh] overflow-y-auto p-5 relative mt-6 border-4 border-black shadow-2xl">
+            <button onclick="closeProductModal()" class="absolute top-3 right-3 text-sm font-black bg-red-600 text-white px-3 py-1 rounded-full border-2 border-black hover:bg-black cursor-pointer shadow-lg z-10 transition-transform hover:scale-110">✕ إغلاق</button>
             <div id="modal-content" class="space-y-4 pt-4"></div>
         </div>
     </div>
 
-    <!-- نافذة نجاح الإضافة للسلة بتصميم البيج والخيارين -->
-    <div id="cart-popup" class="fixed inset-0 bg-black/70 z-50 flex items-center justify-center p-4 hidden">
-        <div class="vintage-box bg-[#fffdf6] max-w-sm w-full p-6 text-center space-y-4 relative">
+    <!-- نافذة نجاح الإضافة للسلة بتصميم مرن وناطط -->
+    <div id="cart-popup" class="fixed inset-0 bg-black/70 z-50 flex items-center justify-center p-4 hidden backdrop-blur-xs">
+        <div id="cart-popup-box" class="vintage-box bg-[#fffdf6] max-w-sm w-full p-6 text-center space-y-4 relative border-4 border-black shadow-2xl">
             <div class="w-16 h-16 bg-green-700 text-white rounded-full flex items-center justify-center text-3xl mx-auto border-3 border-black shadow">✓</div>
             <h3 class="font-black text-xl text-[#111]">تمت الإضافة بنجاح! 🛒</h3>
             <p class="text-xs font-bold text-gray-700">تمت إضافة المنتج إلى سلة المشتريات بنجاح. ماذا تريد أن تفعل الآن؟</p>
@@ -290,11 +359,11 @@
         </div>
     </div>
 
-    <!-- سلة المشتريات -->
-    <div id="cart-drawer" class="fixed inset-y-0 left-0 w-80 bg-[#fffdf6] border-r-4 border-[#111111] shadow-2xl z-50 transform -translate-x-full flex flex-col p-5">
+    <!-- سلة المشتريات المنزلقة بمرونة وفخامة -->
+    <div id="cart-drawer" class="fixed inset-y-0 left-0 w-80 sm:w-96 bg-[#fffdf6] border-r-4 border-[#111111] shadow-2xl z-50 transform -translate-x-full flex flex-col p-5">
         <div class="flex justify-between items-center border-b-4 border-[#111111] pb-3 mb-4">
-            <h2 class="font-black text-2xl">🛒 السلة</h2>
-            <button onclick="toggleCart()" class="text-2xl font-black hover:text-red-500 cursor-pointer">✕</button>
+            <h2 class="font-black text-2xl flex items-center gap-2">🛒 <span>سلة الشراء</span></h2>
+            <button onclick="toggleCart()" class="text-2xl font-black hover:text-red-500 cursor-pointer transition-transform hover:scale-125">✕</button>
         </div>
         <div id="cart-items" class="flex-1 overflow-y-auto space-y-3"></div>
         <div class="border-t-4 border-[#111111] pt-4 mt-2">
@@ -523,6 +592,7 @@
             if(!product) return;
 
             const modal = document.getElementById('product-modal');
+            const modalBox = document.getElementById('modal-container-box');
             const content = document.getElementById('modal-content');
             const isFav = favorites.includes(product.id);
 
@@ -542,7 +612,7 @@
             content.innerHTML = `
                 <div class="relative">
                     <img src="${product.parsedImage}" alt="${product.name}" class="w-full h-64 sm:h-80 object-cover rounded-xl border-3 border-black shadow mb-3">
-                    <button onclick="toggleFavorite(${product.id}); openProductModal(${product.id});" class="absolute top-3 left-3 bg-white p-3 rounded-full border-2 border-black text-xl hover:scale-110 shadow cursor-pointer">${isFav ? '❤️' : '🤍'}</button>
+                    <button onclick="toggleFavorite(${product.id}); openProductModal(${product.id});" class="absolute top-3 left-3 bg-white p-3 rounded-full border-2 border-black text-xl hover:scale-110 shadow cursor-pointer transition-transform">${isFav ? '❤️' : '🤍'}</button>
                 </div>
                 <span class="bg-[#111] text-[#f4ebd0] text-xs px-2.5 py-1 rounded-md font-black inline-block">${product.parsedCategory}</span>
                 <h3 class="font-black text-2xl mt-1 text-[#111]">${product.name}</h3>
@@ -563,6 +633,9 @@
             `;
 
             modal.classList.remove('hidden');
+            modalBox.classList.remove('modal-animate-content');
+            void modalBox.offsetWidth; // إعادة تهيئة الأنيميشن
+            modalBox.classList.add('modal-animate-content');
         }
 
         function closeProductModal() {
@@ -570,7 +643,13 @@
         }
 
         function toggleMenu() { document.getElementById('side-menu').classList.toggle('translate-x-full'); }
-        function toggleCart() { document.getElementById('cart-drawer').classList.toggle('-translate-x-full'); }
+        
+        /* دالة فتح وإغلاق السلة بأنيميشن انزلاق احترافي */
+        function toggleCart() { 
+            const drawer = document.getElementById('cart-drawer');
+            drawer.classList.toggle('-translate-x-full'); 
+        }
+
         function toggleShippingDropdown() {
             const list = document.getElementById('shipping-list');
             list.classList.toggle('hidden');
@@ -581,8 +660,14 @@
             const product = products.find(p => p.id == id);
             cart.push(product);
             updateCartUI();
-            // إظهار نافذة تم الإضافة بنجاح بدزاين البيج
-            document.getElementById('cart-popup').classList.remove('hidden');
+
+            const popup = document.getElementById('cart-popup');
+            const popupBox = document.getElementById('cart-popup-box');
+            
+            popup.classList.remove('hidden');
+            popupBox.classList.remove('popup-animate-content');
+            void popupBox.offsetWidth;
+            popupBox.classList.add('popup-animate-content');
         }
 
         function closeCartPopupAndContinue() {
@@ -602,12 +687,12 @@
             cart.forEach((item, index) => {
                 total += Number(item.price);
                 container.innerHTML += `
-                    <div class="flex justify-between items-center border-b-2 border-black pb-2.5">
+                    <div class="flex justify-between items-center border-b-2 border-black pb-2.5 hover:bg-[#fff7e6] p-2 rounded-lg transition-colors">
                         <div class="cursor-pointer flex-1" onclick="closeCart(); openProductModal(${item.id});">
-                            <p class="font-black text-sm hover:underline">${item.name}</p>
+                            <p class="font-black text-sm hover:underline text-[#111]">${item.name}</p>
                             <p class="text-xs text-green-800 font-black">${Number(item.price).toLocaleString()} د.ع</p>
                         </div>
-                        <button onclick="removeFromCart(${index})" class="text-red-600 font-black text-xs vintage-box px-2 py-1 bg-white cursor-pointer">حذف</button>
+                        <button onclick="removeFromCart(${index})" class="text-red-600 font-black text-xs vintage-box px-2 py-1 bg-white cursor-pointer hover:bg-red-100">حذف</button>
                     </div>
                 `;
             });
@@ -713,9 +798,9 @@
                 grid.innerHTML += `
                     <div class="vintage-box p-2.5 sm:p-4 flex flex-col justify-between cursor-pointer" onclick="openProductModal(${p.id})" id="product-card-${p.id}">
                         <div>
-                            <div class="relative">
-                                <img src="${displayImg}" alt="${p.name}" class="w-full h-32 sm:h-48 object-cover rounded-lg border-2 border-[#111] mb-2 shadow">
-                                <button onclick="event.stopPropagation(); toggleFavorite(${p.id}); filterProducts();" class="absolute top-1.5 left-1.5 bg-white p-1.5 rounded-full border border-[#111] text-xs hover:scale-110 shadow cursor-pointer">${isFav ? '❤️' : '🤍'}</button>
+                            <div class="relative overflow-hidden rounded-lg">
+                                <img src="${displayImg}" alt="${p.name}" class="w-full h-32 sm:h-48 object-cover border-2 border-[#111] mb-2 shadow transition-transform duration-500 hover:scale-110">
+                                <button onclick="event.stopPropagation(); toggleFavorite(${p.id}); filterProducts();" class="absolute top-1.5 left-1.5 bg-white p-1.5 rounded-full border border-[#111] text-xs hover:scale-125 transition-transform shadow cursor-pointer">${isFav ? '❤️' : '🤍'}</button>
                             </div>
                             <span class="bg-[#111] text-[#f4ebd0] text-[9px] px-1.5 py-0.5 rounded font-black inline-block mt-1">${p.parsedCategory}</span>
                             <h4 class="font-black text-xs sm:text-base mt-1 text-[#111] leading-tight">${p.name}</h4>
