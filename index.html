@@ -162,7 +162,7 @@
             <div class="absolute bottom-2 right-4 bg-black text-white text-xs px-2 py-0.5 rounded font-black">إعلانات JF Store 📢</div>
         </div>
 
-        <!-- شريط البحث وأصناف البحث للزبائن -->
+        <!-- شريط البحث والأصناف للزبائن -->
         <div class="mb-8 flex flex-col md:flex-row gap-4 justify-between items-center">
             <input type="text" id="search-input" oninput="filterProducts()" placeholder="🔍 ابحث عن أي منتج ببالك..." class="vintage-input w-full md:w-1/2 p-3.5 font-bold">
             
@@ -191,10 +191,10 @@
             </select>
         </div>
 
-        <!-- لوحة تحكم الأدمن (مع أزرار اختيار الصور والفيديو من الاستوديو والأصناف) -->
+        <!-- لوحة تحكم الأدمن -->
         <div id="admin-panel" class="vintage-box p-6 mb-8 hidden bg-[#fff3d6]">
             <h3 id="admin-panel-title" class="font-black text-xl mb-4 text-[#111] flex items-center gap-2">
-                <span>👑</span> لوحة تحكم الأدمن (إضافة من الاستوديو والأصناف 🚀)
+                <span>👑</span> لوحة تحكم الأدمن (نشر وحذف وتعديل فوري 🚀)
             </h3>
             <input type="hidden" id="editing-product-id" value="">
             <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -316,7 +316,6 @@
             }
         }
 
-        // تحويل الملف المختار من الاستوديو إلى Base64 حتى ينحفظ مباشرة بالسحابة بدون مشاكل برفع ملفات
         function convertFileToBase64(file) {
             return new Promise((resolve, reject) => {
                 const reader = new FileReader();
@@ -340,12 +339,11 @@
                 return;
             }
 
-            document.getElementById('upload-status').innerText = 'جاري الرفع والنشر... ⏳';
+            document.getElementById('upload-status').innerText = 'جاري الحفظ والنشر... ⏳';
 
             let imageUrl = 'https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=500';
             let videoUrl = '';
 
-            // الاحتفاظ بالصورة القديمة في حال التعديل ولم يتم اختيار صورة جديدة
             if (editingId) {
                 const existingProd = products.find(p => p.id === Number(editingId));
                 if (existingProd) {
@@ -362,7 +360,7 @@
                     videoUrl = await convertFileToBase64(videoFile);
                 }
             } catch (err) {
-                alert('خطأ برفع الملفات من الاستوديو!');
+                alert('خطأ برفع الملفات!');
                 document.getElementById('upload-status').innerText = 'فشل الرفع ❌';
                 return;
             }
@@ -417,7 +415,7 @@
         }
 
         function editProduct(id) {
-            const prod = products.find(p => p.id === id);
+            const prod = products.find(p => p.id === Number(id));
             if(!prod) return;
 
             document.getElementById('editing-product-id').value = prod.id;
@@ -440,7 +438,7 @@
             document.getElementById('new-desc').value = '';
             document.getElementById('image-file').value = '';
             document.getElementById('video-file').value = '';
-            document.getElementById('admin-panel-title').innerHTML = `<span>👑</span> لوحة تحكم الأدمن (إضافة من الاستوديو والأصناف 🚀)`;
+            document.getElementById('admin-panel-title').innerHTML = `<span>👑</span> لوحة تحكم الأدمن (نشر وحذف وتعديل فوري 🚀)`;
             document.getElementById('save-btn').innerText = 'نشر في قاعدة البيانات 🚀';
             document.getElementById('cancel-edit-btn').classList.add('hidden');
         }
@@ -482,7 +480,7 @@
         }
 
         function addToCart(id) {
-            const product = products.find(p => p.id === id);
+            const product = products.find(p => p.id === Number(id));
             cart.push(product);
             updateCartUI();
             alert('تمت إضافة المنتج للسلة بنجاح! 🛒');
@@ -514,10 +512,11 @@
         }
 
         function toggleFavorite(id) {
-            if(favorites.includes(id)) {
-                favorites = favorites.filter(fav => fav !== id);
+            const targetId = Number(id);
+            if(favorites.includes(targetId)) {
+                favorites = favorites.filter(fav => fav !== targetId);
             } else {
-                favorites.push(id);
+                favorites.push(targetId);
             }
             document.getElementById('fav-count').innerText = favorites.length;
             renderProducts();
