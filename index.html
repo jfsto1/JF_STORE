@@ -199,10 +199,10 @@
             </select>
         </div>
 
-        <!-- لوحة تحكم الأدمن (مع رفع الصور والفيديو من الاستوديو مباشرة وتظهر للجميع) -->
+        <!-- لوحة تحكم الأدمن (مع الرفع المباشر من الاستوديو وزر الحذف) -->
         <div id="admin-panel" class="vintage-box p-6 mb-8 hidden bg-[#fff3d6]">
             <h3 id="admin-panel-title" class="font-black text-xl mb-4 text-[#111] flex items-center gap-2">
-                <span>👑</span> لوحة تحكم الأدمن (جيف - إضافة بضاعة من الاستوديو للجميع)
+                <span>👑</span> لوحة تحكم الأدمن (جيف - إضافة بضاعة من الاستوديو مع التحكم الكامل)
             </h3>
             <input type="hidden" id="editing-product-id" value="">
             <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -238,7 +238,7 @@
                 </div>
 
                 <div class="vintage-box p-3 bg-white">
-                    <label class="block text-xs font-black mb-1">🎥 اختر فيديو توضيحي من الاستوديو:</label>
+                    <label class="block text-xs font-black mb-1">🎥 اختر فيديو توضيحي من الاستوديو (اختياري):</label>
                     <input type="file" id="new-video-file" accept="video/*" class="w-full text-xs font-bold cursor-pointer">
                 </div>
             </div>
@@ -287,7 +287,7 @@
     </footer>
 
     <script>
-        // مصفوفة المنتجات الأساسية الافتراضية
+        // مصفوفة المنتجات الأساسية الافتراضية الثابتة
         let defaultProducts = [
             {
                 id: 1,
@@ -300,7 +300,7 @@
             }
         ];
 
-        let savedCustomProducts = JSON.parse(localStorage.getItem('jf_global_store_fixed_v2')) || [];
+        let savedCustomProducts = JSON.parse(localStorage.getItem('jf_store_stable_v5')) || [];
         let products = [...savedCustomProducts, ...defaultProducts];
         
         let cart = [];
@@ -557,7 +557,7 @@
                 }
 
                 products = [...savedCustomProducts, ...defaultProducts];
-                localStorage.setItem('jf_global_store_fixed_v2', JSON.stringify(savedCustomProducts));
+                localStorage.setItem('jf_store_stable_v5', JSON.stringify(savedCustomProducts));
                 renderProducts();
                 cancelEdit();
             };
@@ -626,14 +626,14 @@
         }
 
         function cancelEdit() {
-            document.getElementById('editing-product-id').value = '';
+            document.getElementById('editing-product-id').value = ''
             document.getElementById('new-name').value = '';
             document.getElementById('new-price').value = '';
             document.getElementById('new-desc').value = '';
             document.getElementById('new-images-file').value = '';
             document.getElementById('new-video-file').value = '';
 
-            document.getElementById('admin-panel-title').innerHTML = `<span>👑</span> لوحة تحكم الأدمن (جيف - إضافة بضاعة من الاستوديو للجميع)`;
+            document.getElementById('admin-panel-title').innerHTML = `<span>👑</span> لوحة تحكم الأدمن (جيف - إضافة بضاعة من الاستوديو مع التحكم الكامل)`;
             document.getElementById('save-btn').innerText = 'نشر المنتج للجميع فوراً 🚀';
             document.getElementById('cancel-edit-btn').classList.add('hidden');
         }
@@ -642,7 +642,7 @@
             if(confirm('هل أنت متأكد من حذف هذا المنتج نهائياً؟')) {
                 savedCustomProducts = savedCustomProducts.filter(p => p.id !== id);
                 products = [...savedCustomProducts, ...defaultProducts];
-                localStorage.setItem('jf_global_store_fixed_v2', JSON.stringify(savedCustomProducts));
+                localStorage.setItem('jf_store_stable_v5', JSON.stringify(savedCustomProducts));
                 renderProducts();
                 alert('تم حذف المنتج بنجاح 🗑️');
             }
