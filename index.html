@@ -199,10 +199,10 @@
             </select>
         </div>
 
-        <!-- لوحة تحكم الأدمن (مع الروابط المباشرة وزر الحذف الفولاذي) -->
+        <!-- لوحة تحكم الأدمن -->
         <div id="admin-panel" class="vintage-box p-6 mb-8 hidden bg-[#fff3d6]">
             <h3 id="admin-panel-title" class="font-black text-xl mb-4 text-[#111] flex items-center gap-2">
-                <span>👑</span> لوحة تحكم الأدمن (جيف - النشر السريع بالروابط)
+                <span>👑</span> لوحة تحكم الأدمن (جيف - إضافة بضاعة تظهر للجميع فوراً)
             </h3>
             <input type="hidden" id="editing-product-id" value="">
             <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -233,13 +233,13 @@
                 <input type="text" id="new-desc" placeholder="وصف المنتج..." class="vintage-input p-3 font-bold md:col-span-2">
                 
                 <div class="vintage-box p-3 bg-white md:col-span-2">
-                    <label class="block text-xs font-black mb-1">🔗 روابط الصور (افصل بينها بفارزة `,`):</label>
+                    <label class="block text-xs font-black mb-1">🔗 روابط صور المنتج (رابط مباشر للصور من Imgur أو أي موقع):</label>
                     <input type="text" id="new-images-url" placeholder="مثال: https://i.imgur.com/abc.jpg, https://i.imgur.com/xyz.jpg" class="vintage-input p-2.5 w-full text-xs font-bold">
                 </div>
 
                 <div class="vintage-box p-3 bg-white">
-                    <label class="block text-xs font-black mb-1">🎥 رابط فيديو توضيحي (اختياري):</label>
-                    <input type="text" id="new-video-url" placeholder="رابط يوتيوب أو فيديو مباشر..." class="vintage-input p-2.5 w-full text-xs font-bold">
+                    <label class="block text-xs font-black mb-1">🎥 رابط فيديو توضيحي (رابط مباشر):</label>
+                    <input type="text" id="new-video-url" placeholder="رابط يوتيوب أو فيديو..." class="vintage-input p-2.5 w-full text-xs font-bold">
                 </div>
             </div>
             <div class="flex gap-4 mt-4">
@@ -287,6 +287,7 @@
     </footer>
 
     <script>
+        // مصفوفة المنتجات الأساسية الافتراضية الثابتة (حتى تظهر فوراً لكل الناس بدون أخطاء الذاكرة)
         let defaultProducts = [
             {
                 id: 1,
@@ -299,6 +300,7 @@
             }
         ];
 
+        // جلب المنتجات ودمجها مع الذاكرة المحلية لضمان عدم الضياع
         let savedCustomProducts = JSON.parse(localStorage.getItem('jf_global_store_fixed')) || [];
         let products = [...savedCustomProducts, ...defaultProducts];
         
@@ -539,7 +541,7 @@
             let images = imagesInput ? imagesInput.split(',') : ['https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=500'];
 
             if(editingId) {
-                const prod = savedCustomProducts.find(p => p.id == editingId);
+                const prod = products.find(p => p.id == editingId);
                 if(prod) {
                     prod.name = name;
                     prod.price = price;
@@ -552,10 +554,10 @@
             } else {
                 const newP = { id: Date.now(), name, price, category, desc, images, video: videoUrl };
                 savedCustomProducts.unshift(newP);
+                products = [...savedCustomProducts, ...defaultProducts];
                 alert('تم نشر المنتج بنجاح في متجر JF Store! 🔥');
             }
 
-            products = [...savedCustomProducts, ...defaultProducts];
             localStorage.setItem('jf_global_store_fixed', JSON.stringify(savedCustomProducts));
             renderProducts();
             cancelEdit();
@@ -588,7 +590,7 @@
             document.getElementById('new-images-url').value = '';
             document.getElementById('new-video-url').value = '';
 
-            document.getElementById('admin-panel-title').innerHTML = `<span>👑</span> لوحة تحكم الأدمن (جيف - النشر السريع بالروابط)`;
+            document.getElementById('admin-panel-title').innerHTML = `<span>👑</span> لوحة تحكم الأدمن (جيف - إضافة بضاعة تظهر للجميع فوراً)`;
             document.getElementById('save-btn').innerText = 'نشر المنتج للجميع فوراً 🚀';
             document.getElementById('cancel-edit-btn').classList.add('hidden');
         }
