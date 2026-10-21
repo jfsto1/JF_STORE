@@ -163,7 +163,7 @@
     <main class="flex-1 max-w-7xl mx-auto px-4 py-6 w-full">
         
         <!-- سلايدر الإعلانات المتحرك (كل 3 ثواني) -->
-        <div id="ads-banner" class="vintage-box mb-8 p-4 bg-white relative overflow-hidden h-64 flex items-center justify-center text-center hidden">
+        <div id="ads-banner" class="vintage-box mb-8 p-4 bg-white relative overflow-hidden h-64 flex items-center justify-center text-center">
             <div id="ads-content" class="w-full h-full flex flex-col justify-center items-center cursor-pointer transition-all duration-500">
                 <!-- إعلانات المتجر -->
             </div>
@@ -199,10 +199,10 @@
             </select>
         </div>
 
-        <!-- لوحة تحكم الأدمن (مع الرفع السحابي وزر النشر والحذف) -->
+        <!-- لوحة تحكم الأدمن (للإضافة الفورية والتحكم التام) -->
         <div id="admin-panel" class="vintage-box p-6 mb-8 hidden bg-[#fff3d6]">
             <h3 id="admin-panel-title" class="font-black text-xl mb-4 text-[#111] flex items-center gap-2">
-                <span>👑</span> لوحة تحكم الأدمن (جيف - إضافة بضاعة سحابية للجميع)
+                <span>👑</span> لوحة تحكم الأدمن (جيف - إضافة بضاعة فورية)
             </h3>
             <input type="hidden" id="editing-product-id" value="">
             <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -233,17 +233,17 @@
                 <input type="text" id="new-desc" placeholder="وصف المنتج..." class="vintage-input p-3 font-bold md:col-span-2">
                 
                 <div class="vintage-box p-3 bg-white md:col-span-2">
-                    <label class="block text-xs font-black mb-1">🔗 روابط الصور (رابط مباشر للصور مفصول بفارزة `,`):</label>
+                    <label class="block text-xs font-black mb-1">🔗 روابط الصور (رابط مباشر مفصول بفارزة `,`):</label>
                     <input type="text" id="new-images-url" placeholder="مثال: https://i.imgur.com/abc.jpg" class="vintage-input p-2.5 w-full text-xs font-bold">
                 </div>
 
                 <div class="vintage-box p-3 bg-white">
                     <label class="block text-xs font-black mb-1">🎥 رابط فيديو توضيحي (اختياري):</label>
-                    <input type="text" id="new-video-url" placeholder="رابط يوتيوب أو فيديو مباشر..." class="vintage-input p-2.5 w-full text-xs font-bold">
+                    <input type="text" id="new-video-url" placeholder="رابط يوتيوب أو فيديو..." class="vintage-input p-2.5 w-full text-xs font-bold">
                 </div>
             </div>
             <div class="flex gap-4 mt-4">
-                <button id="save-btn" onclick="saveProductToCloud()" class="vintage-btn px-8 py-3 text-base cursor-pointer">نشر سحابياً للجميع فوراً 🚀</button>
+                <button id="save-btn" onclick="saveProduct()" class="vintage-btn px-8 py-3 text-base cursor-pointer">نشر المنتج فوراً 🚀</button>
                 <button id="cancel-edit-btn" onclick="cancelEdit()" class="vintage-btn bg-gray-500 text-white px-6 py-3 text-base cursor-pointer hidden">إلغاء التعديل ✕</button>
             </div>
         </div>
@@ -287,10 +287,30 @@
     </footer>
 
     <script>
-        const BIN_ID = "66f5619ce41b4d34e434316a"; 
-        const API_URL = `https://api.jsonbin.io/v3/b/${BIN_ID}`;
+        let defaultProducts = [
+            {
+                id: 1,
+                name: "سماعات رأس كلاسيكية فائقة العزل",
+                price: 35000,
+                category: "سماعات وصوتيات",
+                desc: "سماعة أصلية بتصميم عتيق (1920s)، صوت نقي جداً ومريحة للأذن.",
+                images: ["https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=500"],
+                video: ""
+            },
+            {
+                id: 2,
+                name: "ساعة جيب معدنية عتيقة",
+                price: 45000,
+                category: "منوعات",
+                desc: "ساعة كلاسيكية بتصميم فخم تعود أجواء طراز العشرينيات.",
+                images: ["https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=500"],
+                video: ""
+            }
+        ];
 
-        let products = [];
+        let savedCustomProducts = JSON.parse(localStorage.getItem('jf_store_local_v10')) || [];
+        let products = [...savedCustomProducts, ...defaultProducts];
+        
         let cart = [];
         let favorites = [];
         let currentAdIndex = 0;
@@ -298,50 +318,6 @@
 
         const ADMIN_EMAIL = "mrskull33442@gmail.com";
         const ADMIN_PASS = "aloxgame4";
-
-        async function fetchProductsFromCloud() {
-            try {
-                const response = await fetch(API_URL + "/latest", {
-                    headers: { "X-Master-Key": "$2a$10$Qx9Z1d4v5Z9w5K8cO7x2Z9w5K8cO7x2Z9w5K8cO7x2Z9w5K8cO7x2" }
-                });
-                if(response.ok) {
-                    const data = await response.json();
-                    products = data.record.products || [];
-                    renderProducts();
-                } else {
-                    products = [{ id: 1, name: "سماعات رأس كلاسيكية", price: 35000, category: "سماعات وصوتيات", desc: "سماعة عتيقة أصلية.", images: ["https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=500"], video: "" }];
-                    renderProducts();
-                }
-            } catch (err) {
-                products = JSON.parse(localStorage.getItem('jf_backup_store')) || [];
-                renderProducts();
-            }
-        }
-
-        async function saveProductsToCloud(updatedProducts) {
-            try {
-                const response = await fetch(API_URL, {
-                    method: 'PUT',
-                    headers: {
-                        "Content-Type": "application/json",
-                        "X-Master-Key": "$2a$10$Qx9Z1d4v5Z9w5K8cO7x2Z9w5K8cO7x2Z9w5K8cO7x2Z9w5K8cO7x2"
-                    },
-                    body: JSON.stringify({ products: updatedProducts })
-                });
-                if(response.ok) {
-                    localStorage.setItem('jf_backup_store', JSON.stringify(updatedProducts));
-                    products = updatedProducts;
-                    renderProducts();
-                    return true;
-                } else {
-                    alert('فشل الحفظ السحابي!');
-                    return false;
-                }
-            } catch(e) {
-                alert('خطأ بالاتصال بالإنترنت!');
-                return false;
-            }
-        }
 
         function renderProducts(list = products) {
             const grid = document.getElementById('products-grid');
@@ -555,7 +531,7 @@
             renderProducts();
         }
 
-        async function saveProductToCloud() {
+        function saveProduct() {
             const editingId = document.getElementById('editing-product-id').value;
             const name = document.getElementById('new-name').value;
             const price = Number(document.getElementById('new-price').value);
@@ -571,23 +547,27 @@
 
             let images = imagesInput ? imagesInput.split(',') : ['https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=500'];
 
-            let updatedList = [...products];
-
             if(editingId) {
-                const index = updatedList.findIndex(p => p.id == editingId);
-                if(index !== -1) {
-                    updatedList[index] = { id: Number(editingId), name, price, category, desc, images, video: videoUrl };
+                const prod = savedCustomProducts.find(p => p.id == editingId);
+                if(prod) {
+                    prod.name = name;
+                    prod.price = price;
+                    prod.category = category;
+                    prod.desc = desc;
+                    prod.images = images;
+                    prod.video = videoUrl;
                 }
+                alert('تم تحديث المنتج بنجاح! ✏️');
             } else {
                 const newP = { id: Date.now(), name, price, category, desc, images, video: videoUrl };
-                updatedList.unshift(newP);
+                savedCustomProducts.unshift(newP);
+                alert('تم نشر المنتج بنجاح في متجرك! 🔥');
             }
 
-            const success = await saveProductsToCloud(updatedList);
-            if(success) {
-                alert('تم نشر المنتج سحابياً ليظهر لكل زبائن العالم فوراً! 🔥');
-                cancelEdit();
-            }
+            products = [...savedCustomProducts, ...defaultProducts];
+            localStorage.setItem('jf_store_local_v10', JSON.stringify(savedCustomProducts));
+            renderProducts();
+            cancelEdit();
         }
 
         function editProduct(id) {
@@ -603,7 +583,7 @@
             document.getElementById('new-video-url').value = prod.video || '';
 
             document.getElementById('admin-panel-title').innerHTML = `<span>👑</span> تعديل المنتج: ${prod.name}`;
-            document.getElementById('save-btn').innerText = 'تحديث المنتج سحابياً ✏️';
+            document.getElementById('save-btn').innerText = 'تحديث المنتج وتعديله ✏️';
             document.getElementById('cancel-edit-btn').classList.remove('hidden');
 
             document.getElementById('admin-panel').scrollIntoView({ behavior: 'smooth' });
@@ -617,18 +597,18 @@
             document.getElementById('new-images-url').value = '';
             document.getElementById('new-video-url').value = '';
 
-            document.getElementById('admin-panel-title').innerHTML = `<span>👑</span> لوحة تحكم الأدمن (جيف - إضافة بضاعة سحابية للجميع)`;
-            document.getElementById('save-btn').innerText = 'نشر سحابياً للجميع فوراً 🚀';
+            document.getElementById('admin-panel-title').innerHTML = `<span>👑</span> لوحة تحكم الأدمن (جيف - إضافة بضاعة فورية)`;
+            document.getElementById('save-btn').innerText = 'نشر المنتج فوراً 🚀';
             document.getElementById('cancel-edit-btn').classList.add('hidden');
         }
 
-        async function deleteProduct(id) {
-            if(confirm('هل أنت متأكد من حذف هذا المنتج نهائياً من السحابة؟')) {
-                const updatedList = products.filter(p => p.id !== id);
-                const success = await saveProductsToCloud(updatedList);
-                if(success) {
-                    alert('تم حذف المنتج بنجاح من كل الأجهزة 🗑️');
-                }
+        function deleteProduct(id) {
+            if(confirm('هل أنت متأكد من حذف هذا المنتج نهائياً؟')) {
+                savedCustomProducts = savedCustomProducts.filter(p => p.id !== id);
+                products = [...savedCustomProducts, ...defaultProducts];
+                localStorage.setItem('jf_store_local_v10', JSON.stringify(savedCustomProducts));
+                renderProducts();
+                alert('تم حذف المنتج بنجاح 🗑️');
             }
         }
 
@@ -668,7 +648,7 @@
                 document.getElementById('user-name').value = savedName;
                 checkAdminStatus(savedEmail, savedName);
             }
-            fetchProductsFromCloud();
+            renderProducts();
         }
     </script>
 </body>
