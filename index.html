@@ -18,35 +18,35 @@
             background-size: 20px 20px;
         }
         .vintage-box { 
-            border: 4px solid #111111; 
-            box-shadow: 6px 6px 0px #111111;
+            border: 3px solid #111111; 
+            box-shadow: 4px 4px 0px #111111;
             background-color: #fffdf6;
-            border-radius: 16px;
+            border-radius: 12px;
             transition: all 0.15s ease;
         }
         .vintage-box:hover {
-            transform: translate(-2px, -2px);
-            box-shadow: 8px 8px 0px #111111;
+            transform: translate(-1px, -1px);
+            box-shadow: 6px 6px 0px #111111;
         }
         .vintage-btn { 
             background-color: #111111; 
             color: #f4ebd0; 
-            border: 3px solid #111111;
-            box-shadow: 4px 4px 0px #d4a373;
+            border: 2px solid #111111;
+            box-shadow: 3px 3px 0px #d4a373;
             font-weight: 900;
-            border-radius: 12px;
+            border-radius: 8px;
             transition: all 0.1s ease;
         }
         .vintage-btn:hover { 
             background-color: #333333; 
-            transform: translate(-2px, -2px); 
-            box-shadow: 6px 6px 0px #111111;
+            transform: translate(-1px, -1px); 
+            box-shadow: 5px 5px 0px #111111;
         }
         .vintage-input {
-            border: 3px solid #111111;
+            border: 2px solid #111111;
             background-color: #fffdf6;
-            border-radius: 12px;
-            box-shadow: inset 3px 3px 0px rgba(0,0,0,0.1);
+            border-radius: 8px;
+            box-shadow: inset 2px 2px 0px rgba(0,0,0,0.1);
         }
         #side-menu {
             transition: transform 0.3s ease-in-out;
@@ -56,28 +56,28 @@
 <body class="min-h-screen flex flex-col relative pb-16">
 
     <!-- شريط علوي كلاسيكي -->
-    <div class="bg-[#111111] text-[#f4ebd0] text-xs py-2 px-4 flex justify-around items-center font-black tracking-widest border-b-4 border-[#111111]">
+    <div class="bg-[#111111] text-[#f4ebd0] text-[10px] sm:text-xs py-1.5 px-2 flex justify-around items-center font-black tracking-widest border-b-4 border-[#111111]">
         <span>✨ توصيل سريع 24-48 ساعة ✨</span>
         <span>🛡️ دفع آمن عند الاستلام 🛡️</span>
     </div>
 
     <!-- الهيدر الرئيسي مع الشعار -->
-    <header class="bg-[#fffdf6] border-b-4 border-[#111111] sticky top-0 z-40 px-6 py-3 flex justify-between items-center shadow-lg">
-        <div class="flex items-center gap-3">
-            <button onclick="toggleMenu()" class="vintage-box px-3 py-1 text-2xl font-black bg-[#f4ebd0] hover:scale-105 cursor-pointer">☰</button>
-            <div class="flex items-center gap-2">
-                <svg class="w-10 h-10 object-contain filter drop-shadow" viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <header class="bg-[#fffdf6] border-b-4 border-[#111111] sticky top-0 z-40 px-4 py-2.5 flex justify-between items-center shadow-lg">
+        <div class="flex items-center gap-2">
+            <button onclick="toggleMenu()" class="vintage-box px-2.5 py-1 text-xl font-black bg-[#f4ebd0] hover:scale-105 cursor-pointer">☰</button>
+            <div class="flex items-center gap-1.5">
+                <svg class="w-8 h-8 object-contain filter drop-shadow" viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <path d="M20 100C30 95 40 90 50 95C45 85 40 75 45 65C50 75 60 85 75 90C45 95 30 110 20 100Z" fill="#111"/>
                     <path d="M55 105H145L165 65H60L55 105Z" stroke="#111" stroke-width="8" stroke-linejoin="round" fill="none"/>
                     <circle cx="80" cy="135" r="12" fill="#111"/>
                     <circle cx="135" cy="135" r="12" fill="#111"/>
                     <path d="M45 105L35 75H15" stroke="#111" stroke-width="8" stroke-linecap="round" fill="none"/>
                 </svg>
-                <h1 class="text-2xl font-black tracking-wider uppercase underline decoration-wavy decoration-2">JF STORE 🖤</h1>
+                <h1 class="text-lg sm:text-2xl font-black tracking-wider uppercase underline decoration-wavy decoration-2">JF STORE 🖤</h1>
             </div>
         </div>
-        <div class="flex items-center gap-4">
-            <button onclick="toggleCart()" class="vintage-btn px-4 py-2 text-sm flex items-center gap-2 cursor-pointer">
+        <div class="flex items-center gap-3">
+            <button onclick="toggleCart()" class="vintage-btn px-3 py-1.5 text-xs sm:text-sm flex items-center gap-1.5 cursor-pointer">
                 🛒 السلة (<span id="cart-count">0</span>)
             </button>
         </div>
@@ -154,18 +154,18 @@
     </div>
 
     <!-- محتوى الموقع الرئيسي -->
-    <main class="flex-1 max-w-7xl mx-auto px-4 py-6 w-full">
+    <main class="flex-1 max-w-7xl mx-auto px-2 sm:px-4 py-4 w-full">
         
         <!-- سلايدر الإعلانات -->
-        <div id="ads-banner" class="vintage-box mb-8 p-4 bg-white relative overflow-hidden h-64 flex items-center justify-center text-center hidden">
+        <div id="ads-banner" class="vintage-box mb-6 p-3 bg-white relative overflow-hidden h-52 flex items-center justify-center text-center hidden">
             <div id="ads-content" class="w-full h-full flex items-center justify-center cursor-pointer transition-all duration-500"></div>
         </div>
 
         <!-- شريط البحث والأصناف للزبائن -->
-        <div class="mb-8 flex flex-col md:flex-row gap-4 justify-between items-center">
-            <input type="text" id="search-input" oninput="filterProducts()" placeholder="🔍 ابحث عن أي منتج ببالك..." class="vintage-input w-full md:w-1/2 p-3.5 font-bold">
+        <div class="mb-6 flex flex-col md:flex-row gap-3 justify-between items-center">
+            <input type="text" id="search-input" oninput="filterProducts()" placeholder="🔍 ابحث عن أي منتج ببالك..." class="vintage-input w-full md:w-1/2 p-3 font-bold text-xs sm:text-sm">
             
-            <select id="category-filter" onchange="filterProducts()" class="vintage-input w-full md:w-1/3 p-3.5 font-black bg-[#fffdf6]">
+            <select id="category-filter" onchange="filterProducts()" class="vintage-input w-full md:w-1/3 p-3 font-black bg-[#fffdf6] text-xs sm:text-sm">
                 <option value="all">📁 كل الأصناف</option>
                 <option value="سماعات وصوتيات">سماعات وصوتيات</option>
                 <option value="إلكترونيات واكسسوارات">إلكترونيات واكسسوارات</option>
@@ -191,15 +191,15 @@
         </div>
 
         <!-- لوحة تحكم الأدمن -->
-        <div id="admin-panel" class="vintage-box p-6 mb-8 hidden bg-[#fff3d6]">
-            <h3 id="admin-panel-title" class="font-black text-xl mb-4 text-[#111] flex items-center gap-2">
+        <div id="admin-panel" class="vintage-box p-4 mb-6 hidden bg-[#fff3d6]">
+            <h3 id="admin-panel-title" class="font-black text-base sm:text-xl mb-3 text-[#111] flex items-center gap-2">
                 <span>👑</span> لوحة تحكم الأدمن (نشر وحذف وتعديل فوري 🚀)
             </h3>
             <input type="hidden" id="editing-product-id" value="">
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                <input type="text" id="new-name" placeholder="اسم المنتج..." class="vintage-input p-3 font-bold">
-                <input type="number" id="new-price" placeholder="السعر (دينار)..." class="vintage-input p-3 font-bold">
-                <select id="new-cat" class="vintage-input p-3 font-black bg-white">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
+                <input type="text" id="new-name" placeholder="اسم المنتج..." class="vintage-input p-2.5 font-bold text-xs sm:text-sm">
+                <input type="number" id="new-price" placeholder="السعر (دينار)..." class="vintage-input p-2.5 font-bold text-xs sm:text-sm">
+                <select id="new-cat" class="vintage-input p-2.5 font-black bg-white text-xs sm:text-sm">
                     <option value="سماعات وصوتيات">سماعات وصوتيات</option>
                     <option value="إلكترونيات واكسسوارات">إلكترونيات واكسسوارات</option>
                     <option value="اجهزة المطبخ">اجهزة المطبخ</option>
@@ -221,30 +221,30 @@
                     <option value="ملابس رجاليه">ملابس رجاليه</option>
                     <option value="ملابس اطفال">ملابس اطفال</option>
                 </select>
-                <input type="text" id="new-desc" placeholder="وصف المنتج..." class="vintage-input p-3 font-bold md:col-span-3">
+                <input type="text" id="new-desc" placeholder="وصف المنتج..." class="vintage-input p-2.5 font-bold text-xs sm:text-sm md:col-span-3">
                 
-                <div class="vintage-box p-3 bg-white">
-                    <label class="block text-xs font-black mb-1">📷 اختر صورة من الاستوديو:</label>
-                    <input type="file" id="image-file" accept="image/*" class="w-full text-xs font-bold cursor-pointer">
+                <div class="vintage-box p-2.5 bg-white">
+                    <label class="block text-[10px] sm:text-xs font-black mb-1">📷 صورة المنتج:</label>
+                    <input type="file" id="image-file" accept="image/*" class="w-full text-[10px] sm:text-xs font-bold cursor-pointer">
                 </div>
 
-                <div class="vintage-box p-3 bg-white">
-                    <label class="block text-xs font-black mb-1">🎥 اختر فيديو (اختياري):</label>
-                    <input type="file" id="video-file" accept="video/*" class="w-full text-xs font-bold cursor-pointer">
+                <div class="vintage-box p-2.5 bg-white">
+                    <label class="block text-[10px] sm:text-xs font-black mb-1">🎥 فيديو (اختياري):</label>
+                    <input type="file" id="video-file" accept="video/*" class="w-full text-[10px] sm:text-xs font-bold cursor-pointer">
                 </div>
 
-                <div class="vintage-box p-3 bg-white flex items-center justify-center">
-                    <span id="upload-status" class="text-xs font-black text-gray-600">جاهز للنشر 🚀</span>
+                <div class="vintage-box p-2.5 bg-white flex items-center justify-center">
+                    <span id="upload-status" class="text-[10px] sm:text-xs font-black text-gray-600">جاهز للنشر 🚀</span>
                 </div>
             </div>
-            <div class="flex gap-4 mt-4">
-                <button id="save-btn" onclick="saveProductToSupabase()" class="vintage-btn px-8 py-3 text-base cursor-pointer">نشر في قاعدة البيانات 🚀</button>
-                <button id="cancel-edit-btn" onclick="cancelEdit()" class="vintage-btn bg-gray-500 text-white px-6 py-3 text-base cursor-pointer hidden">إلغاء ✕</button>
+            <div class="flex gap-3 mt-3">
+                <button id="save-btn" onclick="saveProductToSupabase()" class="vintage-btn px-6 py-2.5 text-xs sm:text-sm cursor-pointer">نشر في قاعدة البيانات 🚀</button>
+                <button id="cancel-edit-btn" onclick="cancelEdit()" class="vintage-btn bg-gray-500 text-white px-4 py-2.5 text-xs sm:text-sm cursor-pointer hidden">إلغاء ✕</button>
             </div>
         </div>
 
-        <!-- شبكة عرض المنتجات (Grid متجاوب: كارتين إلى أربعة كارتات حسب الشاشة) -->
-        <div id="products-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6"></div>
+        <!-- شبكة عرض المنتجات (3 كارتات بالموبايل، و 4 أو أكثر بالشاشات الكبيرة) -->
+        <div id="products-grid" class="grid grid-cols-3 sm:grid-cols-2 lg:grid-cols-4 gap-2 sm:gap-6"></div>
     </main>
 
     <!-- سلة المشتريات -->
@@ -458,15 +458,15 @@
             const isFav = favorites.includes(product.id);
 
             container.innerHTML = `
-                <div class="flex items-center justify-between w-full h-full px-6 gap-4">
-                    <img src="${displayImg}" class="w-36 h-36 object-cover rounded-xl border-3 border-black shadow">
+                <div class="flex items-center justify-between w-full h-full px-4 gap-3">
+                    <img src="${displayImg}" class="w-28 h-28 object-cover rounded-lg border-2 border-black shadow">
                     <div class="text-right flex-1">
-                        <div class="flex items-center justify-end gap-2">
-                            <h3 class="font-black text-xl text-[#111]">${product.name}</h3>
-                            <span class="text-xl">${isFav ? '❤️' : '🤍'}</span>
+                        <div class="flex items-center justify-end gap-1.5">
+                            <h3 class="font-black text-sm sm:text-lg text-[#111]">${product.name}</h3>
+                            <span class="text-base">${isFav ? '❤️' : '🤍'}</span>
                         </div>
-                        <p class="text-green-900 font-black text-lg mt-1">${Number(product.price).toLocaleString()} د.ع</p>
-                        <span class="text-xs font-bold text-gray-600 underline mt-2 block">اضغط للانتقال للمنتج ➔</span>
+                        <p class="text-green-900 font-black text-sm sm:text-base mt-1">${Number(product.price).toLocaleString()} د.ع</p>
+                        <span class="text-[10px] font-bold text-gray-600 underline mt-1 block">اضغط للانتقال للمنتج ➔</span>
                     </div>
                 </div>
             `;
@@ -597,7 +597,7 @@
             const isAdmin = localStorage.getItem('jf_email') && localStorage.getItem('jf_email').toLowerCase() === ADMIN_EMAIL.toLowerCase();
 
             if(list.length === 0) {
-                grid.innerHTML = '<p class="col-span-full text-center font-black text-xl py-16 text-gray-700">لا توجد منتجات مطابقة للبحث أو الصنف المطلوب.</p>';
+                grid.innerHTML = '<p class="col-span-full text-center font-black text-sm sm:text-xl py-16 text-gray-700">لا توجد منتجات مطابقة للبحث أو الصنف المطلوب.</p>';
                 document.getElementById('ads-banner').classList.add('hidden');
                 return;
             }
@@ -612,8 +612,8 @@
                 let videoHtml = '';
                 if(p.parsedVideo) {
                     videoHtml = `
-                        <div class="mt-2">
-                            <video controls class="w-full h-36 object-cover rounded-xl border-2 border-black">
+                        <div class="mt-1.5">
+                            <video controls class="w-full h-24 object-cover rounded-lg border border-black">
                                 <source src="${p.parsedVideo}" type="video/mp4">
                                 متصفحك لا يدعم عرض الفيديو
                             </video>
@@ -624,39 +624,39 @@
                 let adminActionsHtml = '';
                 if(isAdmin) {
                     adminActionsHtml = `
-                        <div class="mt-3 pt-2 border-t border-black flex gap-1.5">
-                            <button onclick="editProduct(${p.id})" class="vintage-btn bg-yellow-400 text-black px-3 py-1.5 text-xs cursor-pointer flex-1">✏️ تعديل</button>
-                            <button onclick="deleteProduct(${p.id})" class="vintage-btn bg-red-600 text-white px-3 py-1.5 text-xs cursor-pointer flex-1">🗑️ حذف</button>
+                        <div class="mt-2 pt-2 border-t border-black flex gap-1">
+                            <button onclick="editProduct(${p.id})" class="vintage-btn bg-yellow-400 text-black px-2 py-1 text-[10px] cursor-pointer flex-1">✏️ تعديل</button>
+                            <button onclick="deleteProduct(${p.id})" class="vintage-btn bg-red-600 text-white px-2 py-1 text-[10px] cursor-pointer flex-1">🗑️ حذف</button>
                         </div>
                     `;
                 }
 
                 grid.innerHTML += `
-                    <div class="vintage-box p-4 flex flex-col justify-between" id="product-card-${p.id}">
+                    <div class="vintage-box p-2.5 sm:p-4 flex flex-col justify-between" id="product-card-${p.id}">
                         <div>
                             <div class="relative">
-                                <img src="${displayImg}" alt="${p.name}" class="w-full h-48 object-cover rounded-xl border-3 border-[#111] mb-2 shadow">
-                                <button onclick="toggleFavorite(${p.id})" class="absolute top-2 left-2 bg-white p-2.5 rounded-full border-2 border-[#111] text-lg hover:scale-110 shadow cursor-pointer">${isFav ? '❤️' : '🤍'}</button>
+                                <img src="${displayImg}" alt="${p.name}" class="w-full h-28 sm:h-48 object-cover rounded-lg border-2 border-[#111] mb-2 shadow">
+                                <button onclick="toggleFavorite(${p.id})" class="absolute top-1.5 left-1.5 bg-white p-1.5 rounded-full border border-[#111] text-xs hover:scale-110 shadow cursor-pointer">${isFav ? '❤️' : '🤍'}</button>
                             </div>
                             ${videoHtml}
-                            <span class="bg-[#111] text-[#f4ebd0] text-xs px-2 py-0.5 rounded-md font-black inline-block mt-2">${p.parsedCategory}</span>
-                            <h4 class="font-black text-lg mt-1 text-[#111]">${p.name}</h4>
+                            <span class="bg-[#111] text-[#f4ebd0] text-[9px] px-1.5 py-0.5 rounded font-black inline-block mt-1">${p.parsedCategory}</span>
+                            <h4 class="font-black text-xs sm:text-base mt-1 text-[#111] leading-tight">${p.name}</h4>
                             
                             <!-- خانة وصف المنتج المنسدلة بالسهم -->
                             <div class="mt-2">
-                                <button onclick="toggleProductDesc(${p.id})" class="w-full text-right font-black text-xs bg-[#fcf8ec] border-2 border-black px-3 py-2 rounded-lg flex justify-between items-center cursor-pointer hover:bg-[#f4ebd0]">
+                                <button onclick="toggleProductDesc(${p.id})" class="w-full text-right font-black text-[10px] sm:text-xs bg-[#fcf8ec] border border-black px-2 py-1.5 rounded flex justify-between items-center cursor-pointer hover:bg-[#f4ebd0]">
                                     <span>وصف المنتج</span>
                                     <span id="desc-arrow-${p.id}">▼</span>
                                 </button>
-                                <div id="product-desc-${p.id}" class="hidden mt-2 p-2.5 bg-white border-2 border-black rounded-lg text-xs font-bold text-gray-800 leading-relaxed">
+                                <div id="product-desc-${p.id}" class="hidden mt-1 p-2 bg-white border border-black rounded text-[10px] font-bold text-gray-800 leading-relaxed">
                                     ${p.cleanDesc || 'لا يوجد وصف مضاف'}
                                 </div>
                             </div>
                         </div>
                         <div>
-                            <div class="mt-3 flex justify-between items-center pt-2.5 border-t-2 border-dashed border-black">
-                                <span class="font-black text-lg text-green-900">${Number(p.price).toLocaleString()} د.ع</span>
-                                <button onclick="addToCart(${p.id})" class="vintage-btn px-4 py-2 text-xs cursor-pointer">أضف للسلة 🛒</button>
+                            <div class="mt-2.5 flex flex-col gap-1 pt-2 border-t border-dashed border-black">
+                                <span class="font-black text-xs sm:text-lg text-green-900">${Number(p.price).toLocaleString()} د.ع</span>
+                                <button onclick="addToCart(${p.id})" class="vintage-btn w-full py-1.5 text-[10px] sm:text-xs cursor-pointer text-center">أضف للسلة 🛒</button>
                             </div>
                             ${adminActionsHtml}
                         </div>
@@ -700,7 +700,7 @@
 
         window.onload = function() {
             const savedEmail = localStorage.getItem('jf_email');
-            const savedName = localStorage.getItem('jf_name');
+            const savedName = localStorage.Manifest ? localStorage.getItem('jf_name') : localStorage.getItem('jf_name');
             if(savedEmail && savedName) {
                 document.getElementById('user-email').value = savedEmail;
                 document.getElementById('user-name').value = savedName;
