@@ -162,69 +162,21 @@
             <div class="absolute bottom-2 right-4 bg-black text-white text-xs px-2 py-0.5 rounded font-black">إعلانات JF Store 📢</div>
         </div>
 
-        <!-- شريط البحث وأصناف البحث للزبائن -->
-        <div class="mb-8 flex flex-col md:flex-row gap-4 justify-between items-center">
-            <input type="text" id="search-input" oninput="filterProducts()" placeholder="🔍 ابحث عن أي منتج ببالك..." class="vintage-input w-full md:w-1/2 p-3.5 font-bold">
-            
-            <select id="category-filter" onchange="filterProducts()" class="vintage-input w-full md:w-1/3 p-3.5 font-black bg-[#fffdf6]">
-                <option value="all">📁 كل الأصناف</option>
-                <option value="سماعات وصوتيات">سماعات وصوتيات</option>
-                <option value="إلكترونيات واكسسوارات">إلكترونيات واكسسوارات</option>
-                <option value="اجهزة المطبخ">اجهزة المطبخ</option>
-                <option value="أثاث منزلي">أثاث منزلي</option>
-                <option value="أجهزة رياضية">أجهزة رياضية</option>
-                <option value="أدوات زراعية">أدوات زراعية</option>
-                <option value="مستلزمات السيارة">مستلزمات السيارة</option>
-                <option value="أجهزة العناية الشخصية">أجهزة العناية الشخصية</option>
-                <option value="أجهزة دينية">أجهزة دينية</option>
-                <option value="ألعاب">ألعاب</option>
-                <option value="أدوات صيانة">أدوات صيانة</option>
-                <option value="أجهزة طبية">أجهزة طبية</option>
-                <option value="أجهزة المنزل">أجهزة المنزل</option>
-                <option value="عدد وادوات">عدد وادوات</option>
-                <option value="منوعات">منوعات</option>
-                <option value="حقائب">حقائب</option>
-                <option value="منتجات العناية">منتجات العناية</option>
-                <option value="إنارة وإضاءة">إنارة وإضاءة</option>
-                <option value="ملابس رجاليه">ملابس رجاليه</option>
-                <option value="ملابس اطفال">ملابس اطفال</option>
-            </select>
+        <!-- شريط البحث -->
+        <div class="mb-8 flex justify-center">
+            <input type="text" id="search-input" oninput="filterProducts()" placeholder="🔍 ابحث عن أي منتج ببالك..." class="vintage-input w-full md:w-2/3 p-3.5 font-bold">
         </div>
 
-        <!-- لوحة تحكم الأدمن -->
+        <!-- لوحة تحكم الأدمن (متوافقة 100% مع الجدول الحالي) -->
         <div id="admin-panel" class="vintage-box p-6 mb-8 hidden bg-[#fff3d6]">
             <h3 id="admin-panel-title" class="font-black text-xl mb-4 text-[#111] flex items-center gap-2">
-                <span>👑</span> لوحة تحكم الأدمن (نشر وتعديل فوري سحابي 🚀)
+                <span>👑</span> لوحة تحكم الأدمن (نشر سحابي فوري 🚀)
             </h3>
             <input type="hidden" id="editing-product-id" value="">
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <input type="text" id="new-name" placeholder="اسم المنتج..." class="vintage-input p-3 font-bold">
                 <input type="number" id="new-price" placeholder="السعر (دينار)..." class="vintage-input p-3 font-bold">
-                <select id="new-cat" class="vintage-input p-3 font-black bg-white">
-                    <option value="سماعات وصوتيات">سماعات وصوتيات</option>
-                    <option value="إلكترونيات واكسسوارات">إلكترونيات واكسسوارات</option>
-                    <option value="اجهزة المطبخ">اجهزة المطبخ</option>
-                    <option value="أثاث منزلي">أثاث منزلي</option>
-                    <option value="أجهزة رياضية">أجهزة رياضية</option>
-                    <option value="أدوات زراعية">أدوات زراعية</option>
-                    <option value="مستلزمات السيارة">مستلزمات السيارة</option>
-                    <option value="أجهزة العناية الشخصية">أجهزة العناية الشخصية</option>
-                    <option value="أجهزة دينية">أجهزة دينية</option>
-                    <option value="ألعاب">ألعاب</option>
-                    <option value="أدوات صيانة">أدوات صيانة</option>
-                    <option value="أجهزة طبية">أجهزة طبية</option>
-                    <option value="أجهزة المنزل">أجهزة المنزل</option>
-                    <option value="عدد وادوات">عدد وادوات</option>
-                    <option value="منوعات">منوعات</option>
-                    <option value="حقائب">حقائب</option>
-                    <option value="منتجات العناية">منتجات العناية</option>
-                    <option value="إنارة وإضاءة">إنارة وإضاءة</option>
-                    <option value="ملابس رجاليه">ملابس رجاليه</option>
-                    <option value="ملابس اطفال">ملابس اطفال</option>
-                </select>
-                <input type="text" id="new-desc" placeholder="وصف المنتج..." class="vintage-input p-3 font-bold md:col-span-3">
-                <input type="text" id="new-image" placeholder="🔗 رابط الصورة المباشر (مثل Imgur)..." class="vintage-input p-3 font-bold md:col-span-2">
-                <input type="text" id="new-video" placeholder="🎥 رابط فيديو توضيحي (اختياري)..." class="vintage-input p-3 font-bold">
+                <input type="text" id="new-desc" placeholder="وصف المنتج..." class="vintage-input p-3 font-bold md:col-span-2">
             </div>
             <div class="flex gap-4 mt-4">
                 <button id="save-btn" onclick="saveProductToSupabase()" class="vintage-btn px-8 py-3 text-base cursor-pointer">نشر في قاعدة البيانات 🚀</button>
@@ -278,24 +230,7 @@
             try {
                 let { data, error } = await supabaseClient.from(TABLE_NAME).select('*').order('id', { ascending: false });
                 if (error) throw error;
-                products = (data || []).map(p => {
-                    let realDesc = p.desc || '';
-                    let cat = 'منوعات';
-                    let img = 'https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=500';
-                    let vid = '';
-
-                    try {
-                        if (realDesc.startsWith('JFDATA|')) {
-                            let parts = realDesc.split('|');
-                            cat = parts[1] || 'منوعات';
-                            img = parts[2] || img;
-                            vid = parts[3] || '';
-                            realDesc = parts[4] || '';
-                        }
-                    } catch(e) {}
-
-                    return { ...p, parsedCategory: cat, parsedImage: img, parsedVideo: vid, cleanDesc: realDesc };
-                });
+                products = data || [];
                 renderProducts();
             } catch (err) {
                 console.log("خطأ بجلب المنتجات:", err.message);
@@ -308,24 +243,18 @@
             const editingId = document.getElementById('editing-product-id').value;
             const name = document.getElementById('new-name').value;
             const price = Number(document.getElementById('new-price').value);
-            const category = document.getElementById('new-cat').value;
             const desc = document.getElementById('new-desc').value;
-            const image = document.getElementById('new-image').value.trim();
-            const video = document.getElementById('new-video').value.trim();
 
             if(!name || !price) {
                 alert('يرجى إدخال اسم المنتج والسعر على الأقل!');
                 return;
             }
 
-            const packedDesc = `JFDATA|${category}|${image}|${video}|${desc}`;
-
             if(editingId) {
-                // تحويل editingId إلى رقم صحيح لضمان تطابق البحث في قاعدة البيانات
                 const targetId = Number(editingId);
                 const { error } = await supabaseClient
                     .from(TABLE_NAME)
-                    .update({ name, price, desc: packedDesc })
+                    .update({ name, price, desc })
                     .eq('id', targetId);
                 
                 if(error) {
@@ -337,7 +266,7 @@
             } else {
                 const { error } = await supabaseClient
                     .from(TABLE_NAME)
-                    .insert([{ name, price, desc: packedDesc }]);
+                    .insert([{ name, price, desc }]);
                 
                 if(error) {
                     alert('فشل النشر: ' + error.message);
@@ -346,8 +275,6 @@
                     document.getElementById('new-name').value = '';
                     document.getElementById('new-price').value = '';
                     document.getElementById('new-desc').value = '';
-                    document.getElementById('new-image').value = '';
-                    document.getElementById('new-video').value = '';
                 }
             }
             fetchProductsFromSupabase();
@@ -373,10 +300,7 @@
             document.getElementById('editing-product-id').value = prod.id;
             document.getElementById('new-name').value = prod.name;
             document.getElementById('new-price').value = prod.price;
-            document.getElementById('new-cat').value = prod.parsedCategory || 'منوعات';
-            document.getElementById('new-desc').value = prod.cleanDesc || '';
-            document.getElementById('new-image').value = prod.parsedImage || '';
-            document.getElementById('new-video').value = prod.parsedVideo || '';
+            document.getElementById('new-desc').value = prod.desc || '';
 
             document.getElementById('admin-panel-title').innerHTML = `<span>👑</span> تعديل المنتج سحابياً: ${prod.name}`;
             document.getElementById('save-btn').innerText = 'تحديث في قاعدة البيانات ✏️';
@@ -390,9 +314,7 @@
             document.getElementById('new-name').value = '';
             document.getElementById('new-price').value = '';
             document.getElementById('new-desc').value = '';
-            document.getElementById('new-image').value = '';
-            document.getElementById('new-video').value = '';
-            document.getElementById('admin-panel-title').innerHTML = `<span>👑</span> لوحة تحكم الأدمن (نشر وتعديل فوري سحابي 🚀)`;
+            document.getElementById('admin-panel-title').innerHTML = `<span>👑</span> لوحة تحكم الأدمن (نشر سحابي فوري 🚀)`;
             document.getElementById('save-btn').innerText = 'نشر في قاعدة البيانات 🚀';
             document.getElementById('cancel-edit-btn').classList.add('hidden');
         }
@@ -529,11 +451,8 @@
 
         function filterProducts() {
             const query = document.getElementById('search-input').value.toLowerCase();
-            const cat = document.getElementById('category-filter').value;
             const filtered = products.filter(p => {
-                const matchQuery = p.name.toLowerCase().includes(query) || (p.cleanDesc && p.cleanDesc.toLowerCase().includes(query));
-                const matchCat = (cat === 'all' || p.parsedCategory === cat);
-                return matchQuery && matchCat;
+                return p.name.toLowerCase().includes(query) || (p.desc && p.desc.toLowerCase().includes(query));
             });
             renderProducts(filtered);
         }
