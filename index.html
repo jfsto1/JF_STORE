@@ -191,10 +191,10 @@
             </select>
         </div>
 
-        <!-- لوحة تحكم الأدمن المربوطة بـ Supabase (مع خانات الصور والفيديوهات) -->
+        <!-- لوحة تحكم الأدمن المتوافقة مع أعمدة Supabase -->
         <div id="admin-panel" class="vintage-box p-6 mb-8 hidden bg-[#fff3d6]">
             <h3 id="admin-panel-title" class="font-black text-xl mb-4 text-[#111] flex items-center gap-2">
-                <span>👑</span> لوحة تحكم الأدمن (نشر سحابي عبر Supabase 🚀)
+                <span>👑</span> لوحة تحكم الأدمن (نشر سحابي متوافق 🚀)
             </h3>
             <input type="hidden" id="editing-product-id" value="">
             <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -222,17 +222,7 @@
                     <option value="ملابس رجاليه">ملابس رجاليه</option>
                     <option value="ملابس اطفال">ملابس اطفال</option>
                 </select>
-                <input type="text" id="new-desc" placeholder="وصف المنتج..." class="vintage-input p-3 font-bold md:col-span-2">
-                
-                <div class="vintage-box p-3 bg-white md:col-span-2">
-                    <label class="block text-xs font-black mb-1">🔗 رابط الصورة المباشر:</label>
-                    <input type="text" id="new-images-url" placeholder="مثال: https://i.imgur.com/abc.jpg" class="vintage-input p-2.5 w-full text-xs font-bold">
-                </div>
-
-                <div class="vintage-box p-3 bg-white">
-                    <label class="block text-xs font-black mb-1">🎥 رابط فيديو توضيحي (اختياري):</label>
-                    <input type="text" id="new-video-url" placeholder="رابط يوتيوب أو فيديو..." class="vintage-input p-2.5 w-full text-xs font-bold">
-                </div>
+                <input type="text" id="new-desc" placeholder="وصف المنتج..." class="vintage-input p-3 font-bold md:col-span-3">
             </div>
             <div class="flex gap-4 mt-4">
                 <button id="save-btn" onclick="saveProductToSupabase()" class="vintage-btn px-8 py-3 text-base cursor-pointer">نشر في قاعدة البيانات 🚀</button>
@@ -267,7 +257,6 @@
     </footer>
 
     <script>
-        // إعدادات اتصال Supabase باستخدام المفتاح الصحيح
         const SUPABASE_URL = 'https://dgxksrdcguoijlmvqstw.supabase.co';
         const SUPABASE_ANON_KEY = 'sb_publishable_TySRw16o2RLuSxAfsWZ3Sw_JLvpv3OB';
         
@@ -282,7 +271,6 @@
         const ADMIN_EMAIL = "mrskull33442@gmail.com";
         const ADMIN_PASS = "aloxgame4";
 
-        // جلب المنتجات من قاعدة بيانات Supabase
         async function fetchProductsFromSupabase() {
             try {
                 let { data, error } = await supabaseClient.from('products').select('*').order('id', { ascending: false });
@@ -296,15 +284,12 @@
             }
         }
 
-        // حفظ ونشر المنتج سحابياً في Supabase
         async function saveProductToSupabase() {
             const editingId = document.getElementById('editing-product-id').value;
             const name = document.getElementById('new-name').value;
             const price = Number(document.getElementById('new-price').value);
             const category = document.getElementById('new-cat').value;
             const desc = document.getElementById('new-desc').value;
-            const images = document.getElementById('new-images-url').value.trim() || 'https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=500';
-            const video = document.getElementById('new-video-url').value.trim();
 
             if(!name || !price) {
                 alert('يرجى إدخال اسم المنتج والسعر على الأقل!');
@@ -314,7 +299,7 @@
             if(editingId) {
                 const { error } = await supabaseClient
                     .from('products')
-                    .update({ name, price, category, desc, images, video })
+                    .update({ name, price, category, desc })
                     .eq('id', editingId);
                 
                 if(error) {
@@ -326,7 +311,7 @@
             } else {
                 const { error } = await supabaseClient
                     .from('products')
-                    .insert([{ name, price, category, desc, images, video }]);
+                    .insert([{ name, price, category, desc }]);
                 
                 if(error) {
                     alert('فشل النشر: ' + error.message);
@@ -335,8 +320,6 @@
                     document.getElementById('new-name').value = '';
                     document.getElementById('new-price').value = '';
                     document.getElementById('new-desc').value = '';
-                    document.getElementById('new-images-url').value = '';
-                    document.getElementById('new-video-url').value = '';
                 }
             }
             fetchProductsFromSupabase();
@@ -358,12 +341,7 @@
 
             list.forEach(p => {
                 const isFav = favorites.includes(p.id);
-                const firstImg = p.images || 'https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=500';
-
-                let videoHtml = '';
-                if(p.video) {
-                    videoHtml = `<div class="mt-2"><a href="${p.video}" target="_blank" class="block text-center bg-black text-white py-1.5 rounded text-xs font-black">▶ مشاهدة فيديو المنتج التوضيحي</a></div>`;
-                }
+                const firstImg = 'https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=500';
 
                 let adminActionsHtml = '';
                 if(isAdmin) {
@@ -382,7 +360,6 @@
                                 <img src="${firstImg}" alt="${p.name}" class="w-full h-52 object-cover rounded-xl border-3 border-[#111] mb-2 shadow">
                                 <button onclick="toggleFavorite(${p.id})" class="absolute top-3 left-3 bg-white p-2.5 rounded-full border-3 border-[#111] text-lg hover:scale-110 shadow cursor-pointer">${isFav ? '❤️' : '🤍'}</button>
                             </div>
-                            ${videoHtml}
                             <span class="bg-[#111] text-[#f4ebd0] text-xs px-2.5 py-1 rounded-md font-black inline-block mt-2">${p.category}</span>
                             <h4 class="font-black text-xl mt-2 text-[#111]">${p.name}</h4>
                             <p class="text-gray-700 text-sm mt-1.5 font-bold leading-relaxed">${p.desc || 'لا يوجد وصف'}</p>
@@ -420,8 +397,6 @@
             document.getElementById('new-price').value = prod.price;
             document.getElementById('new-cat').value = prod.category;
             document.getElementById('new-desc').value = prod.desc || '';
-            document.getElementById('new-images-url').value = prod.images || '';
-            document.getElementById('new-video-url').value = prod.video || '';
 
             document.getElementById('admin-panel-title').innerHTML = `<span>👑</span> تعديل المنتج سحابياً: ${prod.name}`;
             document.getElementById('save-btn').innerText = 'تحديث في قاعدة البيانات ✏️';
@@ -435,9 +410,7 @@
             document.getElementById('new-name').value = '';
             document.getElementById('new-price').value = '';
             document.getElementById('new-desc').value = '';
-            document.getElementById('new-images-url').value = '';
-            document.getElementById('new-video-url').value = '';
-            document.getElementById('admin-panel-title').innerHTML = `<span>👑</span> لوحة تحكم الأدمن (نشر سحابي عبر Supabase 🚀)`;
+            document.getElementById('admin-panel-title').innerHTML = `<span>👑</span> لوحة تحكم الأدمن (نشر سحابي متوافق 🚀)`;
             document.getElementById('save-btn').innerText = 'نشر في قاعدة البيانات 🚀';
             document.getElementById('cancel-edit-btn').classList.add('hidden');
         }
