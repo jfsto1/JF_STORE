@@ -162,21 +162,81 @@
             <div class="absolute bottom-2 right-4 bg-black text-white text-xs px-2 py-0.5 rounded font-black">إعلانات JF Store 📢</div>
         </div>
 
-        <!-- شريط البحث -->
-        <div class="mb-8 flex justify-center">
-            <input type="text" id="search-input" oninput="filterProducts()" placeholder="🔍 ابحث عن أي منتج ببالك..." class="vintage-input w-full md:w-2/3 p-3.5 font-bold">
+        <!-- شريط البحث وأصناف البحث للزبائن -->
+        <div class="mb-8 flex flex-col md:flex-row gap-4 justify-between items-center">
+            <input type="text" id="search-input" oninput="filterProducts()" placeholder="🔍 ابحث عن أي منتج ببالك..." class="vintage-input w-full md:w-1/2 p-3.5 font-bold">
+            
+            <select id="category-filter" onchange="filterProducts()" class="vintage-input w-full md:w-1/3 p-3.5 font-black bg-[#fffdf6]">
+                <option value="all">📁 كل الأصناف</option>
+                <option value="سماعات وصوتيات">سماعات وصوتيات</option>
+                <option value="إلكترونيات واكسسوارات">إلكترونيات واكسسوارات</option>
+                <option value="اجهزة المطبخ">اجهزة المطبخ</option>
+                <option value="أثاث منزلي">أثاث منزلي</option>
+                <option value="أجهزة رياضية">أجهزة رياضية</option>
+                <option value="أدوات زراعية">أدوات زراعية</option>
+                <option value="مستلزمات السيارة">مستلزمات السيارة</option>
+                <option value="أجهزة العناية الشخصية">أجهزة العناية الشخصية</option>
+                <option value="أجهزة دينية">أجهزة دينية</option>
+                <option value="ألعاب">ألعاب</option>
+                <option value="أدوات صيانة">أدوات صيانة</option>
+                <option value="أجهزة طبية">أجهزة طبية</option>
+                <option value="أجهزة المنزل">أجهزة المنزل</option>
+                <option value="عدد وادوات">عدد وادوات</option>
+                <option value="منوعات">منوعات</option>
+                <option value="حقائب">حقائب</option>
+                <option value="منتجات العناية">منتجات العناية</option>
+                <option value="إنارة وإضاءة">إنارة وإضاءة</option>
+                <option value="ملابس رجاليه">ملابس رجاليه</option>
+                <option value="ملابس اطفال">ملابس اطفال</option>
+            </select>
         </div>
 
-        <!-- لوحة تحكم الأدمن (متوافقة 100% مع الجدول الحالي) -->
+        <!-- لوحة تحكم الأدمن (مع أزرار اختيار الصور والفيديو من الاستوديو والأصناف) -->
         <div id="admin-panel" class="vintage-box p-6 mb-8 hidden bg-[#fff3d6]">
             <h3 id="admin-panel-title" class="font-black text-xl mb-4 text-[#111] flex items-center gap-2">
-                <span>👑</span> لوحة تحكم الأدمن (نشر سحابي فوري 🚀)
+                <span>👑</span> لوحة تحكم الأدمن (إضافة من الاستوديو والأصناف 🚀)
             </h3>
             <input type="hidden" id="editing-product-id" value="">
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <input type="text" id="new-name" placeholder="اسم المنتج..." class="vintage-input p-3 font-bold">
                 <input type="number" id="new-price" placeholder="السعر (دينار)..." class="vintage-input p-3 font-bold">
-                <input type="text" id="new-desc" placeholder="وصف المنتج..." class="vintage-input p-3 font-bold md:col-span-2">
+                <select id="new-cat" class="vintage-input p-3 font-black bg-white">
+                    <option value="سماعات وصوتيات">سماعات وصوتيات</option>
+                    <option value="إلكترونيات واكسسوارات">إلكترونيات واكسسوارات</option>
+                    <option value="اجهزة المطبخ">اجهزة المطبخ</option>
+                    <option value="أثاث منزلي">أثاث منزلي</option>
+                    <option value="أجهزة رياضية">أجهزة رياضية</option>
+                    <option value="أدوات زراعية">أدوات زراعية</option>
+                    <option value="مستلزمات السيارة">مستلزمات السيارة</option>
+                    <option value="أجهزة العناية الشخصية">أجهزة العناية الشخصية</option>
+                    <option value="أجهزة دينية">أجهزة دينية</option>
+                    <option value="ألعاب">ألعاب</option>
+                    <option value="أدوات صيانة">أدوات صيانة</option>
+                    <option value="أجهزة طبية">أجهزة طبية</option>
+                    <option value="أجهزة المنزل">أجهزة المنزل</option>
+                    <option value="عدد وادوات">عدد وادوات</option>
+                    <option value="منوعات">منوعات</option>
+                    <option value="حقائب">حقائب</option>
+                    <option value="منتجات العناية">منتجات العناية</option>
+                    <option value="إنارة وإضاءة">إنارة وإضاءة</option>
+                    <option value="ملابس رجاليه">ملابس رجاليه</option>
+                    <option value="ملابس اطفال">ملابس اطفال</option>
+                </select>
+                <input type="text" id="new-desc" placeholder="وصف المنتج..." class="vintage-input p-3 font-bold md:col-span-3">
+                
+                <div class="vintage-box p-3 bg-white">
+                    <label class="block text-xs font-black mb-1">📷 اختر صورة من الاستوديو:</label>
+                    <input type="file" id="image-file" accept="image/*" class="w-full text-xs font-bold cursor-pointer">
+                </div>
+
+                <div class="vintage-box p-3 bg-white">
+                    <label class="block text-xs font-black mb-1">🎥 اختر فيديو من الاستوديو (اختياري):</label>
+                    <input type="file" id="video-file" accept="video/*" class="w-full text-xs font-bold cursor-pointer">
+                </div>
+
+                <div class="vintage-box p-3 bg-white flex items-center justify-center">
+                    <span id="upload-status" class="text-xs font-black text-gray-600">جاهز للنشر 🚀</span>
+                </div>
             </div>
             <div class="flex gap-4 mt-4">
                 <button id="save-btn" onclick="saveProductToSupabase()" class="vintage-btn px-8 py-3 text-base cursor-pointer">نشر في قاعدة البيانات 🚀</button>
@@ -230,7 +290,24 @@
             try {
                 let { data, error } = await supabaseClient.from(TABLE_NAME).select('*').order('id', { ascending: false });
                 if (error) throw error;
-                products = data || [];
+                products = (data || []).map(p => {
+                    let realDesc = p.desc || '';
+                    let cat = 'منوعات';
+                    let img = 'https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=500';
+                    let vid = '';
+
+                    try {
+                        if (realDesc.startsWith('JFDATA|')) {
+                            let parts = realDesc.split('|');
+                            cat = parts[1] || 'منوعات';
+                            img = parts[2] || img;
+                            vid = parts[3] || '';
+                            realDesc = parts[4] || '';
+                        }
+                    } catch(e) {}
+
+                    return { ...p, parsedCategory: cat, parsedImage: img, parsedVideo: vid, cleanDesc: realDesc };
+                });
                 renderProducts();
             } catch (err) {
                 console.log("خطأ بجلب المنتجات:", err.message);
@@ -239,22 +316,64 @@
             }
         }
 
+        // تحويل الملف المختار من الاستوديو إلى Base64 حتى ينحفظ مباشرة بالسحابة بدون مشاكل برفع ملفات
+        function convertFileToBase64(file) {
+            return new Promise((resolve, reject) => {
+                const reader = new FileReader();
+                reader.readAsDataURL(file);
+                reader.onload = () => resolve(reader.result);
+                reader.onerror = error => reject(error);
+            });
+        }
+
         async function saveProductToSupabase() {
             const editingId = document.getElementById('editing-product-id').value;
             const name = document.getElementById('new-name').value;
             const price = Number(document.getElementById('new-price').value);
+            const category = document.getElementById('new-cat').value;
             const desc = document.getElementById('new-desc').value;
+            const imageFile = document.getElementById('image-file').files[0];
+            const videoFile = document.getElementById('video-file').files[0];
 
             if(!name || !price) {
                 alert('يرجى إدخال اسم المنتج والسعر على الأقل!');
                 return;
             }
 
+            document.getElementById('upload-status').innerText = 'جاري الرفع والنشر... ⏳';
+
+            let imageUrl = 'https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=500';
+            let videoUrl = '';
+
+            // الاحتفاظ بالصورة القديمة في حال التعديل ولم يتم اختيار صورة جديدة
+            if (editingId) {
+                const existingProd = products.find(p => p.id === Number(editingId));
+                if (existingProd) {
+                    imageUrl = existingProd.parsedImage;
+                    videoUrl = existingProd.parsedVideo;
+                }
+            }
+
+            try {
+                if (imageFile) {
+                    imageUrl = await convertFileToBase64(imageFile);
+                }
+                if (videoFile) {
+                    videoUrl = await convertFileToBase64(videoFile);
+                }
+            } catch (err) {
+                alert('خطأ برفع الملفات من الاستوديو!');
+                document.getElementById('upload-status').innerText = 'فشل الرفع ❌';
+                return;
+            }
+
+            const packedDesc = `JFDATA|${category}|${imageUrl}|${videoUrl}|${desc}`;
+
             if(editingId) {
                 const targetId = Number(editingId);
                 const { error } = await supabaseClient
                     .from(TABLE_NAME)
-                    .update({ name, price, desc })
+                    .update({ name, price, desc: packedDesc })
                     .eq('id', targetId);
                 
                 if(error) {
@@ -266,7 +385,7 @@
             } else {
                 const { error } = await supabaseClient
                     .from(TABLE_NAME)
-                    .insert([{ name, price, desc }]);
+                    .insert([{ name, price, desc: packedDesc }]);
                 
                 if(error) {
                     alert('فشل النشر: ' + error.message);
@@ -275,8 +394,12 @@
                     document.getElementById('new-name').value = '';
                     document.getElementById('new-price').value = '';
                     document.getElementById('new-desc').value = '';
+                    document.getElementById('image-file').value = '';
+                    document.getElementById('video-file').value = '';
                 }
             }
+
+            document.getElementById('upload-status').innerText = 'تم بنجاح ✅';
             fetchProductsFromSupabase();
         }
 
@@ -300,7 +423,8 @@
             document.getElementById('editing-product-id').value = prod.id;
             document.getElementById('new-name').value = prod.name;
             document.getElementById('new-price').value = prod.price;
-            document.getElementById('new-desc').value = prod.desc || '';
+            document.getElementById('new-cat').value = prod.parsedCategory || 'منوعات';
+            document.getElementById('new-desc').value = prod.cleanDesc || '';
 
             document.getElementById('admin-panel-title').innerHTML = `<span>👑</span> تعديل المنتج سحابياً: ${prod.name}`;
             document.getElementById('save-btn').innerText = 'تحديث في قاعدة البيانات ✏️';
@@ -314,7 +438,9 @@
             document.getElementById('new-name').value = '';
             document.getElementById('new-price').value = '';
             document.getElementById('new-desc').value = '';
-            document.getElementById('admin-panel-title').innerHTML = `<span>👑</span> لوحة تحكم الأدمن (نشر سحابي فوري 🚀)`;
+            document.getElementById('image-file').value = '';
+            document.getElementById('video-file').value = '';
+            document.getElementById('admin-panel-title').innerHTML = `<span>👑</span> لوحة تحكم الأدمن (إضافة من الاستوديو والأصناف 🚀)`;
             document.getElementById('save-btn').innerText = 'نشر في قاعدة البيانات 🚀';
             document.getElementById('cancel-edit-btn').classList.add('hidden');
         }
@@ -449,10 +575,77 @@
             renderProducts();
         }
 
+        function renderProducts(list = products) {
+            const grid = document.getElementById('products-grid');
+            grid.innerHTML = '';
+            const isAdmin = localStorage.getItem('jf_email') && localStorage.getItem('jf_email').toLowerCase() === ADMIN_EMAIL.toLowerCase();
+
+            if(list.length === 0) {
+                grid.innerHTML = '<p class="col-span-full text-center font-black text-xl py-16 text-gray-700">لا توجد منتجات معروضة حالياً في السحابة.</p>';
+                document.getElementById('ads-banner').classList.add('hidden');
+                return;
+            }
+
+            document.getElementById('ads-banner').classList.remove('hidden');
+            startAdsSlider(list);
+
+            list.forEach(p => {
+                const isFav = favorites.includes(p.id);
+                const displayImg = p.parsedImage || 'https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=500';
+
+                let videoHtml = '';
+                if(p.parsedVideo) {
+                    videoHtml = `
+                        <div class="mt-2">
+                            <video controls class="w-full h-36 object-cover rounded-xl border-2 border-black">
+                                <source src="${p.parsedVideo}" type="video/mp4">
+                                متصفحك لا يدعم عرض الفيديو
+                            </video>
+                        </div>
+                    `;
+                }
+
+                let adminActionsHtml = '';
+                if(isAdmin) {
+                    adminActionsHtml = `
+                        <div class="mt-4 pt-3 border-t border-black flex gap-2">
+                            <button onclick="editProduct(${p.id})" class="vintage-btn bg-yellow-400 text-black px-3 py-1.5 text-xs cursor-pointer flex-1">✏️ تعديل</button>
+                            <button onclick="deleteProduct(${p.id})" class="vintage-btn bg-red-600 text-white px-3 py-1.5 text-xs cursor-pointer flex-1">🗑️ حذف</button>
+                        </div>
+                    `;
+                }
+
+                grid.innerHTML += `
+                    <div class="vintage-box p-5 flex flex-col justify-between" id="product-card-${p.id}">
+                        <div>
+                            <div class="relative">
+                                <img src="${displayImg}" alt="${p.name}" class="w-full h-52 object-cover rounded-xl border-3 border-[#111] mb-2 shadow">
+                                <button onclick="toggleFavorite(${p.id})" class="absolute top-3 left-3 bg-white p-2.5 rounded-full border-3 border-[#111] text-lg hover:scale-110 shadow cursor-pointer">${isFav ? '❤️' : '🤍'}</button>
+                            </div>
+                            ${videoHtml}
+                            <span class="bg-[#111] text-[#f4ebd0] text-xs px-2.5 py-1 rounded-md font-black inline-block mt-2">${p.parsedCategory}</span>
+                            <h4 class="font-black text-xl mt-2 text-[#111]">${p.name}</h4>
+                            <p class="text-gray-700 text-sm mt-1.5 font-bold leading-relaxed">${p.cleanDesc || 'لا يوجد وصف'}</p>
+                        </div>
+                        <div>
+                            <div class="mt-4 flex justify-between items-center pt-3 border-t-2 border-dashed border-black">
+                                <span class="font-black text-xl text-green-900">${Number(p.price).toLocaleString()} د.ع</span>
+                                <button onclick="addToCart(${p.id})" class="vintage-btn px-5 py-2.5 text-sm cursor-pointer">أضف للسلة 🛒</button>
+                            </div>
+                            ${adminActionsHtml}
+                        </div>
+                    </div>
+                `;
+            });
+        }
+
         function filterProducts() {
             const query = document.getElementById('search-input').value.toLowerCase();
+            const cat = document.getElementById('category-filter').value;
             const filtered = products.filter(p => {
-                return p.name.toLowerCase().includes(query) || (p.desc && p.desc.toLowerCase().includes(query));
+                const matchQuery = p.name.toLowerCase().includes(query) || (p.cleanDesc && p.cleanDesc.toLowerCase().includes(query));
+                const matchCat = (cat === 'all' || p.parsedCategory === cat);
+                return matchQuery && matchCat;
             });
             renderProducts(filtered);
         }
