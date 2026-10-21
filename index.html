@@ -199,10 +199,10 @@
             </select>
         </div>
 
-        <!-- لوحة تحكم الأدمن (للإضافة الفورية والتحكم التام) -->
+        <!-- لوحة تحكم الأدمن (نظيف وثابت 100%) -->
         <div id="admin-panel" class="vintage-box p-6 mb-8 hidden bg-[#fff3d6]">
             <h3 id="admin-panel-title" class="font-black text-xl mb-4 text-[#111] flex items-center gap-2">
-                <span>👑</span> لوحة تحكم الأدمن (جيف - إضافة بضاعة فورية)
+                <span>👑</span> لوحة تحكم الأدمن (جيف - إضافة بضاعة فورية ونظيفة)
             </h3>
             <input type="hidden" id="editing-product-id" value="">
             <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -308,7 +308,7 @@
             }
         ];
 
-        let savedCustomProducts = JSON.parse(localStorage.getItem('jf_store_local_v10')) || [];
+        let savedCustomProducts = JSON.parse(localStorage.getItem('jf_store_clean_v1')) || [];
         let products = [...savedCustomProducts, ...defaultProducts];
         
         let cart = [];
@@ -565,7 +565,7 @@
             }
 
             products = [...savedCustomProducts, ...defaultProducts];
-            localStorage.setItem('jf_store_local_v10', JSON.stringify(savedCustomProducts));
+            localStorage.setItem('jf_store_clean_v1', JSON.stringify(savedCustomProducts));
             renderProducts();
             cancelEdit();
         }
@@ -606,7 +606,7 @@
             if(confirm('هل أنت متأكد من حذف هذا المنتج نهائياً؟')) {
                 savedCustomProducts = savedCustomProducts.filter(p => p.id !== id);
                 products = [...savedCustomProducts, ...defaultProducts];
-                localStorage.setItem('jf_store_local_v10', JSON.stringify(savedCustomProducts));
+                localStorage.setItem('jf_store_clean_v1', JSON.stringify(savedCustomProducts));
                 renderProducts();
                 alert('تم حذف المنتج بنجاح 🗑️');
             }
