@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>JF Store - متجر </title>
+    <title>JF Store - متجر</title>
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- Supabase JS Client CDN -->
@@ -353,7 +353,7 @@
                     <option value="ملابس اطفال">ملابس اطفال</option>
                 </select>
 
-                <!-- قائمة ألوان منسدلة للأدمن (اختيار متعدد عبر المربعات أو تحديد ألوان) -->
+                <!-- مربعات تحديد الألوان للأدمن -->
                 <div class="vintage-box p-3 bg-white md:col-span-3">
                     <label class="block text-xs font-black mb-2">🎨 حدد الألوان المتوفرة (اختر ما تشاء أو اترك الكل فارغاً):</label>
                     <div class="flex flex-wrap gap-3" id="admin-colors-checkboxes">
@@ -604,12 +604,12 @@
             const price = Number(document.getElementById('new-price').value);
             const category = document.getElementById('new-cat').value;
             
-            // جمع الألوان المحددة من مربعات الاختيار (الآدمن)
+            // جمع الألوان المحددة من مربعات الاختيار
             const selectedColors = [];
             document.querySelectorAll('input[name="admin-color"]:checked').forEach(cb => {
                 selectedColors.push(cb.value);
             });
-            const colors = selectedColors.join(', ');
+            const colors = selectedColors.join(',');
 
             const desc = document.getElementById('new-desc').value.trim();
             const imageFile = document.getElementById('image-file').files[0];
@@ -704,7 +704,6 @@
             document.getElementById('new-price').value = prod.price;
             document.getElementById('new-cat').value = prod.parsedCategory || 'منوعات';
             
-            // تحديد الألوان في مربعات الاختيار للأدمن
             const prodColors = prod.parsedColors ? prod.parsedColors.split(',').map(c => c.trim()) : [];
             document.querySelectorAll('input[name="admin-color"]').forEach(cb => {
                 cb.checked = prodColors.includes(cb.value);
