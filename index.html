@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>JF Store - متجر jf sotre</title>
+    <title>JF Store - متجر JF Store </title>
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- Supabase JS Client CDN -->
@@ -23,7 +23,6 @@
             perspective: 1200px;
         }
 
-        /* تصميم البطاقات الصندوقية بستايل الكارتون الكلاسيكي */
         .vintage-box { 
             border: 3.5px solid #111111; 
             box-shadow: 5px 5px 0px #111111;
@@ -38,12 +37,6 @@
             box-shadow: 10px 10px 0px #111111;
         }
 
-        .vintage-box:active {
-            transform: scale(0.96) rotateY(-4deg);
-            box-shadow: 2px 2px 0px #111111;
-        }
-
-        /* تصميم إطار الإعلانات Rubber Hose */
         .rubber-banner-frame {
             border: 4px solid #111111;
             box-shadow: 7px 7px 0px #111111;
@@ -69,11 +62,6 @@
             box-shadow: 6px 6px 0px #111111;
         }
 
-        .vintage-btn:active {
-            transform: translate(1px, 1px) scale(0.97);
-            box-shadow: 1px 1px 0px #111111;
-        }
-
         .vintage-input {
             border: 3px solid #111111;
             background-color: #fffdf6;
@@ -81,7 +69,6 @@
             box-shadow: inset 2px 2px 0px rgba(0,0,0,0.12);
         }
 
-        /* أنيميشن شخصيات Rubber Hose المطاطية */
         @keyframes rubberHoseWiggle {
             0%, 100% { transform: translateY(0) rotate(0deg) scale(1, 1); }
             25% { transform: translateY(-7px) rotate(-6deg) scale(1.06, 0.94); }
@@ -144,7 +131,6 @@
 </head>
 <body class="min-h-screen flex flex-col relative pb-20">
 
-    <!-- شخصية كارتونية جانبية جهة اليمين -->
     <div class="fixed top-1/3 -right-1 sm:-right-2 z-30 pointer-events-none rubber-sticker-right">
         <svg class="w-16 h-20 sm:w-24 sm:h-28 filter drop-shadow-[2px_2px_0px_rgba(0,0,0,1)]" viewBox="0 0 100 120" fill="none" xmlns="http://www.w3.org/2000/svg">
             <path d="M30 60 C30 35, 70 35, 70 60 C70 90, 30 90, 30 60 Z" fill="#fffdf6" stroke="#111" stroke-width="4"/>
@@ -162,7 +148,6 @@
         </svg>
     </div>
 
-    <!-- شخصية كارتونية جانبية جهة اليسار -->
     <div class="fixed top-2/3 -left-1 sm:-left-2 z-30 pointer-events-none rubber-sticker-left">
         <svg class="w-16 h-20 sm:w-24 sm:h-28 filter drop-shadow-[2px_2px_0px_rgba(0,0,0,1)]" viewBox="0 0 100 120" fill="none" xmlns="http://www.w3.org/2000/svg">
             <path d="M35 55 C35 30, 65 30, 65 55 C65 85, 35 85, 35 55 Z" fill="#fffdf6" stroke="#111" stroke-width="4"/>
@@ -177,13 +162,11 @@
         </svg>
     </div>
 
-    <!-- شريط علوي كلاسيكي -->
     <div class="bg-[#111111] text-[#f4ebd0] text-[10px] sm:text-xs py-1.5 px-2 flex justify-around items-center font-black tracking-widest border-b-4 border-[#111111]">
         <span>✨ توصيل سريع 24-48 ساعة ✨</span>
         <span>🛡️ دفع آمن عند الاستلام 🛡️</span>
     </div>
 
-    <!-- الهيدر الرئيسي -->
     <header class="bg-[#fffdf6] border-b-4 border-[#111111] sticky top-0 z-40 px-4 py-2.5 flex justify-between items-center shadow-lg">
         <div class="flex items-center gap-2">
             <button onclick="toggleMenu()" class="vintage-box px-2.5 py-1 text-xl font-black bg-[#f4ebd0] hover:scale-105 cursor-pointer">☰</button>
@@ -199,7 +182,6 @@
             </div>
         </div>
         
-        <!-- حقل البحث -->
         <div class="flex items-center gap-2">
             <div class="relative">
                 <input type="text" id="search-input" oninput="filterProducts()" placeholder="🔍 ابحث عن منتج..." class="vintage-input py-1.5 px-3 text-xs sm:text-sm font-bold w-36 sm:w-60">
@@ -207,13 +189,11 @@
         </div>
     </header>
 
-    <!-- زر السلة الدائري العائم أسفل اليمين -->
     <button onclick="toggleCart()" class="cart-float-btn fixed bottom-6 right-6 z-40 w-16 h-16 bg-[#111111] text-[#f4ebd0] rounded-full border-4 border-[#f4ebd0] shadow-2xl flex flex-col items-center justify-center font-black hover:scale-115 cursor-pointer transition-all duration-300">
         <span class="text-xl">🛒</span>
         <span id="cart-count" class="absolute -top-1 -right-1 bg-red-600 text-white text-xs w-6 h-6 rounded-full flex items-center justify-center border-2 border-black font-black">0</span>
     </button>
 
-    <!-- القائمة الجانبية -->
     <div id="side-menu" class="fixed inset-y-0 right-0 w-80 bg-[#fffdf6] border-l-4 border-[#111111] shadow-2xl z-50 transform translate-x-full flex flex-col">
         <div class="p-4 bg-[#111111] text-[#f4ebd0] flex justify-between items-center border-b-4 border-[#111111]">
             <h2 class="text-xl font-black">قائمة JF Store الكلاسيكية</h2>
@@ -221,14 +201,12 @@
         </div>
 
         <div class="flex-1 overflow-y-auto p-4 space-y-4">
-            <!-- ادخل الحساب مع حقل كلمة السر المباشر للأدمن -->
             <div class="vintage-box p-4">
                 <h3 class="font-black text-lg mb-2">👤 ادخل الحساب</h3>
                 <div id="user-auth-section">
                     <input type="email" id="user-email" oninput="checkAdminEmailInput()" placeholder="البريد الإلكتروني..." class="vintage-input w-full p-2.5 mb-2 text-sm">
                     <input type="text" id="user-name" placeholder="اسمك الكريم..." class="vintage-input w-full p-2.5 mb-2 text-sm">
                     
-                    <!-- حقل الباسورد ينفتح تلقائياً عند كتابة إيميل الأدمن -->
                     <div id="password-field-container" class="hidden">
                         <input type="password" id="user-password" placeholder="🔑 كلمة سر الأدمن..." class="vintage-input w-full p-2.5 mb-2 text-sm border-yellow-500 bg-yellow-50">
                     </div>
@@ -242,7 +220,6 @@
                 </div>
             </div>
 
-            <!-- المفضلات -->
             <div>
                 <button onclick="toggleFavoritesTab()" class="vintage-box w-full text-right font-black text-base p-3 flex justify-between items-center bg-white hover:bg-[#f4ebd0] cursor-pointer">
                     <span>⭐ المفضلات المحفوظة</span>
@@ -250,14 +227,12 @@
                 </button>
             </div>
 
-            <!-- الدعم الفني -->
             <div>
                 <a href="https://wa.me/9647717938654" target="_blank" class="vintage-btn text-center block py-3 text-sm">
                     💬 الدعم الفني (واتساب)
                 </a>
             </div>
 
-            <!-- الشحن الدولي -->
             <div>
                 <button onclick="toggleShippingDropdown()" class="vintage-box w-full text-right font-black text-base p-3 flex justify-between items-center bg-white cursor-pointer">
                     <span>🌍 الشحن الدولي (13 منصة)</span>
@@ -280,7 +255,6 @@
                 </div>
             </div>
 
-            <!-- تواصل معنا على التيكتوك -->
             <div>
                 <a href="https://www.tiktok.com/@jf_sto?_r=1&_t=ZS-9AjLyNa6Dwb" target="_blank" class="vintage-box text-center block py-3 text-sm font-black bg-[#ff0050] text-white shadow hover:scale-[1.02]">
                     🎵 تواصل معنا على التيكتوك
@@ -289,10 +263,8 @@
         </div>
     </div>
 
-    <!-- محتوى الموقع الرئيسي -->
     <main class="flex-1 max-w-7xl mx-auto px-2 sm:px-4 py-4 w-full">
         
-        <!-- بنر الإعلانات المطاطي -->
         <div id="ads-banner" class="rubber-banner-frame mb-6 p-4 relative overflow-visible flex items-center justify-center text-center hidden">
             <div class="absolute -top-4 right-6 bg-[#111111] text-[#f4ebd0] text-[11px] sm:text-xs font-black px-3 py-1 rounded-full border-2 border-[#fffdf6] shadow-md tracking-wider">
                 ✨ إعلان كلاسيكي خاص ✨
@@ -312,7 +284,6 @@
             <div id="ads-content" class="w-full h-full flex items-center justify-center cursor-pointer fade-slide py-2"></div>
         </div>
 
-        <!-- قائمة اختيار الأصناف الكلاسيكية المخصصة -->
         <div class="mb-6 flex justify-between items-center relative z-30">
             <h2 class="font-black text-sm sm:text-lg text-[#111] flex items-center gap-1.5">
                 <span>🏷️</span> تصفح الأصناف:
@@ -350,7 +321,6 @@
             </div>
         </div>
 
-        <!-- لوحة تحكم الأدمن -->
         <div id="admin-panel" class="vintage-box p-4 mb-6 hidden bg-[#fff3d6]">
             <h3 id="admin-panel-title" class="font-black text-base sm:text-xl mb-3 text-[#111] flex items-center gap-2">
                 <span>👑</span> لوحة تحكم الأدمن (نشر وحذف وتعديل فوري 🚀)
@@ -382,9 +352,7 @@
                     <option value="ملابس اطفال">ملابس اطفال</option>
                 </select>
 
-                <!-- حقل الألوان المخصصة للأدمن (لكل المنتجات عدا الملابس) -->
-                <input type="text" id="new-colors" placeholder="الألوان المتوفرة (اكتبها مفصولة بفواصل مثل: أسود, أبيض, أحمر)..." class="vintage-input p-2.5 font-bold text-xs sm:text-sm md:col-span-3">
-
+                <input type="text" id="new-colors" placeholder="الألوان المتوفرة (أبيض, أسود... إلخ)" class="vintage-input p-2.5 font-bold text-xs sm:text-sm md:col-span-3">
                 <input type="text" id="new-desc" placeholder="وصف المنتج..." class="vintage-input p-2.5 font-bold text-xs sm:text-sm md:col-span-3">
                 
                 <div class="vintage-box p-2.5 bg-white">
@@ -407,11 +375,9 @@
             </div>
         </div>
 
-        <!-- شبكة عرض المنتجات -->
         <div id="products-grid" class="grid-container grid grid-cols-3 sm:grid-cols-2 lg:grid-cols-4 gap-2 sm:gap-6"></div>
     </main>
 
-    <!-- نافذة تفاصيل المنتج المنبثقة (القياسات، الألوان، الكميات) -->
     <div id="product-modal" class="fixed inset-0 bg-black/70 z-50 flex items-center justify-center p-4 hidden backdrop-blur-xs">
         <div id="modal-container-box" class="vintage-box bg-[#fffdf6] max-w-lg w-full max-h-[90vh] overflow-y-auto p-5 relative mt-6 border-4 border-black shadow-2xl">
             <button onclick="closeProductModal()" class="absolute top-3 right-3 text-sm font-black bg-red-600 text-white px-3 py-1 rounded-full border-2 border-black hover:bg-black cursor-pointer shadow-lg z-10 transition-transform hover:scale-110">✕ إغلاق</button>
@@ -419,7 +385,6 @@
         </div>
     </div>
 
-    <!-- نافذة نجاح الإضافة للسلة -->
     <div id="cart-popup" class="fixed inset-0 bg-black/70 z-50 flex items-center justify-center p-4 hidden backdrop-blur-xs">
         <div id="cart-popup-box" class="vintage-box bg-[#fffdf6] max-w-sm w-full p-6 text-center space-y-4 relative border-4 border-black shadow-2xl">
             <div class="w-16 h-16 bg-green-700 text-white rounded-full flex items-center justify-center text-3xl mx-auto border-3 border-black shadow">✓</div>
@@ -436,7 +401,6 @@
         </div>
     </div>
 
-    <!-- سلة المشتريات المنزلقة وواجهة إتمام الشراء الـ Checkout -->
     <div id="cart-drawer" class="fixed inset-y-0 left-0 w-80 sm:w-[420px] bg-[#fffdf6] border-r-4 border-[#111111] shadow-2xl z-50 transform -translate-x-full flex flex-col p-5">
         <div class="flex justify-between items-center border-b-4 border-[#111111] pb-3 mb-2">
             <h2 class="font-black text-xl flex items-center gap-2">🛒 <span>سلة الشراء وإتمام الطلب</span></h2>
@@ -444,10 +408,8 @@
         </div>
 
         <div class="flex-1 overflow-y-auto space-y-4 pr-1">
-            <!-- قائمة المنتجات داخل السلة -->
             <div id="cart-items" class="space-y-3 pb-2 border-b-4 border-black"></div>
 
-            <!-- تفاصيل الحسابات وتكلفة التوصيل -->
             <div class="bg-[#fcf6e6] p-3 rounded-xl border-3 border-black space-y-2 text-xs font-black">
                 <div class="flex justify-between">
                     <span>إجمالي المنتجات:</span>
@@ -463,7 +425,6 @@
                 </div>
             </div>
 
-            <!-- استمارة إتمام الطلب (Checkout Form) -->
             <div class="vintage-box p-3.5 space-y-3 bg-white">
                 <h3 class="font-black text-sm text-[#111] border-b-2 border-black pb-1.5">📦 إتمام الطلب (معلومات الزبون)</h3>
                 
@@ -506,13 +467,13 @@
                 </div>
 
                 <div>
-                    <label class="block text-[10px] font-black mb-1">العنوان بالتفصيل (المنطقة، الاقرب نقطة دالة) *</label>
+                    <label class="block text-[10px] font-black mb-1">العنوان بالتفصيل *</label>
                     <input type="text" id="cust-address" placeholder="اسم المنطقة والشارع..." class="vintage-input w-full p-2 text-xs font-bold">
                 </div>
 
                 <div>
                     <label class="block text-[10px] font-black mb-1">الملاحظات (اختياري)</label>
-                    <textarea id="cust-notes" placeholder="أي ملاحظة إضافية..." class="vintage-input w-full p-2 text-xs font-bold h-16"></textarea>
+                    <textarea id="cust-notes" placeholder="أي ملاحظة..." class="vintage-input w-full p-2 text-xs font-bold h-16"></textarea>
                 </div>
 
                 <div class="pt-2 border-t border-black">
@@ -542,7 +503,7 @@
         
         const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
         const TABLE_NAME = 'products JPG';
-        const ORDERS_TABLE = 'store_orders'; // جدول الطلبات السحابي
+        const ORDERS_TABLE = 'store_orders';
 
         let products = [];
         let cart = [];
@@ -572,7 +533,7 @@
                             img = parts[2] || img;
                             vid = (parts[3] || '').trim();
                             colors = (parts[4] || '').trim();
-                            realDesc = parts[5] || '';
+                            realDesc = parts.slice(5).join('|') || '';
                         }
                     } catch(e) {}
 
@@ -620,16 +581,16 @@
 
         async function saveProductToSupabase() {
             const editingId = document.getElementById('editing-product-id').value;
-            const name = document.getElementById('new-name').value;
+            const name = document.getElementById('new-name').value.trim();
             const price = Number(document.getElementById('new-price').value);
             const category = document.getElementById('new-cat').value;
-            const colors = document.getElementById('new-colors').value;
-            const desc = document.getElementById('new-desc').value;
+            const colors = document.getElementById('new-colors').value.trim();
+            const desc = document.getElementById('new-desc').value.trim();
             const imageFile = document.getElementById('image-file').files[0];
             const videoFile = document.getElementById('video-file').files[0];
 
-            if(!name || !price) {
-                alert('يرجى إدخال اسم المنتج والسعر على الأقل!');
+            if(!name || isNaN(price)) {
+                alert('يرجى إدخال اسم المنتج والسعر بشكل صحيح!');
                 return;
             }
 
@@ -654,35 +615,31 @@
                     videoUrl = await convertFileToBase64(videoFile);
                 }
             } catch (err) {
-                alert('خطأ برفع الملفات!');
+                alert('خطأ في معالجة الملفات المرفوعة!');
                 document.getElementById('upload-status').innerText = 'فشل الرفع ❌';
                 return;
             }
 
             const packedDesc = `JFDATA|${category}|${imageUrl}|${videoUrl}|${colors}|${desc}`;
 
-            if(editingId) {
-                const targetId = Number(editingId);
-                const { error } = await supabaseClient
-                    .from(TABLE_NAME)
-                    .update({ name, price, desc: packedDesc })
-                    .eq('id', targetId);
-                
-                if(error) {
-                    alert('فشل التحديث: ' + error.message);
-                } else {
+            try {
+                if(editingId) {
+                    const targetId = Number(editingId);
+                    const { error } = await supabaseClient
+                        .from(TABLE_NAME)
+                        .update({ name, price, desc: packedDesc })
+                        .eq('id', targetId);
+                    
+                    if(error) throw error;
                     alert('تم تحديث المنتج سحابياً بنجاح! ✏️');
                     cancelEdit();
-                }
-            } else {
-                const { error } = await supabaseClient
-                    .from(TABLE_NAME)
-                    .insert([{ name, price, desc: packedDesc }]);
-                
-                if(error) {
-                    alert('فشل النشر: ' + error.message);
                 } else {
-                    alert('تم نشر المنتج في قاعدة البيانات! 🚀');
+                    const { error } = await supabaseClient
+                        .from(TABLE_NAME)
+                        .insert([{ name, price, desc: packedDesc }]);
+                    
+                    if(error) throw error;
+                    alert('تم نشر المنتج في قاعدة البيانات بنجاح! 🚀');
                     document.getElementById('new-name').value = '';
                     document.getElementById('new-price').value = '';
                     document.getElementById('new-colors').value = '';
@@ -690,10 +647,13 @@
                     document.getElementById('image-file').value = '';
                     document.getElementById('video-file').value = '';
                 }
-            }
 
-            document.getElementById('upload-status').innerText = 'تم بنجاح ✅';
-            fetchProductsFromSupabase();
+                document.getElementById('upload-status').innerText = 'تم بنجاح ✅';
+                fetchProductsFromSupabase();
+            } catch (err) {
+                alert('فشل الاتصال بقاعدة البيانات: ' + err.message);
+                document.getElementById('upload-status').innerText = 'فشل الحفظ ❌';
+            }
         }
 
         async function deleteProduct(id) {
@@ -812,8 +772,7 @@
                     </div>
                 `;
             } else {
-                // بقية المنتجات (الألوان التي حددها الأدمن)
-                let colorsArray = product.parsedColors ? product.parsedColors.split(',').map(c => c.trim()).filter(c => c) : ['أسود'];
+                let colorsArray = product.parsedColors ? product.parsedColors.split(',').map(c => c.trim()).filter(c => c) : ['افتراضي'];
                 let colorButtons = colorsArray.map(c => `<button type="button" onclick="selectModalColor(this)" data-color="${c}" class="vintage-box px-3 py-1.5 text-xs font-black bg-white hover:bg-[#f4ebd0] cursor-pointer">${c}</button>`).join('');
                 
                 optionsHtml = `
@@ -854,7 +813,6 @@
 
                 ${optionsHtml}
 
-                <!-- عداد الكمية داخل نافذة المنتج -->
                 <div class="mt-3 space-y-1.5">
                     <label class="block text-xs font-black">الكمية المطلوبة:</label>
                     <div class="flex items-center gap-3">
@@ -918,7 +876,6 @@
                 return;
             }
             if (cat !== 'ملابس رجاليه' && cat !== 'ملابس اطفال' && !selectedModalOption) {
-                // إذا لم يختار، نأخذ أول خيار افتراضياً أو كلمة أساسية
                 selectedModalOption = 'اللون: افتراضي';
             }
 
@@ -928,7 +885,6 @@
                 quantity: selectedModalQty
             });
 
-            // إعادة تعيين المتغيرات
             selectedModalQty = 1;
             selectedModalOption = '';
 
@@ -1029,7 +985,6 @@
             toggleMenu();
         }
 
-        /* فحص إيميل الأدمن وإظهار حقل الباسورد تلقائياً */
         function checkAdminEmailInput() {
             const email = document.getElementById('user-email').value.trim();
             const passContainer = document.getElementById('password-field-container');
@@ -1162,7 +1117,6 @@
             }
         }
 
-        /* نظام إتمام الشراء وتخزين الطلب بالبايز وتجهيز رسالة الواتساب */
         async function checkoutWhatsApp() {
             if(cart.length === 0) {
                 alert('السلة فارغة يا بطل!');
@@ -1187,10 +1141,8 @@
             });
             let finalTotal = subtotal + 6000;
 
-            // تجهيز تفاصيل المنتجات للواتساب وللسحابة
             let itemsSummary = cart.map((item, i) => `${i+1}. ${item.name} (${item.chosenOption}) - الكمية: ${item.quantity} - السعر: ${(Number(item.price)*item.quantity).toLocaleString()} د.ع`).join('\n');
 
-            // حفظ الطلب في جدول Supabase
             try {
                 await supabaseClient.from(ORDERS_TABLE).insert([{
                     customer_name: name,
@@ -1206,7 +1158,6 @@
                 console.log("خطأ بتسجيل الطلب بالسحابة:", e.message);
             }
 
-            // صياغة رسالة الواتساب الاحترافية الموجهة إليك
             let msg = `🛒 *طلب جديد عبر متجر JF Store* 🖤\n\n`;
             msg += `👤 *الاسم:* ${name}\n`;
             msg += `📞 *رقم الهاتف:* ${phone}\n`;
