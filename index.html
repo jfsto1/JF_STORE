@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>JF Store - متجر JF Store </title>
+    <title>JF Store - متجر</title>
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- Supabase JS Client CDN -->
@@ -352,7 +352,8 @@
                     <option value="ملابس اطفال">ملابس اطفال</option>
                 </select>
 
-                <input type="text" id="new-colors" placeholder="الألوان المتوفرة (أبيض, أسود... إلخ)" class="vintage-input p-2.5 font-bold text-xs sm:text-sm md:col-span-3">
+                <!-- حقل الألوان المحددة للأدمن (اتركه فارغاً إذا المنتج بدون ألوان) -->
+                <input type="text" id="new-colors" placeholder="الألوان المتوفرة (اكتبها مفصولة بفواصل مثل: أسود, أبيض) أو اتركه فارغاً..." class="vintage-input p-2.5 font-bold text-xs sm:text-sm md:col-span-3">
                 <input type="text" id="new-desc" placeholder="وصف المنتج..." class="vintage-input p-2.5 font-bold text-xs sm:text-sm md:col-span-3">
                 
                 <div class="vintage-box p-2.5 bg-white">
@@ -772,17 +773,24 @@
                     </div>
                 `;
             } else {
-                let colorsArray = product.parsedColors ? product.parsedColors.split(',').map(c => c.trim()).filter(c => c) : ['افتراضي'];
-                let colorButtons = colorsArray.map(c => `<button type="button" onclick="selectModalColor(this)" data-color="${c}" class="vintage-box px-3 py-1.5 text-xs font-black bg-white hover:bg-[#f4ebd0] cursor-pointer">${c}</button>`).join('');
-                
-                optionsHtml = `
-                    <div class="space-y-1.5">
-                        <label class="block text-xs font-black">اختر اللون أو المتغير:</label>
-                        <div class="flex flex-wrap gap-2" id="modal-colors-group">
-                            ${colorButtons}
+                // قسم الألوان للمنتجات الأخرى (يظهر فقط إذا الأدمن حدد ألوان ولم يتركه فارغاً)
+                let colorsStr = (product.parsedColors || '').trim();
+                if (colorsStr !== '') {
+                    let colorsArray = colorsStr.split(',').map(c => c.trim()).filter(c => c);
+                    let colorButtons = colorsArray.map(c => `<button type="button" onclick="selectModalColor(this)" data-color="${c}" class="vintage-box px-3 py-1.5 text-xs font-black bg-white hover:bg-[#f4ebd0] cursor-pointer">${c}</button>`).join('');
+                    
+                    optionsHtml = `
+                        <div class="space-y-1.5">
+                            <label class="block text-xs font-black">اختر اللون أو المتغير:</label>
+                            <div class="flex flex-wrap gap-2" id="modal-colors-group">
+                                ${colorButtons}
+                            </div>
                         </div>
-                    </div>
-                `;
+                    `;
+                } else {
+                    // إذا ترك الأدمن حقل الألوان فارغاً، لا تظهر خانة الألوان نهائياً للزبون
+                    optionsHtml = '';
+                }
             }
 
             let videoHtml = '';
@@ -875,13 +883,21 @@
                 alert('يرجى اختيار القياس أولاً!');
                 return;
             }
-            if (cat !== 'ملابس رجاليه' && cat !== 'ملابس اطفال' && !selectedModalOption) {
-                selectedModalOption = 'اللون: افتراضي';
+
+            // التحقق من الألوان إذا كانت موجودة بالمنتج
+            const colorsStr = (product.parsedColors || '').trim();
+            if (cat !== 'ملابس رجاليه' && cat !== 'ملابس اطفال' && colorsStr !== '' && !selectedModalOption) {
+                alert('يرجى اختيار اللون أو المتغير أولاً!');
+                return;
+            }
+
+            if (!selectedModalOption) {
+                selectedModalOption = 'بدون خيارات إضافية';
             }
 
             cart.push({
                 ...product,
-                chosenOption: selectedModalOption || 'عام',
+                chosenOption: selectedModalOption,
                 quantity: selectedModalQty
             });
 
