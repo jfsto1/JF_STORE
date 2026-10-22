@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>JF Store - متجر</title>
+    <title>JF Store - متجر </title>
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- Supabase JS Client CDN -->
@@ -54,6 +54,7 @@
             font-weight: 900;
             border-radius: 10px;
             transition: all 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+            cursor: pointer;
         }
 
         .vintage-btn:hover { 
@@ -352,8 +353,25 @@
                     <option value="ملابس اطفال">ملابس اطفال</option>
                 </select>
 
-                <!-- حقل الألوان المحددة للأدمن (اتركه فارغاً إذا المنتج بدون ألوان) -->
-                <input type="text" id="new-colors" placeholder="الألوان المتوفرة (اكتبها مفصولة بفواصل مثل: أسود, أبيض) أو اتركه فارغاً..." class="vintage-input p-2.5 font-bold text-xs sm:text-sm md:col-span-3">
+                <!-- قائمة ألوان منسدلة للأدمن (اختيار متعدد عبر المربعات أو تحديد ألوان) -->
+                <div class="vintage-box p-3 bg-white md:col-span-3">
+                    <label class="block text-xs font-black mb-2">🎨 حدد الألوان المتوفرة (اختر ما تشاء أو اترك الكل فارغاً):</label>
+                    <div class="flex flex-wrap gap-3" id="admin-colors-checkboxes">
+                        <label class="flex items-center gap-1.5 text-xs font-bold cursor-pointer"><input type="checkbox" name="admin-color" value="أسود" class="w-4 h-4 accent-black"> أسود</label>
+                        <label class="flex items-center gap-1.5 text-xs font-bold cursor-pointer"><input type="checkbox" name="admin-color" value="أبيض" class="w-4 h-4 accent-black"> أبيض</label>
+                        <label class="flex items-center gap-1.5 text-xs font-bold cursor-pointer"><input type="checkbox" name="admin-color" value="أحمر" class="w-4 h-4 accent-black"> أحمر</label>
+                        <label class="flex items-center gap-1.5 text-xs font-bold cursor-pointer"><input type="checkbox" name="admin-color" value="أزرق" class="w-4 h-4 accent-black"> أزرق</label>
+                        <label class="flex items-center gap-1.5 text-xs font-bold cursor-pointer"><input type="checkbox" name="admin-color" value="أخضر" class="w-4 h-4 accent-black"> أخضر</label>
+                        <label class="flex items-center gap-1.5 text-xs font-bold cursor-pointer"><input type="checkbox" name="admin-color" value="أصفر" class="w-4 h-4 accent-black"> أصفر</label>
+                        <label class="flex items-center gap-1.5 text-xs font-bold cursor-pointer"><input type="checkbox" name="admin-color" value="وردي" class="w-4 h-4 accent-black"> وردي</label>
+                        <label class="flex items-center gap-1.5 text-xs font-bold cursor-pointer"><input type="checkbox" name="admin-color" value="رمادي" class="w-4 h-4 accent-black"> رمادي</label>
+                        <label class="flex items-center gap-1.5 text-xs font-bold cursor-pointer"><input type="checkbox" name="admin-color" value="بنفسجي" class="w-4 h-4 accent-black"> بنفسجي</label>
+                        <label class="flex items-center gap-1.5 text-xs font-bold cursor-pointer"><input type="checkbox" name="admin-color" value="برتقالي" class="w-4 h-4 accent-black"> برتقالي</label>
+                        <label class="flex items-center gap-1.5 text-xs font-bold cursor-pointer"><input type="checkbox" name="admin-color" value="ذهبي" class="w-4 h-4 accent-black"> ذهبي</label>
+                        <label class="flex items-center gap-1.5 text-xs font-bold cursor-pointer"><input type="checkbox" name="admin-color" value="فضي" class="w-4 h-4 accent-black"> فضي</label>
+                    </div>
+                </div>
+
                 <input type="text" id="new-desc" placeholder="وصف المنتج..." class="vintage-input p-2.5 font-bold text-xs sm:text-sm md:col-span-3">
                 
                 <div class="vintage-box p-2.5 bg-white">
@@ -371,8 +389,8 @@
                 </div>
             </div>
             <div class="flex gap-3 mt-3">
-                <button id="save-btn" onclick="saveProductToSupabase()" class="vintage-btn px-6 py-2.5 text-xs sm:text-sm cursor-pointer">نشر في قاعدة البيانات 🚀</button>
-                <button id="cancel-edit-btn" onclick="cancelEdit()" class="vintage-btn bg-gray-500 text-white px-4 py-2.5 text-xs sm:text-sm cursor-pointer hidden">إلغاء ✕</button>
+                <button type="button" id="save-btn" onclick="saveProductToSupabase()" ontouchend="saveProductToSupabase()" class="vintage-btn px-6 py-2.5 text-xs sm:text-sm w-full sm:w-auto text-center">نشر في قاعدة البيانات 🚀</button>
+                <button type="button" id="cancel-edit-btn" onclick="cancelEdit()" ontouchend="cancelEdit()" class="vintage-btn bg-gray-500 text-white px-4 py-2.5 text-xs sm:text-sm hidden">إلغاء ✕</button>
             </div>
         </div>
 
@@ -392,10 +410,10 @@
             <h3 class="font-black text-xl text-[#111]">تمت الإضافة بنجاح! 🛒</h3>
             <p class="text-xs font-bold text-gray-700">تمت إضافة المنتج إلى سلة المشتريات بنجاح. ماذا تريد أن تفعل الآن؟</p>
             <div class="flex flex-col gap-2.5 pt-2">
-                <button onclick="closeCartPopupAndContinue()" class="vintage-btn py-2.5 text-xs bg-[#f4ebd0] text-[#111] hover:bg-[#e3d5b8] cursor-pointer">
+                <button onclick="closeCartPopupAndContinue()" class="vintage-btn py-2.5 text-xs bg-[#f4ebd0] text-[#111] hover:bg-[#e3d5b8]">
                     متابعة التسوق (رجوع للمسواق) 🛍️
                 </button>
-                <button onclick="openCartFromPopup()" class="vintage-btn py-2.5 text-xs bg-green-700 text-white hover:bg-green-800 cursor-pointer">
+                <button onclick="openCartFromPopup()" class="vintage-btn py-2.5 text-xs bg-green-700 text-white hover:bg-green-800">
                     عرض السلة 🛒
                 </button>
             </div>
@@ -488,7 +506,7 @@
         </div>
 
         <div class="border-t-4 border-[#111111] pt-3 mt-2">
-            <button onclick="checkoutWhatsApp()" class="vintage-btn w-full py-3.5 text-sm bg-green-700 text-white shadow-lg text-center block hover:bg-green-800 cursor-pointer">
+            <button onclick="checkoutWhatsApp()" class="vintage-btn w-full py-3.5 text-sm bg-green-700 text-white shadow-lg text-center block hover:bg-green-800">
                 إتمام الشراء وإرسال الطلب عبر الواتساب 📲
             </button>
         </div>
@@ -585,7 +603,14 @@
             const name = document.getElementById('new-name').value.trim();
             const price = Number(document.getElementById('new-price').value);
             const category = document.getElementById('new-cat').value;
-            const colors = document.getElementById('new-colors').value.trim();
+            
+            // جمع الألوان المحددة من مربعات الاختيار (الآدمن)
+            const selectedColors = [];
+            document.querySelectorAll('input[name="admin-color"]:checked').forEach(cb => {
+                selectedColors.push(cb.value);
+            });
+            const colors = selectedColors.join(', ');
+
             const desc = document.getElementById('new-desc').value.trim();
             const imageFile = document.getElementById('image-file').files[0];
             const videoFile = document.getElementById('video-file').files[0];
@@ -643,7 +668,7 @@
                     alert('تم نشر المنتج في قاعدة البيانات بنجاح! 🚀');
                     document.getElementById('new-name').value = '';
                     document.getElementById('new-price').value = '';
-                    document.getElementById('new-colors').value = '';
+                    document.querySelectorAll('input[name="admin-color"]').forEach(cb => cb.checked = false);
                     document.getElementById('new-desc').value = '';
                     document.getElementById('image-file').value = '';
                     document.getElementById('video-file').value = '';
@@ -678,7 +703,13 @@
             document.getElementById('new-name').value = prod.name;
             document.getElementById('new-price').value = prod.price;
             document.getElementById('new-cat').value = prod.parsedCategory || 'منوعات';
-            document.getElementById('new-colors').value = prod.parsedColors || '';
+            
+            // تحديد الألوان في مربعات الاختيار للأدمن
+            const prodColors = prod.parsedColors ? prod.parsedColors.split(',').map(c => c.trim()) : [];
+            document.querySelectorAll('input[name="admin-color"]').forEach(cb => {
+                cb.checked = prodColors.includes(cb.value);
+            });
+
             document.getElementById('new-desc').value = prod.cleanDesc || '';
 
             document.getElementById('admin-panel-title').innerHTML = `<span>👑</span> تعديل المنتج سحابياً: ${prod.name}`;
@@ -692,7 +723,7 @@
             document.getElementById('editing-product-id').value = '';
             document.getElementById('new-name').value = '';
             document.getElementById('new-price').value = '';
-            document.getElementById('new-colors').value = '';
+            document.querySelectorAll('input[name="admin-color"]').forEach(cb => cb.checked = false);
             document.getElementById('new-desc').value = '';
             document.getElementById('image-file').value = '';
             document.getElementById('video-file').value = '';
@@ -773,7 +804,6 @@
                     </div>
                 `;
             } else {
-                // قسم الألوان للمنتجات الأخرى (يظهر فقط إذا الأدمن حدد ألوان ولم يتركه فارغاً)
                 let colorsStr = (product.parsedColors || '').trim();
                 if (colorsStr !== '') {
                     let colorsArray = colorsStr.split(',').map(c => c.trim()).filter(c => c);
@@ -781,14 +811,13 @@
                     
                     optionsHtml = `
                         <div class="space-y-1.5">
-                            <label class="block text-xs font-black">اختر اللون أو المتغير:</label>
+                            <label class="block text-xs font-black">اختر اللون:</label>
                             <div class="flex flex-wrap gap-2" id="modal-colors-group">
                                 ${colorButtons}
                             </div>
                         </div>
                     `;
                 } else {
-                    // إذا ترك الأدمن حقل الألوان فارغاً، لا تظهر خانة الألوان نهائياً للزبون
                     optionsHtml = '';
                 }
             }
@@ -884,10 +913,9 @@
                 return;
             }
 
-            // التحقق من الألوان إذا كانت موجودة بالمنتج
             const colorsStr = (product.parsedColors || '').trim();
             if (cat !== 'ملابس رجاليه' && cat !== 'ملابس اطفال' && colorsStr !== '' && !selectedModalOption) {
-                alert('يرجى اختيار اللون أو المتغير أولاً!');
+                alert('يرجى اختيار اللون أولاً!');
                 return;
             }
 
