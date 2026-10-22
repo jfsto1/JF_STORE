@@ -355,7 +355,7 @@
 
                 <!-- مربعات تحديد الألوان للأدمن -->
                 <div class="vintage-box p-3 bg-white md:col-span-3">
-                    <label class="block text-xs font-black mb-2">🎨 حدد الألوان المتوفرة (اختر ما تشاء أو اترك الكل فارغاً):</label>
+                    <label class="block text-xs font-black mb-2">🎨 حدد الألوان المتوفرة (تعمل لكل المنتجات بما فيها الملابس):</label>
                     <div class="flex flex-wrap gap-3" id="admin-colors-checkboxes">
                         <label class="flex items-center gap-1.5 text-xs font-bold cursor-pointer"><input type="checkbox" name="admin-color" value="أسود" class="w-4 h-4 accent-black"> أسود</label>
                         <label class="flex items-center gap-1.5 text-xs font-bold cursor-pointer"><input type="checkbox" name="admin-color" value="أبيض" class="w-4 h-4 accent-black"> أبيض</label>
@@ -604,7 +604,6 @@
             const price = Number(document.getElementById('new-price').value);
             const category = document.getElementById('new-cat').value;
             
-            // جمع الألوان المحددة من مربعات الاختيار
             const selectedColors = [];
             document.querySelectorAll('input[name="admin-color"]:checked').forEach(cb => {
                 selectedColors.push(cb.value);
@@ -776,8 +775,9 @@
             let optionsHtml = '';
             const cat = (product.parsedCategory || '').trim();
 
+            // 1. خيارات القياسات حسب الصنف
             if (cat === 'ملابس رجاليه') {
-                optionsHtml = `
+                optionsHtml += `
                     <div class="space-y-1.5">
                         <label class="block text-xs font-black">القياسات المتوفرة:</label>
                         <div class="flex flex-wrap gap-2" id="modal-sizes-group">
@@ -790,7 +790,7 @@
                     </div>
                 `;
             } else if (cat === 'ملابس اطفال') {
-                optionsHtml = `
+                optionsHtml += `
                     <div class="space-y-1.5">
                         <label class="block text-xs font-black">قياسات الأعمار المتوفرة:</label>
                         <div class="flex flex-col gap-2" id="modal-sizes-group">
@@ -802,23 +802,22 @@
                         </div>
                     </div>
                 `;
-            } else {
-                let colorsStr = (product.parsedColors || '').trim();
-                if (colorsStr !== '') {
-                    let colorsArray = colorsStr.split(',').map(c => c.trim()).filter(c => c);
-                    let colorButtons = colorsArray.map(c => `<button type="button" onclick="selectModalColor(this)" data-color="${c}" class="vintage-box px-3 py-1.5 text-xs font-black bg-white hover:bg-[#f4ebd0] cursor-pointer">${c}</button>`).join('');
-                    
-                    optionsHtml = `
-                        <div class="space-y-1.5">
-                            <label class="block text-xs font-black">اختر اللون:</label>
-                            <div class="flex flex-wrap gap-2" id="modal-colors-group">
-                                ${colorButtons}
-                            </div>
+            }
+
+            // 2. خيارات الألوان (تظهر تلقائياً إذا حددها الأدمن بغض النظر عن القسم)
+            let colorsStr = (product.parsedColors || '').trim();
+            if (colorsStr !== '') {
+                let colorsArray = colorsStr.split(',').map(c => c.trim()).filter(c => c);
+                let colorButtons = colorsArray.map(c => `<button type="button" onclick="selectModalColor(this)" data-color="${c}" class="vintage-box px-3 py-1.5 text-xs font-black bg-white hover:bg-[#f4ebd0] cursor-pointer">${c}</button>`).join('');
+                
+                optionsHtml += `
+                    <div class="space-y-1.5 mt-2">
+                        <label class="block text-xs font-black">اختر اللون:</label>
+                        <div class="flex flex-wrap gap-2" id="modal-colors-group">
+                            ${colorButtons}
                         </div>
-                    `;
-                } else {
-                    optionsHtml = '';
-                }
+                    </div>
+                `;
             }
 
             let videoHtml = '';
@@ -874,7 +873,8 @@
         }
 
         let selectedModalQty = 1;
-        let selectedModalOption = '';
+        let selectedModalSizeOption = '';
+        let selectedModalColorOption = '';
 
         function selectModalSize(btn) {
             document.querySelectorAll('#modal-sizes-group button').forEach(b => {
@@ -883,7 +883,7 @@
             });
             btn.style.backgroundColor = '#111';
             btn.style.color = '#f4ebd0';
-            selectedModalOption = 'القياس: ' + btn.getAttribute('data-size');
+            selectedModalSizeOption = 'القياس: ' + btn.getAttribute('data-size');
         }
 
         function selectModalColor(btn) {
@@ -893,7 +893,7 @@
             });
             btn.style.backgroundColor = '#111';
             btn.style.color = '#f4ebd0';
-            selectedModalOption = 'اللون: ' + btn.getAttribute('data-color');
+            selectedModalColorOption = 'اللون: ' + btn.getAttribute('data-color');
         }
 
         function changeModalQty(amt) {
@@ -907,29 +907,36 @@
             if(!product) return;
 
             const cat = (product.parsedCategory || '').trim();
-            if ((cat === 'ملابس رجاليه' || cat === 'ملابس اطفال') && !selectedModalOption) {
-                alert('يرجى اختيار القياس أولاً!');
-                return;
+            let finalOptionParts = [];
+
+            if ((cat === 'ملابس رجاليه' || cat === 'ملابس اطفال')) {
+                if (!selectedModalSizeOption) {
+                    alert('يرجى اختيار القياس أولاً!');
+                    return;
+                }
+                finalOptionParts.push(selectedModalSizeOption);
             }
 
             const colorsStr = (product.parsedColors || '').trim();
-            if (cat !== 'ملابس رجاليه' && cat !== 'ملابس اطفال' && colorsStr !== '' && !selectedModalOption) {
-                alert('يرجى اختيار اللون أولاً!');
-                return;
+            if (colorsStr !== '') {
+                if (!selectedModalColorOption) {
+                    alert('يرجى اختيار اللون أولاً!');
+                    return;
+                }
+                finalOptionParts.push(selectedModalColorOption);
             }
 
-            if (!selectedModalOption) {
-                selectedModalOption = 'بدون خيارات إضافية';
-            }
+            let finalOptionString = finalOptionParts.length > 0 ? finalOptionParts.join(' - ') : 'بدون خيارات إضافية';
 
             cart.push({
                 ...product,
-                chosenOption: selectedModalOption,
+                chosenOption: finalOptionString,
                 quantity: selectedModalQty
             });
 
             selectedModalQty = 1;
-            selectedModalOption = '';
+            selectedModalSizeOption = '';
+            selectedModalColorOption = '';
 
             closeProductModal();
             updateCartUI();
@@ -945,7 +952,8 @@
         function closeProductModal() {
             document.getElementById('product-modal').classList.add('hidden');
             selectedModalQty = 1;
-            selectedModalOption = '';
+            selectedModalSizeOption = '';
+            selectedModalColorOption = '';
         }
 
         function toggleMenu() { document.getElementById('side-menu').classList.toggle('translate-x-full'); }
