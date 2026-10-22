@@ -436,11 +436,11 @@
                 </div>
                 <div class="flex justify-between items-center">
                     <span>سعر التوصيل:</span>
-                    <span class="text-green-900">6,000 د.ع</span>
+                    <span class="text-green-900">5,000 د.ع</span>
                 </div>
                 <div class="flex justify-between text-sm pt-2 border-t-2 border-black font-black">
                     <span>التكلفة النهائية:</span>
-                    <span id="cart-total" class="text-red-700">6,000 د.ع</span>
+                    <span id="cart-total" class="text-red-700">5,000 د.ع</span>
                 </div>
             </div>
 
@@ -775,7 +775,6 @@
             let optionsHtml = '';
             const cat = (product.parsedCategory || '').trim();
 
-            // 1. خيارات القياسات حسب الصنف
             if (cat === 'ملابس رجاليه') {
                 optionsHtml += `
                     <div class="space-y-1.5">
@@ -804,7 +803,6 @@
                 `;
             }
 
-            // 2. خيارات الألوان (تظهر تلقائياً إذا حددها الأدمن بغض النظر عن القسم)
             let colorsStr = (product.parsedColors || '').trim();
             if (colorsStr !== '') {
                 let colorsArray = colorsStr.split(',').map(c => c.trim()).filter(c => c);
@@ -1010,7 +1008,7 @@
             });
 
             document.getElementById('cart-subtotal').innerText = subtotal.toLocaleString() + ' د.ع';
-            let finalTotal = cart.length > 0 ? subtotal + 6000 : 0;
+            let finalTotal = cart.length > 0 ? subtotal + 5000 : 0;
             document.getElementById('cart-total').innerText = finalTotal.toLocaleString() + ' د.ع';
         }
 
@@ -1190,7 +1188,7 @@
             cart.forEach(item => {
                 subtotal += Number(item.price) * item.quantity;
             });
-            let finalTotal = subtotal + 6000;
+            let finalTotal = subtotal + 5000;
 
             let itemsSummary = cart.map((item, i) => `${i+1}. ${item.name} (${item.chosenOption}) - الكمية: ${item.quantity} - السعر: ${(Number(item.price)*item.quantity).toLocaleString()} د.ع`).join('\n');
 
