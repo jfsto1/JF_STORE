@@ -254,7 +254,7 @@
                     <p>• Taobao (تاوباو)</p>
                     <p>• 1688 (1688)</p>
                     <p>• Alibaba (علي بابا)</p>
-                    <p>• Goofish (غوفيش)</p>
+                    <p>• Goodfish (غودفيش)</p>
                     <p>• Newegg (نيويغ)</p>
                     <p>• DHgate (دي إتش غيت)</p>
                     <p>• Banggood (بانغود)</p>
@@ -275,7 +275,7 @@
         
         <div id="ads-banner" class="rubber-banner-frame mb-6 p-4 relative overflow-visible flex items-center justify-center text-center hidden">
             <div class="absolute -top-4 right-6 bg-[#111111] text-[#f4ebd0] text-[11px] sm:text-xs font-black px-3 py-1 rounded-full border-2 border-[#fffdf6] shadow-md tracking-wider">
-                ✨ إعلان كلاسيكي خاص ✨
+                ✨ إعلانات ✨
             </div>
             
             <div class="absolute -bottom-2 -left-2 z-10 pointer-events-none hidden sm:block">
@@ -543,7 +543,6 @@
         const ADMIN_EMAIL = "mrskull33442@gmail.com";
         const ADMIN_PASS = "aloxgame4";
 
-        // رفع الملفات مباشرة لمخزن products-images بـ Supabase
         async function uploadFileToStorage(file) {
             try {
                 const fileExt = file.name.split('.').pop();
@@ -828,6 +827,14 @@
             };
         }
 
+        function openProductModalFromCart(id) {
+            const drawer = document.getElementById('cart-drawer');
+            if (!drawer.classList.contains('-translate-x-full')) {
+                toggleCart();
+            }
+            openProductModal(id);
+        }
+
         function openProductModal(id) {
             const product = products.find(p => p.id == id);
             if(!product) return;
@@ -1065,13 +1072,13 @@
                 let itemTotal = Number(item.price) * item.quantity;
                 subtotal += itemTotal;
                 container.innerHTML += `
-                    <div class="vintage-box p-2.5 bg-white space-y-1">
+                    <div class="vintage-box p-2.5 bg-white space-y-1 cursor-pointer hover:bg-[#fcf6e6] transition-colors" onclick="openProductModalFromCart(${item.id})">
                         <div class="flex justify-between items-start">
                             <div>
-                                <p class="font-black text-xs text-[#111]">${item.name}</p>
+                                <p class="font-black text-xs text-[#111] hover:underline">${item.name} 🔍</p>
                                 <p class="text-[10px] font-bold text-gray-600">${item.chosenOption}</p>
                             </div>
-                            <button onclick="removeFromCart(${index})" class="text-red-600 font-black text-[10px] underline cursor-pointer">حذف</button>
+                            <button onclick="event.stopPropagation(); removeFromCart(${index})" class="text-red-600 font-black text-[10px] underline cursor-pointer hover:scale-110">حذف ✕</button>
                         </div>
                         <div class="flex justify-between items-center text-xs font-black pt-1 border-t border-dashed border-black">
                             <span>الكمية: ${item.quantity}</span>
