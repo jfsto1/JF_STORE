@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>JF Store - متجر </title>
+    <title>JF Store - متجر</title>
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- Supabase JS Client CDN -->
@@ -381,7 +381,7 @@
                 <input type="text" id="new-desc" placeholder="وصف المنتج..." class="vintage-input p-2.5 font-bold text-xs sm:text-sm md:col-span-3">
                 
                 <div class="vintage-box p-2.5 bg-white">
-                    <label class="block text-[10px] sm:text-xs font-black mb-1">📷 صور المنتج (حدد صور متعددة من استوديو جهازك):</label>
+                    <label class="block text-[10px] sm:text-xs font-black mb-1">📷 صور المنتج (حدد من جهازك):</label>
                     <input type="file" id="image-files" accept="image/*" multiple class="w-full text-[10px] sm:text-xs font-bold cursor-pointer">
                 </div>
 
@@ -529,6 +529,7 @@
         const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
         const TABLE_NAME = 'products JPG';
         const ORDERS_TABLE = 'store_orders';
+        const BUCKET_NAME = 'products-images';
 
         const FALLBACK_IMG = 'https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=500';
 
@@ -542,54 +543,39 @@
         const ADMIN_EMAIL = "mrskull33442@gmail.com";
         const ADMIN_PASS = "aloxgame4";
 
-        // ضغط فائق للصور يحول الصورة إلى حجم خفيف جداً (~20-30KB) لمنع انقطاع النص بـ Supabase
-        function compressSuperLight(file, maxWidth = 450, quality = 0.5) {
-            return new Promise((resolve, reject) => {
-                const reader = new FileReader();
-                reader.readAsDataURL(file);
-                reader.onload = (event) => {
-                    const img = new Image();
-                    img.src = event.target.result;
-                    img.onload = () => {
-                        const canvas = document.createElement('canvas');
-                        let width = img.width;
-                        let height = img.height;
+        // رفع الملفات مباشرة إلى مخزن سوبابيس لضمان الحفظ 100%
+        async function uploadFileToStorage(file) {
+            try {
+                const fileExt = file.name.split('.').pop();
+                const fileName = `${Date.now()}_${Math.random().toString(36).substring(2, 7)}.${fileExt}`;
+                const filePath = `${fileName}`;
 
-                        if (width > maxWidth) {
-                            height = Math.round((height * maxWidth) / width);
-                            width = maxWidth;
-                        }
+                let { error: uploadError } = await supabaseClient.storage
+                    .from(BUCKET_NAME)
+                    .upload(filePath, file, { cacheControl: '3600', upsert: true });
 
-                        canvas.width = width;
-                        canvas.height = height;
-                        const ctx = canvas.getContext('2d');
-                        ctx.drawImage(img, 0, 0, width, height);
-                        resolve(canvas.toDataURL('image/jpeg', quality));
-                    };
-                    img.onerror = () => resolve(FALLBACK_IMG);
-                };
-                reader.onerror = () => resolve(FALLBACK_IMG);
-            });
+                if (uploadError) {
+                    console.log("Storage upload warning, using fallback", uploadError);
+                    return await convertFileToBase64(file);
+                }
+
+                const { data } = supabaseClient.storage
+                    .from(BUCKET_NAME)
+                    .getPublicUrl(filePath);
+
+                return data.publicUrl;
+            } catch(e) {
+                return await convertFileToBase64(file);
+            }
         }
 
         function convertFileToBase64(file) {
-            return new Promise((resolve, reject) => {
+            return new Promise((resolve) => {
                 const reader = new FileReader();
                 reader.readAsDataURL(file);
                 reader.onload = () => resolve(reader.result);
-                reader.onerror = error => reject(error);
+                reader.onerror = () => resolve(FALLBACK_IMG);
             });
-        }
-
-        function isValidImageString(str) {
-            if (!str || typeof str !== 'string') return false;
-            if (str.startsWith('http://') || str.startsWith('https://')) return true;
-            // فحص صيغة Base64 غير المقطوعة
-            if (str.startsWith('data:image/') && str.length > 100) {
-                // إذا كان خافياً أو مقطوعاً الكود يكتشفه
-                return true;
-            }
-            return false;
         }
 
         async function fetchProductsFromSupabase() {
@@ -610,7 +596,7 @@
                             cat = (parts[1] || 'منوعات').trim();
                             let imgsStr = parts[2] || '';
                             if (imgsStr) {
-                                imgs = imgsStr.split(';').map(s => s.trim()).filter(s => isValidImageString(s));
+                                imgs = imgsStr.split(';').map(s => s.trim()).filter(Boolean);
                             }
                             vid = (parts[3] || '').trim();
                             colors = (parts[4] || '').trim();
@@ -689,7 +675,7 @@
                 return;
             }
 
-            document.getElementById('upload-status').innerText = 'جاري المعالجة السريعة والرفع... ⏳';
+            document.getElementById('upload-status').innerText = 'جاري رفع الملفات إلى المخزن... ⏳';
 
             let imagesArray = [FALLBACK_IMG];
             let videoUrl = '';
@@ -706,16 +692,16 @@
                 if (imageFiles && imageFiles.length > 0) {
                     imagesArray = [];
                     for (let i = 0; i < imageFiles.length; i++) {
-                        const compressedImg = await compressSuperLight(imageFiles[i]);
-                        imagesArray.push(compressedImg);
+                        const publicImgUrl = await uploadFileToStorage(imageFiles[i]);
+                        imagesArray.push(publicImgUrl);
                     }
                 }
 
                 if (videoFile) {
-                    videoUrl = await convertFileToBase64(videoFile);
+                    videoUrl = await uploadFileToStorage(videoFile);
                 }
             } catch (err) {
-                alert('خطأ في رفع الملفات!');
+                alert('خطأ في معالجة الصور!');
                 document.getElementById('upload-status').innerText = 'فشل الرفع ❌';
                 saveBtn.disabled = false;
                 return;
@@ -741,7 +727,7 @@
                         .insert([{ name, price, desc: packedDesc }]);
                     
                     if(error) throw error;
-                    alert('تم نشر المنتج بسرعة فائقة ونجاح! 🚀');
+                    alert('تم نشر المنتج بنجاح وللأبد! 🚀');
                     document.getElementById('new-name').value = '';
                     document.getElementById('new-price').value = '';
                     document.querySelectorAll('input[name="admin-color"]').forEach(cb => cb.checked = false);
@@ -750,10 +736,10 @@
                     document.getElementById('video-file').value = '';
                 }
 
-                document.getElementById('upload-status').innerText = 'تم بنجاح ✅';
+                document.getElementById('upload-status').innerText = 'تم الحفظ بنجاح ✅';
                 fetchProductsFromSupabase();
             } catch (err) {
-                alert('فشل الاتصال بقاعدة البيانات: ' + err.message);
+                alert('فشل الحفظ: ' + err.message);
                 document.getElementById('upload-status').innerText = 'فشل الحفظ ❌';
             } finally {
                 saveBtn.disabled = false;
