@@ -381,7 +381,7 @@
                 <input type="text" id="new-desc" placeholder="وصف المنتج..." class="vintage-input p-2.5 font-bold text-xs sm:text-sm md:col-span-3">
                 
                 <div class="vintage-box p-2.5 bg-white">
-                    <label class="block text-[10px] sm:text-xs font-black mb-1">📷 صور المنتج (حدد من جهازك):</label>
+                    <label class="block text-[10px] sm:text-xs font-black mb-1">📷 صور المنتج (حدد من استوديو جهازك):</label>
                     <input type="file" id="image-files" accept="image/*" multiple class="w-full text-[10px] sm:text-xs font-bold cursor-pointer">
                 </div>
 
@@ -543,7 +543,7 @@
         const ADMIN_EMAIL = "mrskull33442@gmail.com";
         const ADMIN_PASS = "aloxgame4";
 
-        // رفع الملفات مباشرة إلى مخزن سوبابيس لضمان الحفظ 100%
+        // رفع الملفات مباشرة لمخزن products-images بـ Supabase
         async function uploadFileToStorage(file) {
             try {
                 const fileExt = file.name.split('.').pop();
@@ -555,7 +555,7 @@
                     .upload(filePath, file, { cacheControl: '3600', upsert: true });
 
                 if (uploadError) {
-                    console.log("Storage upload warning, using fallback", uploadError);
+                    console.log("Storage upload error:", uploadError);
                     return await convertFileToBase64(file);
                 }
 
@@ -675,7 +675,7 @@
                 return;
             }
 
-            document.getElementById('upload-status').innerText = 'جاري رفع الملفات إلى المخزن... ⏳';
+            document.getElementById('upload-status').innerText = 'جاري رفع الملفات للسحابة... ⏳';
 
             let imagesArray = [FALLBACK_IMG];
             let videoUrl = '';
