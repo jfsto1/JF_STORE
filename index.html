@@ -254,7 +254,7 @@
                     <p>• Taobao (تاوباو)</p>
                     <p>• 1688 (1688)</p>
                     <p>• Alibaba (علي بابا)</p>
-                    <p>• Goodfish (غودفيش)</p>
+                    <p>• Goofish (غوفيش)</p>
                     <p>• Newegg (نيويغ)</p>
                     <p>• DHgate (دي إتش غيت)</p>
                     <p>• Banggood (بانغود)</p>
@@ -275,7 +275,7 @@
         
         <div id="ads-banner" class="rubber-banner-frame mb-6 p-4 relative overflow-visible flex items-center justify-center text-center hidden">
             <div class="absolute -top-4 right-6 bg-[#111111] text-[#f4ebd0] text-[11px] sm:text-xs font-black px-3 py-1 rounded-full border-2 border-[#fffdf6] shadow-md tracking-wider">
-                ✨ إعلانات ✨
+                ✨ الإعلانات ✨
             </div>
             
             <div class="absolute -bottom-2 -left-2 z-10 pointer-events-none hidden sm:block">
@@ -519,7 +519,7 @@
     </div>
 
     <footer class="bg-[#111111] text-[#f4ebd0] text-center py-6 mt-auto font-black text-sm border-t-4 border-[#111111]">
-        جميع الحقوق محفوظة © 2026 - JF Store (ميسان - العراق) 🖤
+        جميع الحقوق محفوظة © 2026 - JF Store (العراق) 🖤
     </footer>
 
     <script>
@@ -835,6 +835,25 @@
             openProductModal(id);
         }
 
+        function toggleModalDesc() {
+            const descBox = document.getElementById('modal-desc-box');
+            const toggleText = document.getElementById('desc-toggle-text');
+            const toggleIcon = document.getElementById('desc-toggle-icon');
+            if (!descBox) return;
+
+            if (descBox.classList.contains('max-h-12')) {
+                descBox.classList.remove('max-h-12');
+                descBox.classList.add('max-h-[1000px]');
+                if (toggleText) toggleText.innerText = 'عرض أقل';
+                if (toggleIcon) toggleIcon.innerText = '▲';
+            } else {
+                descBox.classList.remove('max-h-[1000px]');
+                descBox.classList.add('max-h-12');
+                if (toggleText) toggleText.innerText = 'عرض المزيد';
+                if (toggleIcon) toggleIcon.innerText = '▼';
+            }
+        }
+
         function openProductModal(id) {
             const product = products.find(p => p.id == id);
             if(!product) return;
@@ -910,6 +929,17 @@
                 galleryHtml = `<div class="flex gap-2 mt-2 overflow-x-auto pb-1">${thumbs}</div>`;
             }
 
+            let cleanDescText = product.cleanDesc || 'لا يوجد وصف مضاف لهذا المنتج.';
+            let descToggleBtnHtml = '';
+            if (cleanDescText.length > 70) {
+                descToggleBtnHtml = `
+                    <button type="button" onclick="toggleModalDesc()" class="mt-1.5 text-xs font-black text-black underline flex items-center gap-1 hover:text-gray-700 cursor-pointer">
+                        <span id="desc-toggle-text">عرض المزيد</span>
+                        <span id="desc-toggle-icon">▼</span>
+                    </button>
+                `;
+            }
+
             content.innerHTML = `
                 <div class="relative">
                     <img id="modal-main-img" src="${allImgs[0]}" onerror="this.onerror=null; this.src='${FALLBACK_IMG}';" alt="${product.name}" class="w-full h-60 object-cover rounded-xl border-3 border-black shadow mb-2">
@@ -922,7 +952,10 @@
                 
                 <div class="mt-2 p-3 bg-white border-2 border-black rounded-xl text-xs font-bold text-gray-800 leading-relaxed">
                     <h4 class="font-black text-sm mb-1 underline">وصف ومواصفات المنتج:</h4>
-                    ${product.cleanDesc || 'لا يوجد وصف مضاف لهذا المنتج.'}
+                    <div id="modal-desc-box" class="max-h-12 overflow-hidden transition-all duration-300">
+                        ${cleanDescText}
+                    </div>
+                    ${descToggleBtnHtml}
                 </div>
 
                 ${optionsHtml}
