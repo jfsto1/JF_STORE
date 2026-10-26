@@ -96,23 +96,23 @@
 
         /* حركات اللودر الكلاسيكي الفخم - طيران ورفرفة وإضاءة الحروف */
         @keyframes cartFloating {
-            0%, 100% { transform: translateY(0px) rotate(0deg); }
-            50% { transform: translateY(-10px) rotate(-2deg); }
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-8px); }
         }
 
         @keyframes wingFlapping {
-            0%, 100% { transform: rotate(0deg) scale(1, 1); }
-            50% { transform: rotate(-24deg) scale(0.9, 1.15); }
+            0%, 100% { transform: rotate(0deg); }
+            50% { transform: rotate(-24deg); }
         }
 
         @keyframes neonLetterGlow {
             0%, 100% { 
-                fill: #111111; 
-                filter: drop-shadow(0 0 1px rgba(0,0,0,0.5));
+                color: #111111; 
+                text-shadow: 0 0 1px rgba(0,0,0,0.2);
             }
             50% { 
-                fill: #222222; 
-                filter: drop-shadow(0 0 6px rgba(212, 163, 115, 0.95)) drop-shadow(0 0 12px rgba(255, 215, 0, 0.7));
+                color: #1a1a1a; 
+                text-shadow: 0 0 8px rgba(212, 163, 115, 0.95), 0 0 16px rgba(255, 215, 0, 0.7);
             }
         }
 
@@ -123,12 +123,11 @@
 
         .jf-floating-cart {
             animation: cartFloating 2.4s ease-in-out infinite;
-            transform-origin: center center;
         }
 
         .jf-animated-wing {
             animation: wingFlapping 0.65s ease-in-out infinite;
-            transform-origin: 80px 75px;
+            transform-origin: 48px 75px;
         }
 
         .jf-glowing-text {
@@ -137,7 +136,6 @@
 
         .jf-speed-sparks {
             animation: speedPulse 1.1s ease-in-out infinite;
-            transform-origin: 380px 45px;
         }
 
         @keyframes menuPop {
@@ -257,7 +255,7 @@
 
     <div id="side-menu" class="fixed inset-y-0 right-0 w-80 bg-[#fffdf6] border-l-4 border-[#111111] shadow-2xl z-50 transform translate-x-full flex flex-col">
         <div class="p-4 bg-[#111111] text-[#f4ebd0] flex justify-between items-center border-b-4 border-[#111111]">
-            <h2 class="text-xl font-black">قائمة JF Store الكلاسيكية</h2>
+            <h2 class="text-xl font-black">قائمة JF Store </h2>
             <button onclick="toggleMenu()" class="text-2xl font-black hover:text-red-400 cursor-pointer">✕</button>
         </div>
 
@@ -328,7 +326,7 @@
         
         <div id="ads-banner" class="rubber-banner-frame mb-6 p-4 relative overflow-visible flex items-center justify-center text-center hidden">
             <div class="absolute -top-4 right-6 bg-[#111111] text-[#f4ebd0] text-[11px] sm:text-xs font-black px-3 py-1 rounded-full border-2 border-[#fffdf6] shadow-md tracking-wider">
-                ✨ إعلانات ✨
+                ✨ إعلان كلاسيكي خاص ✨
             </div>
             
             <div class="absolute -bottom-2 -left-2 z-10 pointer-events-none hidden sm:block">
@@ -356,21 +354,17 @@
                     <span id="cat-arrow" class="text-xs transition-transform">▼</span>
                 </button>
 
-                <!-- قائمة الأصناف مع دوائر الأعداد الذكية -->
-                <div id="custom-cat-dropdown" class="hidden absolute right-0 top-full mt-2 w-full bg-[#fffdf6] border-4 border-[#111111] shadow-[6px_6px_0px_#111111] rounded-xl z-50 max-h-72 overflow-y-auto p-2 space-y-1 custom-menu-anim">
-                    <!-- سيتم توليد العناصر برمجياً بداخلها دوائر الأعداد -->
-                </div>
+                <div id="custom-cat-dropdown" class="hidden absolute right-0 top-full mt-2 w-full bg-[#fffdf6] border-4 border-[#111111] shadow-[6px_6px_0px_#111111] rounded-xl z-50 max-h-72 overflow-y-auto p-2 space-y-1 custom-menu-anim"></div>
             </div>
         </div>
 
-        <!-- لوحة تحكم الأدمن مضاف لها عدادات الزوار المباشرة والكلية -->
+        <!-- لوحة تحكم الأدمن مع عداد الزوار المزدوج المباشر -->
         <div id="admin-panel" class="vintage-box p-4 mb-6 hidden bg-[#fff3d6]">
             <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 border-b-2 border-black pb-3 mb-4">
                 <h3 id="admin-panel-title" class="font-black text-base sm:text-xl text-[#111] flex items-center gap-2">
                     <span>👑</span> لوحة تحكم الأدمن (نشر وحذف وتعديل فوري 🚀)
                 </h3>
 
-                <!-- كروت إحصائيات الزوار للآدمن -->
                 <div class="flex items-center gap-2 sm:gap-3 w-full sm:w-auto">
                     <div class="vintage-box px-3 py-1.5 bg-green-100 flex items-center gap-2 border-2 border-green-800 flex-1 sm:flex-initial">
                         <span class="w-3 h-3 rounded-full bg-green-600 animate-ping"></span>
@@ -456,46 +450,56 @@
             </div>
         </div>
 
-        <!-- لودر JF الكلاسيكي الفخم بدقة عالية وأجنحة ترفرف وحروف تضوي -->
+        <!-- لودر JF الكلاسيكي الجديد بتصميم فليكس منفصل ومستحيل يتداخل نهائياً -->
         <div id="jf-main-loader" class="col-span-full py-16 flex flex-col items-center justify-center text-center">
-            <div class="vintage-box p-8 bg-[#fffdf6] max-w-sm sm:max-w-md w-full flex flex-col items-center justify-center border-4 border-black shadow-[8px_8px_0px_#111]">
-                <div class="relative w-72 sm:w-80 h-36 flex items-center justify-center jf-floating-cart">
-                    <svg viewBox="0 0 450 200" class="w-full h-full filter drop-shadow-[3px_3px_0px_rgba(0,0,0,1)]" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        
-                        <!-- مجموعة الجناح الكلاسيكي المرفرف -->
-                        <g class="jf-animated-wing">
-                            <path d="M78 80 C40 60, 15 80, 20 95 C45 95, 65 88, 76 84" stroke="#111" stroke-width="8" stroke-linecap="round" fill="#fffdf6"/>
-                            <path d="M76 96 C30 90, 25 118, 38 128 C58 128, 70 112, 78 104" stroke="#111" stroke-width="8" stroke-linecap="round" fill="#fffdf6"/>
-                            <path d="M76 110 C45 116, 42 138, 58 144 C72 142, 78 128, 80 118" stroke="#111" stroke-width="7" stroke-linecap="round" fill="#fffdf6"/>
-                        </g>
+            <div class="vintage-box p-6 sm:p-8 bg-[#fffdf6] max-w-sm sm:max-w-md w-full flex flex-col items-center justify-center border-4 border-black shadow-[8px_8px_0px_#111]">
+                
+                <!-- حاوية الشعار بتقنية Flex LTR لضمان الفصل التام بين العربة والنص -->
+                <div class="jf-floating-cart flex items-center justify-center gap-3 sm:gap-4 py-2 select-none" style="direction: ltr !important;">
+                    
+                    <!-- 1. العربة الكلاسيكية مع الجناح المرفرف -->
+                    <div class="relative w-28 sm:w-36 h-24 sm:h-28 flex items-center justify-center flex-shrink-0">
+                        <svg viewBox="0 0 160 140" class="w-full h-full filter drop-shadow-[2px_2px_0px_rgba(0,0,0,1)]" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <!-- الجناح المرفرف المستقل -->
+                            <g class="jf-animated-wing">
+                                <path d="M48 60 C20 45, 5 62, 10 75 C30 75, 42 70, 48 66" stroke="#111" stroke-width="6" stroke-linecap="round" fill="#fffdf6"/>
+                                <path d="M46 72 C15 68, 12 90, 22 98 C36 98, 44 86, 48 80" stroke="#111" stroke-width="6" stroke-linecap="round" fill="#fffdf6"/>
+                                <path d="M46 84 C22 90, 20 106, 32 110 C42 108, 46 98, 48 90" stroke="#111" stroke-width="5" stroke-linecap="round" fill="#fffdf6"/>
+                            </g>
+                            <!-- هيكل سلة العربة -->
+                            <path d="M52 48 H135 L120 102 H62 L52 48 Z" stroke="#111" stroke-width="7" stroke-linejoin="round" fill="#fffdf6"/>
+                            <!-- يد العربة -->
+                            <path d="M50 48 L38 30 H22" stroke="#111" stroke-width="6" stroke-linecap="round" fill="none"/>
+                            <!-- عجلات العربة -->
+                            <circle cx="72" cy="118" r="10" fill="#111"/>
+                            <circle cx="112" cy="118" r="10" fill="#111"/>
+                            <path d="M60 110 H124" stroke="#111" stroke-width="5" stroke-linecap="round"/>
+                            <!-- كتابة JF Store مصغرة داخل العربة -->
+                            <text x="88" y="74" text-anchor="middle" font-family="'Shrikhand', cursive, sans-serif" font-weight="900" font-size="16" fill="#111" font-style="italic">JF</text>
+                            <text x="88" y="93" text-anchor="middle" font-family="'Shrikhand', cursive, sans-serif" font-weight="900" font-size="12" fill="#111">Store</text>
+                        </svg>
+                    </div>
 
-                        <!-- هيكل العربة الكلاسيكي -->
-                        <path d="M82 65 H165 L145 135 H95 L82 65 Z" stroke="#111" stroke-width="9" stroke-linejoin="round" fill="#fffdf6"/>
-                        <path d="M80 65 L64 42 H45" stroke="#111" stroke-width="8" stroke-linecap="round" fill="none"/>
-                        <!-- عجلات العربة الكلاسيكية -->
-                        <circle cx="100" cy="155" r="14" fill="#111"/>
-                        <circle cx="138" cy="155" r="14" fill="#111"/>
-                        <path d="M90 145 H150" stroke="#111" stroke-width="7" stroke-linecap="round"/>
+                    <!-- 2. نص JF Store الكلاسيكي الكبير وإشعاعات السرعة -->
+                    <div class="relative flex flex-col items-start justify-center text-left leading-none">
+                        <div class="jf-glowing-text flex flex-col font-black tracking-tight" style="font-family: 'Shrikhand', cursive, sans-serif;">
+                            <span class="text-4xl sm:text-5xl text-[#111] leading-none mb-1">JF</span>
+                            <span class="text-3xl sm:text-4xl text-[#111] leading-none">Store</span>
+                        </div>
 
-                        <!-- النص الصغير داخل العربة -->
-                        <text x="100" y="98" font-family="'Shrikhand', cursive, sans-serif" font-weight="900" font-size="22" fill="#111" font-style="italic">JF</text>
-                        <text x="94" y="122" font-family="'Shrikhand', cursive, sans-serif" font-weight="900" font-size="16" fill="#111">Store</text>
+                        <!-- إشعاعات وشرارات الحركة الكلاسيكية -->
+                        <div class="jf-speed-sparks absolute -top-2 -right-6 sm:-right-8 w-6 h-6 pointer-events-none">
+                            <svg viewBox="0 0 40 40" fill="none" class="w-full h-full">
+                                <path d="M12 28 C12 18, 16 12, 20 6" stroke="#111" stroke-width="4.5" stroke-linecap="round"/>
+                                <path d="M24 32 C30 26, 36 20, 38 12" stroke="#111" stroke-width="4.5" stroke-linecap="round"/>
+                                <path d="M26 38 H38" stroke="#111" stroke-width="4.5" stroke-linecap="round"/>
+                            </svg>
+                        </div>
+                    </div>
 
-                        <!-- النص الكلاسيكي الفخم JF Store مع إضاءة نيون متحركة -->
-                        <g class="jf-glowing-text">
-                            <text x="195" y="88" font-family="'Shrikhand', cursive, sans-serif" font-weight="900" font-size="62" letter-spacing="1">JF</text>
-                            <text x="185" y="152" font-family="'Shrikhand', cursive, sans-serif" font-weight="900" font-size="56" letter-spacing="1">Store</text>
-                        </g>
-
-                        <!-- خطوط السرعة والشرارات الكلاسيكية المشعة -->
-                        <g class="jf-speed-sparks">
-                            <path d="M365 72 C365 60, 370 54, 372 48" stroke="#111" stroke-width="8" stroke-linecap="round"/>
-                            <path d="M380 92 C386 86, 396 80, 404 76" stroke="#111" stroke-width="8" stroke-linecap="round"/>
-                            <path d="M385 116 H406" stroke="#111" stroke-width="8" stroke-linecap="round"/>
-                        </g>
-                    </svg>
                 </div>
-                <div class="mt-5 flex items-center gap-2">
+
+                <div class="mt-5 flex items-center justify-center gap-2">
                     <span class="w-3.5 h-3.5 bg-black rounded-full animate-ping"></span>
                     <h3 class="font-black text-sm sm:text-base text-[#111] tracking-wide">
                         جاري جلب بضاعة JF STORE... ⏳
@@ -670,7 +674,7 @@
         const ADMIN_EMAIL = "mrskull33442@gmail.com";
         const ADMIN_PASS = "aloxgame4";
 
-        // نظام الزوار المباشر (Online Now) عبر Supabase Realtime
+        // نظام الزوار المباشر (Online Now) عبر قناة Realtime
         function initRealtimePresence() {
             try {
                 const presenceChannel = supabaseClient.channel('jfstore-live-visitors');
@@ -695,7 +699,7 @@
             }
         }
 
-        // عداد إجمالي الزيارات الكلي السحابي التراكمي
+        // عداد إجمالي الزيارات الكلي
         async function recordAndFetchTotalVisits() {
             try {
                 const res = await fetch('https://api.counterapi.dev/v1/jfstore_iraq_maysan_prod/visits/up');
@@ -795,12 +799,11 @@
             });
         }
 
-        // تحديث وبناء قائمة الأصناف المنسدلة مع دوائر الأعداد
+        // بناء قائمة الأصناف مع دوائر الأعداد الذكية
         function renderCategoriesDropdown() {
             const dropdown = document.getElementById('custom-cat-dropdown');
             if (!dropdown) return;
 
-            // حساب عدد المنتجات بكل صنف
             const categoryCounts = {};
             products.forEach(p => {
                 const c = (p.parsedCategory || 'منوعات').trim();
@@ -829,7 +832,7 @@
             dropdown.innerHTML = html;
         }
 
-        // سحب المنتجات مباشرة من سوبابيس بدون تخزين كاش يسبب كراش
+        // جلب المنتجات مباشرة من سوبابيس بدون كاش المتصفح
         async function fetchProductsFromSupabase() {
             const loader = document.getElementById('jf-main-loader');
             try {
