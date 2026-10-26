@@ -94,7 +94,7 @@
             transform-origin: bottom center;
         }
 
-        /* حركات اللودر الكلاسيكي الفخم - طيران ورفرفة وإضاءة الحروف */
+        /* حركات اللودر الكلاسيكي الفخم */
         @keyframes cartFloating {
             0%, 100% { transform: translateY(0px); }
             50% { transform: translateY(-8px); }
@@ -255,7 +255,7 @@
 
     <div id="side-menu" class="fixed inset-y-0 right-0 w-80 bg-[#fffdf6] border-l-4 border-[#111111] shadow-2xl z-50 transform translate-x-full flex flex-col">
         <div class="p-4 bg-[#111111] text-[#f4ebd0] flex justify-between items-center border-b-4 border-[#111111]">
-            <h2 class="text-xl font-black">قائمة JF Store </h2>
+            <h2 class="text-xl font-black">قائمة JF Store الكلاسيكية</h2>
             <button onclick="toggleMenu()" class="text-2xl font-black hover:text-red-400 cursor-pointer">✕</button>
         </div>
 
@@ -325,8 +325,9 @@
     <main class="flex-1 max-w-7xl mx-auto px-2 sm:px-4 py-4 w-full">
         
         <div id="ads-banner" class="rubber-banner-frame mb-6 p-4 relative overflow-visible flex items-center justify-center text-center hidden">
+            <!-- شارة الإعلانات المعدلة -->
             <div class="absolute -top-4 right-6 bg-[#111111] text-[#f4ebd0] text-[11px] sm:text-xs font-black px-3 py-1 rounded-full border-2 border-[#fffdf6] shadow-md tracking-wider">
-                ✨ إعلان كلاسيكي خاص ✨
+                ✨ الاعلانات ✨
             </div>
             
             <div class="absolute -bottom-2 -left-2 z-10 pointer-events-none hidden sm:block">
@@ -358,7 +359,7 @@
             </div>
         </div>
 
-        <!-- لوحة تحكم الأدمن مع عداد الزوار المزدوج المباشر -->
+        <!-- لوحة تحكم الأدمن -->
         <div id="admin-panel" class="vintage-box p-4 mb-6 hidden bg-[#fff3d6]">
             <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 border-b-2 border-black pb-3 mb-4">
                 <h3 id="admin-panel-title" class="font-black text-base sm:text-xl text-[#111] flex items-center gap-2">
@@ -377,7 +378,7 @@
                         <span class="text-base">👥</span>
                         <div class="text-right">
                             <span class="block text-[9px] font-black text-gray-700">إجمالي الزيارات:</span>
-                            <span id="total-visits-count" class="text-xs font-black text-black">جاري الحساب...</span>
+                            <span id="total-visits-count" class="text-xs font-black text-black">1 زيارة</span>
                         </div>
                     </div>
                 </div>
@@ -450,44 +451,37 @@
             </div>
         </div>
 
-        <!-- لودر JF الكلاسيكي الجديد بتصميم فليكس منفصل ومستحيل يتداخل نهائياً -->
+        <!-- لودر JF الكلاسيكي الفخم المستقل تماماً -->
         <div id="jf-main-loader" class="col-span-full py-16 flex flex-col items-center justify-center text-center">
             <div class="vintage-box p-6 sm:p-8 bg-[#fffdf6] max-w-sm sm:max-w-md w-full flex flex-col items-center justify-center border-4 border-black shadow-[8px_8px_0px_#111]">
                 
-                <!-- حاوية الشعار بتقنية Flex LTR لضمان الفصل التام بين العربة والنص -->
                 <div class="jf-floating-cart flex items-center justify-center gap-3 sm:gap-4 py-2 select-none" style="direction: ltr !important;">
                     
-                    <!-- 1. العربة الكلاسيكية مع الجناح المرفرف -->
+                    <!-- العربة والجناح المرفرف -->
                     <div class="relative w-28 sm:w-36 h-24 sm:h-28 flex items-center justify-center flex-shrink-0">
                         <svg viewBox="0 0 160 140" class="w-full h-full filter drop-shadow-[2px_2px_0px_rgba(0,0,0,1)]" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <!-- الجناح المرفرف المستقل -->
                             <g class="jf-animated-wing">
                                 <path d="M48 60 C20 45, 5 62, 10 75 C30 75, 42 70, 48 66" stroke="#111" stroke-width="6" stroke-linecap="round" fill="#fffdf6"/>
                                 <path d="M46 72 C15 68, 12 90, 22 98 C36 98, 44 86, 48 80" stroke="#111" stroke-width="6" stroke-linecap="round" fill="#fffdf6"/>
                                 <path d="M46 84 C22 90, 20 106, 32 110 C42 108, 46 98, 48 90" stroke="#111" stroke-width="5" stroke-linecap="round" fill="#fffdf6"/>
                             </g>
-                            <!-- هيكل سلة العربة -->
                             <path d="M52 48 H135 L120 102 H62 L52 48 Z" stroke="#111" stroke-width="7" stroke-linejoin="round" fill="#fffdf6"/>
-                            <!-- يد العربة -->
                             <path d="M50 48 L38 30 H22" stroke="#111" stroke-width="6" stroke-linecap="round" fill="none"/>
-                            <!-- عجلات العربة -->
                             <circle cx="72" cy="118" r="10" fill="#111"/>
                             <circle cx="112" cy="118" r="10" fill="#111"/>
                             <path d="M60 110 H124" stroke="#111" stroke-width="5" stroke-linecap="round"/>
-                            <!-- كتابة JF Store مصغرة داخل العربة -->
                             <text x="88" y="74" text-anchor="middle" font-family="'Shrikhand', cursive, sans-serif" font-weight="900" font-size="16" fill="#111" font-style="italic">JF</text>
                             <text x="88" y="93" text-anchor="middle" font-family="'Shrikhand', cursive, sans-serif" font-weight="900" font-size="12" fill="#111">Store</text>
                         </svg>
                     </div>
 
-                    <!-- 2. نص JF Store الكلاسيكي الكبير وإشعاعات السرعة -->
+                    <!-- نص JF Store الكلاسيكي المضيء وشرارات الحركة -->
                     <div class="relative flex flex-col items-start justify-center text-left leading-none">
                         <div class="jf-glowing-text flex flex-col font-black tracking-tight" style="font-family: 'Shrikhand', cursive, sans-serif;">
                             <span class="text-4xl sm:text-5xl text-[#111] leading-none mb-1">JF</span>
                             <span class="text-3xl sm:text-4xl text-[#111] leading-none">Store</span>
                         </div>
 
-                        <!-- إشعاعات وشرارات الحركة الكلاسيكية -->
                         <div class="jf-speed-sparks absolute -top-2 -right-6 sm:-right-8 w-6 h-6 pointer-events-none">
                             <svg viewBox="0 0 40 40" fill="none" class="w-full h-full">
                                 <path d="M12 28 C12 18, 16 12, 20 6" stroke="#111" stroke-width="4.5" stroke-linecap="round"/>
@@ -637,6 +631,7 @@
         const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
         const TABLE_NAME = 'products JPG';
         const ORDERS_TABLE = 'store_orders';
+        const STATS_TABLE = 'site_stats';
         const BUCKET_NAME = 'products-images';
 
         const FALLBACK_IMG = 'https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=500';
@@ -674,7 +669,7 @@
         const ADMIN_EMAIL = "mrskull33442@gmail.com";
         const ADMIN_PASS = "aloxgame4";
 
-        // نظام الزوار المباشر (Online Now) عبر قناة Realtime
+        // نظام الزوار المباشر (Online Now)
         function initRealtimePresence() {
             try {
                 const presenceChannel = supabaseClient.channel('jfstore-live-visitors');
@@ -699,31 +694,34 @@
             }
         }
 
-        // عداد إجمالي الزيارات الكلي
+        // عداد إجمالي الزيارات من جدول site_stats في Supabase مباشرة وبشكل فوري
         async function recordAndFetchTotalVisits() {
             try {
-                const res = await fetch('https://api.counterapi.dev/v1/jfstore_iraq_maysan_prod/visits/up');
-                if (res.ok) {
-                    const data = await res.json();
-                    const totalEl = document.getElementById('total-visits-count');
-                    if (totalEl && data.count) {
-                        totalEl.innerText = `${Number(data.count).toLocaleString()} زيارة`;
+                // 1. جلب القيمة الحالية
+                const { data, error } = await supabaseClient
+                    .from(STATS_TABLE)
+                    .select('total_visits')
+                    .eq('id', 1)
+                    .single();
+
+                if (!error && data) {
+                    let currentCount = Number(data.total_visits) || 1;
+                    
+                    // زيادة الزيارة مرة واحدة فقط لكل جلسة متصفح
+                    if (!sessionStorage.getItem('jf_visited_session')) {
+                        currentCount += 1;
+                        sessionStorage.setItem('jf_visited_session', 'true');
+                        await supabaseClient
+                            .from(STATS_TABLE)
+                            .update({ total_visits: currentCount })
+                            .eq('id', 1);
                     }
-                }
-            } catch (e) {
-                try {
-                    const fallbackRes = await fetch('https://api.counterapi.dev/v1/jfstore_iraq_maysan_prod/visits');
-                    if (fallbackRes.ok) {
-                        const data = await fallbackRes.json();
-                        const totalEl = document.getElementById('total-visits-count');
-                        if (totalEl && data.count) {
-                            totalEl.innerText = `${Number(data.count).toLocaleString()} زيارة`;
-                        }
-                    }
-                } catch(err) {
+
                     const totalEl = document.getElementById('total-visits-count');
-                    if (totalEl) totalEl.innerText = `1,840 زيارة`;
+                    if (totalEl) totalEl.innerText = `${currentCount.toLocaleString()} زيارة`;
                 }
+            } catch (err) {
+                console.log("خطأ في قراءة العداد:", err);
             }
         }
 
@@ -799,7 +797,7 @@
             });
         }
 
-        // بناء قائمة الأصناف مع دوائر الأعداد الذكية
+        // بناء قائمة الأصناف مع دوائر الأعداد
         function renderCategoriesDropdown() {
             const dropdown = document.getElementById('custom-cat-dropdown');
             if (!dropdown) return;
@@ -832,7 +830,7 @@
             dropdown.innerHTML = html;
         }
 
-        // جلب المنتجات مباشرة من سوبابيس بدون كاش المتصفح
+        // جلب المنتجات مباشرة من سوبابيس
         async function fetchProductsFromSupabase() {
             const loader = document.getElementById('jf-main-loader');
             try {
