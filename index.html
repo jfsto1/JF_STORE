@@ -3,12 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>JF Store - متجر</title>
+    <title>JF Store - متجر </title>
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- Supabase JS Client CDN -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700;900&family=Shrikhand&display=swap" rel="stylesheet">
     <style>
         body { 
             font-family: 'Cairo', sans-serif; 
@@ -92,6 +92,36 @@
         .rubber-sticker-left {
             animation: rubberHoseWiggle 3.4s ease-in-out infinite 0.5s;
             transform-origin: bottom center;
+        }
+
+        /* حركات اللودر الكلاسيكي لعربة JF الطائرة */
+        @keyframes cartFlyBob {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-12px) rotate(-2deg); }
+        }
+
+        @keyframes wingFlapLeft {
+            0%, 100% { transform: rotate(0deg) scale(1); }
+            50% { transform: rotate(-22deg) scale(0.9, 1.1); }
+        }
+
+        @keyframes sparkPulse {
+            0%, 100% { opacity: 0.3; transform: scale(0.85); }
+            50% { opacity: 1; transform: scale(1.15); }
+        }
+
+        .jf-loader-cart {
+            animation: cartFlyBob 2.2s ease-in-out infinite;
+            transform-origin: center center;
+        }
+
+        .jf-loader-wing {
+            animation: wingFlapLeft 0.7s ease-in-out infinite;
+            transform-origin: 65px 45px;
+        }
+
+        .jf-loader-sparks {
+            animation: sparkPulse 1.2s ease-in-out infinite;
         }
 
         @keyframes menuPop {
@@ -204,7 +234,7 @@
 
     <div id="side-menu" class="fixed inset-y-0 right-0 w-80 bg-[#fffdf6] border-l-4 border-[#111111] shadow-2xl z-50 transform translate-x-full flex flex-col">
         <div class="p-4 bg-[#111111] text-[#f4ebd0] flex justify-between items-center border-b-4 border-[#111111]">
-            <h2 class="text-xl font-black">قائمة JF Store الكلاسيكية</h2>
+            <h2 class="text-xl font-black">قائمة JF Store </h2>
             <button onclick="toggleMenu()" class="text-2xl font-black hover:text-red-400 cursor-pointer">✕</button>
         </div>
 
@@ -275,7 +305,7 @@
         
         <div id="ads-banner" class="rubber-banner-frame mb-6 p-4 relative overflow-visible flex items-center justify-center text-center hidden">
             <div class="absolute -top-4 right-6 bg-[#111111] text-[#f4ebd0] text-[11px] sm:text-xs font-black px-3 py-1 rounded-full border-2 border-[#fffdf6] shadow-md tracking-wider">
-                ✨ الإعلانات ✨
+                ✨ إعلانات ✨
             </div>
             
             <div class="absolute -bottom-2 -left-2 z-10 pointer-events-none hidden sm:block">
@@ -397,6 +427,51 @@
             <div class="flex gap-3 mt-3">
                 <button type="button" id="save-btn" onclick="saveProductToSupabase()" class="vintage-btn px-6 py-2.5 text-xs sm:text-sm w-full sm:w-auto text-center">نشر في قاعدة البيانات 🚀</button>
                 <button type="button" id="cancel-edit-btn" onclick="cancelEdit()" class="vintage-btn bg-gray-500 text-white px-4 py-2.5 text-xs sm:text-sm hidden">إلغاء ✕</button>
+            </div>
+        </div>
+
+        <!-- لودر JF الكلاسيكي (عربة JF الطائرة) -->
+        <div id="jf-main-loader" class="col-span-full py-16 flex flex-col items-center justify-center text-center">
+            <div class="vintage-box p-8 bg-[#fffdf6] max-w-sm w-full flex flex-col items-center justify-center border-4 border-black shadow-[8px_8px_0px_#111]">
+                <div class="relative w-64 h-36 flex items-center justify-center jf-loader-cart">
+                    <svg viewBox="0 0 320 180" class="w-full h-full filter drop-shadow-[3px_3px_0px_rgba(0,0,0,1)]" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <!-- الأجنحة الكلاسيكية المرفرفة -->
+                        <g class="jf-loader-wing">
+                            <path d="M70 70 C30 50, 10 75, 15 90 C35 90, 55 80, 68 76" stroke="#111" stroke-width="7" stroke-linecap="round" fill="#fffdf6"/>
+                            <path d="M68 85 C25 80, 20 105, 30 115 C48 115, 60 102, 70 95" stroke="#111" stroke-width="7" stroke-linecap="round" fill="#fffdf6"/>
+                            <path d="M68 98 C35 105, 35 125, 50 130 C62 128, 68 115, 72 108" stroke="#111" stroke-width="6" stroke-linecap="round" fill="#fffdf6"/>
+                        </g>
+
+                        <!-- هيكل العربة الكلاسيكي -->
+                        <path d="M68 55 H130 L115 115 H78 L68 55 Z" stroke="#111" stroke-width="8" stroke-linejoin="round" fill="#fffdf6"/>
+                        <path d="M65 55 L52 35 H35" stroke="#111" stroke-width="7" stroke-linecap="round" fill="none"/>
+                        <!-- عجلات العربة -->
+                        <circle cx="82" cy="132" r="11" fill="#111"/>
+                        <circle cx="112" cy="132" r="11" fill="#111"/>
+                        <path d="M72 122 H122" stroke="#111" stroke-width="6" stroke-linecap="round"/>
+
+                        <!-- كلمة JF مصغرة داخل العربة -->
+                        <text x="82" y="85" font-family="'Shrikhand', cursive, sans-serif" font-weight="900" font-size="20" fill="#111" font-style="italic">JF</text>
+                        <text x="76" y="105" font-family="'Shrikhand', cursive, sans-serif" font-weight="900" font-size="14" fill="#111">Store</text>
+
+                        <!-- النص الكلاسيكي JF Store بجانب العربة -->
+                        <text x="145" y="75" font-family="'Shrikhand', cursive, sans-serif" font-weight="900" font-size="44" fill="#111">JF</text>
+                        <text x="140" y="125" font-family="'Shrikhand', cursive, sans-serif" font-weight="900" font-size="40" fill="#111">Store</text>
+
+                        <!-- شرارات الحركة الكلاسيكية -->
+                        <g class="jf-loader-sparks">
+                            <path d="M265 60 C265 50, 270 45, 272 40" stroke="#111" stroke-width="6" stroke-linecap="round"/>
+                            <path d="M280 75 C285 70, 292 65, 298 62" stroke="#111" stroke-width="6" stroke-linecap="round"/>
+                            <path d="M282 95 H298" stroke="#111" stroke-width="6" stroke-linecap="round"/>
+                        </g>
+                    </svg>
+                </div>
+                <div class="mt-4 flex items-center gap-2">
+                    <span class="w-3 h-3 bg-black rounded-full animate-ping"></span>
+                    <h3 class="font-black text-sm sm:text-base text-[#111] tracking-wide">
+                        جاري جلب بضاعة JF STORE... ⏳
+                    </h3>
+                </div>
             </div>
         </div>
 
@@ -577,52 +652,64 @@
             });
         }
 
+        function parseProductsRawData(data) {
+            return (data || []).map(p => {
+                let realDesc = p.desc || '';
+                let cat = 'منوعات';
+                let imgs = [];
+                let vid = '';
+                let colors = '';
+
+                try {
+                    if (realDesc.startsWith('JFDATA|')) {
+                        let parts = realDesc.split('|');
+                        cat = (parts[1] || 'منوعات').trim();
+                        let imgsStr = parts[2] || '';
+                        if (imgsStr) {
+                            imgs = imgsStr.split(';').map(s => s.trim()).filter(Boolean);
+                        }
+                        vid = (parts[3] || '').trim();
+                        colors = (parts[4] || '').trim();
+                        realDesc = parts.slice(5).join('|') || '';
+                    }
+                } catch(e) {}
+
+                if (imgs.length === 0) {
+                    imgs = [FALLBACK_IMG];
+                }
+
+                return { 
+                    ...p, 
+                    parsedCategory: cat, 
+                    parsedImages: imgs, 
+                    parsedImage: imgs[0], 
+                    parsedVideo: vid, 
+                    parsedColors: colors, 
+                    cleanDesc: realDesc 
+                };
+            });
+        }
+
+        // سحب المنتجات مباشرة من سوبابيس بدون أي كاش أو أخطاء تخزين
         async function fetchProductsFromSupabase() {
+            const loader = document.getElementById('jf-main-loader');
             try {
-                let { data, error } = await supabaseClient.from(TABLE_NAME).select('*').order('id', { ascending: false });
+                let { data, error } = await supabaseClient
+                    .from(TABLE_NAME)
+                    .select('*')
+                    .order('id', { ascending: false });
+                
                 if (error) throw error;
 
-                products = (data || []).map(p => {
-                    let realDesc = p.desc || '';
-                    let cat = 'منوعات';
-                    let imgs = [];
-                    let vid = '';
-                    let colors = '';
-
-                    try {
-                        if (realDesc.startsWith('JFDATA|')) {
-                            let parts = realDesc.split('|');
-                            cat = (parts[1] || 'منوعات').trim();
-                            let imgsStr = parts[2] || '';
-                            if (imgsStr) {
-                                imgs = imgsStr.split(';').map(s => s.trim()).filter(Boolean);
-                            }
-                            vid = (parts[3] || '').trim();
-                            colors = (parts[4] || '').trim();
-                            realDesc = parts.slice(5).join('|') || '';
-                        }
-                    } catch(e) {}
-
-                    if (imgs.length === 0) {
-                        imgs = [FALLBACK_IMG];
-                    }
-
-                    return { 
-                        ...p, 
-                        parsedCategory: cat, 
-                        parsedImages: imgs, 
-                        parsedImage: imgs[0], 
-                        parsedVideo: vid, 
-                        parsedColors: colors, 
-                        cleanDesc: realDesc 
-                    };
-                });
-
-                filterProducts();
+                if (data) {
+                    products = parseProductsRawData(data);
+                    filterProducts();
+                }
             } catch (err) {
-                console.log("خطأ بجلب المنتجات:", err.message);
-                products = [];
+                console.log("خطأ في جلب المنتجات:", err.message);
                 renderProducts([]);
+            } finally {
+                if (loader) loader.classList.add('hidden');
             }
         }
 
