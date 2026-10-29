@@ -94,7 +94,6 @@
             transform-origin: bottom center;
         }
 
-        /* حركات اللودر الكلاسيكي الفخم */
         @keyframes cartFloating {
             0%, 100% { transform: translateY(0px); }
             50% { transform: translateY(-8px); }
@@ -305,7 +304,7 @@
                     <p>• Taobao (تاوباو)</p>
                     <p>• 1688 (1688)</p>
                     <p>• Alibaba (علي بابا)</p>
-                    <p>• Goofish (غوفيش)</p>
+                    <p>• Goodfish (غودفيش)</p>
                     <p>• Newegg (نيويغ)</p>
                     <p>• DHgate (دي إتش غيت)</p>
                     <p>• Banggood (بانغود)</p>
@@ -325,7 +324,6 @@
     <main class="flex-1 max-w-7xl mx-auto px-2 sm:px-4 py-4 w-full">
         
         <div id="ads-banner" class="rubber-banner-frame mb-6 p-4 relative overflow-visible flex items-center justify-center text-center hidden">
-            <!-- شارة الإعلانات المعدلة -->
             <div class="absolute -top-4 right-6 bg-[#111111] text-[#f4ebd0] text-[11px] sm:text-xs font-black px-3 py-1 rounded-full border-2 border-[#fffdf6] shadow-md tracking-wider">
                 ✨ الاعلانات ✨
             </div>
@@ -451,13 +449,12 @@
             </div>
         </div>
 
-        <!-- لودر JF الكلاسيكي الفخم المستقل تماماً -->
+        <!-- لودر JF الكلاسيكي الفخم المستقل -->
         <div id="jf-main-loader" class="col-span-full py-16 flex flex-col items-center justify-center text-center">
             <div class="vintage-box p-6 sm:p-8 bg-[#fffdf6] max-w-sm sm:max-w-md w-full flex flex-col items-center justify-center border-4 border-black shadow-[8px_8px_0px_#111]">
                 
                 <div class="jf-floating-cart flex items-center justify-center gap-3 sm:gap-4 py-2 select-none" style="direction: ltr !important;">
                     
-                    <!-- العربة والجناح المرفرف -->
                     <div class="relative w-28 sm:w-36 h-24 sm:h-28 flex items-center justify-center flex-shrink-0">
                         <svg viewBox="0 0 160 140" class="w-full h-full filter drop-shadow-[2px_2px_0px_rgba(0,0,0,1)]" fill="none" xmlns="http://www.w3.org/2000/svg">
                             <g class="jf-animated-wing">
@@ -475,7 +472,6 @@
                         </svg>
                     </div>
 
-                    <!-- نص JF Store الكلاسيكي المضيء وشرارات الحركة -->
                     <div class="relative flex flex-col items-start justify-center text-left leading-none">
                         <div class="jf-glowing-text flex flex-col font-black tracking-tight" style="font-family: 'Shrikhand', cursive, sans-serif;">
                             <span class="text-4xl sm:text-5xl text-[#111] leading-none mb-1">JF</span>
@@ -632,6 +628,7 @@
         const TABLE_NAME = 'products JPG';
         const ORDERS_TABLE = 'store_orders';
         const STATS_TABLE = 'site_stats';
+        const FAVORITES_TABLE = 'user_favorites';
         const BUCKET_NAME = 'products-images';
 
         const FALLBACK_IMG = 'https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=500';
@@ -665,6 +662,7 @@
         let currentCategory = 'all';
         let currentAdIndex = 0;
         let adInterval = null;
+        let showingFavoritesOnly = false;
 
         const ADMIN_EMAIL = "mrskull33442@gmail.com";
         const ADMIN_PASS = "aloxgame4";
@@ -694,10 +692,9 @@
             }
         }
 
-        // عداد إجمالي الزيارات من جدول site_stats في Supabase مباشرة وبشكل فوري
+        // عداد الزيارات التراكمي
         async function recordAndFetchTotalVisits() {
             try {
-                // 1. جلب القيمة الحالية
                 const { data, error } = await supabaseClient
                     .from(STATS_TABLE)
                     .select('total_visits')
@@ -707,7 +704,6 @@
                 if (!error && data) {
                     let currentCount = Number(data.total_visits) || 1;
                     
-                    // زيادة الزيارة مرة واحدة فقط لكل جلسة متصفح
                     if (!sessionStorage.getItem('jf_visited_session')) {
                         currentCount += 1;
                         sessionStorage.setItem('jf_visited_session', 'true');
@@ -725,6 +721,55 @@
             }
         }
 
+        // مزامنة المفضلات مع السحابة بالإيميل
+        async function syncFavoritesWithCloud(email) {
+            if (!email) return;
+            try {
+                const { data, error } = await supabaseClient
+                    .from(FAVORITES_TABLE)
+                    .select('favorites')
+                    .eq('email', email.toLowerCase())
+                    .single();
+
+                if (!error && data && data.favorites) {
+                    const cloudFavs = data.favorites.split(',').map(Number).filter(n => !isNaN(n));
+                    favorites = Array.from(new Set([...favorites, ...cloudFavs]));
+                    localStorage.setItem('jf_favs', JSON.stringify(favorites));
+                    updateFavUIOnly();
+                } else if (favorites.length > 0) {
+                    saveFavoritesToCloud(email);
+                }
+            } catch (err) {
+                console.log("Favorites sync error:", err);
+            }
+        }
+
+        async function saveFavoritesToCloud(email) {
+            if (!email) return;
+            try {
+                const favsStr = favorites.join(',');
+                const { data } = await supabaseClient
+                    .from(FAVORITES_TABLE)
+                    .select('id')
+                    .eq('email', email.toLowerCase())
+                    .single();
+
+                if (data && data.id) {
+                    await supabaseClient
+                        .from(FAVORITES_TABLE)
+                        .update({ favorites: favsStr })
+                        .eq('email', email.toLowerCase());
+                } else {
+                    await supabaseClient
+                        .from(FAVORITES_TABLE)
+                        .insert([{ email: email.toLowerCase(), favorites: favsStr }]);
+                }
+            } catch (err) {
+                console.log("Cloud save error:", err);
+            }
+        }
+
+        // رفع الملفات للسحابة
         async function uploadFileToStorage(file) {
             try {
                 const fileExt = file.name.split('.').pop();
@@ -759,45 +804,46 @@
             });
         }
 
-        function parseProductsRawData(data) {
-            return (data || []).map(p => {
-                let realDesc = p.desc || '';
-                let cat = 'منوعات';
-                let imgs = [];
-                let vid = '';
-                let colors = '';
+        function parseSingleProduct(p) {
+            let realDesc = p.desc || '';
+            let cat = 'منوعات';
+            let imgs = [];
+            let vid = '';
+            let colors = '';
 
-                try {
-                    if (realDesc.startsWith('JFDATA|')) {
-                        let parts = realDesc.split('|');
-                        cat = (parts[1] || 'منوعات').trim();
-                        let imgsStr = parts[2] || '';
-                        if (imgsStr) {
-                            imgs = imgsStr.split(';').map(s => s.trim()).filter(Boolean);
-                        }
-                        vid = (parts[3] || '').trim();
-                        colors = (parts[4] || '').trim();
-                        realDesc = parts.slice(5).join('|') || '';
+            try {
+                if (realDesc.startsWith('JFDATA|')) {
+                    let parts = realDesc.split('|');
+                    cat = (parts[1] || 'منوعات').trim();
+                    let imgsStr = parts[2] || '';
+                    if (imgsStr) {
+                        imgs = imgsStr.split(';').map(s => s.trim()).filter(Boolean);
                     }
-                } catch(e) {}
-
-                if (imgs.length === 0) {
-                    imgs = [FALLBACK_IMG];
+                    vid = (parts[3] || '').trim();
+                    colors = (parts[4] || '').trim();
+                    realDesc = parts.slice(5).join('|') || '';
                 }
+            } catch(e) {}
 
-                return { 
-                    ...p, 
-                    parsedCategory: cat, 
-                    parsedImages: imgs, 
-                    parsedImage: imgs[0], 
-                    parsedVideo: vid, 
-                    parsedColors: colors, 
-                    cleanDesc: realDesc 
-                };
-            });
+            if (imgs.length === 0) {
+                imgs = [FALLBACK_IMG];
+            }
+
+            return { 
+                ...p, 
+                parsedCategory: cat, 
+                parsedImages: imgs, 
+                parsedImage: imgs[0], 
+                parsedVideo: vid, 
+                parsedColors: colors, 
+                cleanDesc: realDesc 
+            };
         }
 
-        // بناء قائمة الأصناف مع دوائر الأعداد
+        function parseProductsRawData(data) {
+            return (data || []).map(parseSingleProduct);
+        }
+
         function renderCategoriesDropdown() {
             const dropdown = document.getElementById('custom-cat-dropdown');
             if (!dropdown) return;
@@ -830,7 +876,6 @@
             dropdown.innerHTML = html;
         }
 
-        // جلب المنتجات مباشرة من سوبابيس
         async function fetchProductsFromSupabase() {
             const loader = document.getElementById('jf-main-loader');
             try {
@@ -862,6 +907,7 @@
         }
 
         function selectCategory(catVal, catLabel) {
+            showingFavoritesOnly = false;
             currentCategory = catVal;
             document.getElementById('selected-cat-label').innerText = catLabel;
             toggleCustomCatMenu();
@@ -877,6 +923,7 @@
             }
         });
 
+        // نشر سريع متوازي فائق السرعة
         async function saveProductToSupabase() {
             const saveBtn = document.getElementById('save-btn');
             saveBtn.disabled = true;
@@ -902,7 +949,7 @@
                 return;
             }
 
-            document.getElementById('upload-status').innerText = 'جاري رفع الملفات للسحابة... ⏳';
+            document.getElementById('upload-status').innerText = 'جاري الرفع السحابي السريع... 🚀';
 
             let imagesArray = [FALLBACK_IMG];
             let videoUrl = '';
@@ -916,12 +963,10 @@
             }
 
             try {
+                // رفع متوازي فوري للصور
                 if (imageFiles && imageFiles.length > 0) {
-                    imagesArray = [];
-                    for (let i = 0; i < imageFiles.length; i++) {
-                        const publicImgUrl = await uploadFileToStorage(imageFiles[i]);
-                        imagesArray.push(publicImgUrl);
-                    }
+                    const uploadPromises = Array.from(imageFiles).map(file => uploadFileToStorage(file));
+                    imagesArray = await Promise.all(uploadPromises);
                 }
 
                 if (videoFile) {
@@ -940,21 +985,35 @@
             try {
                 if(editingId) {
                     const targetId = Number(editingId);
-                    const { error } = await supabaseClient
+                    const { data, error } = await supabaseClient
                         .from(TABLE_NAME)
                         .update({ name, price, desc: packedDesc })
-                        .eq('id', targetId);
+                        .eq('id', targetId)
+                        .select();
                     
                     if(error) throw error;
+                    
+                    if (data && data[0]) {
+                        const updated = parseSingleProduct(data[0]);
+                        const idx = products.findIndex(p => p.id == targetId);
+                        if (idx !== -1) products[idx] = updated;
+                    }
                     alert('تم تحديث المنتج بنجاح! ✏️');
                     cancelEdit();
                 } else {
-                    const { error } = await supabaseClient
+                    const { data, error } = await supabaseClient
                         .from(TABLE_NAME)
-                        .insert([{ name, price, desc: packedDesc }]);
+                        .insert([{ name, price, desc: packedDesc }])
+                        .select();
                     
                     if(error) throw error;
-                    alert('تم نشر المنتج بنجاح وللأبد! 🚀');
+                    
+                    if (data && data[0]) {
+                        const newProd = parseSingleProduct(data[0]);
+                        products.unshift(newProd);
+                    }
+                    alert('تم نشر المنتج فورياً في المتجر! 🚀');
+                    
                     document.getElementById('new-name').value = '';
                     document.getElementById('new-price').value = '';
                     document.querySelectorAll('input[name="admin-color"]').forEach(cb => cb.checked = false);
@@ -964,7 +1023,8 @@
                 }
 
                 document.getElementById('upload-status').innerText = 'تم الحفظ بنجاح ✅';
-                fetchProductsFromSupabase();
+                renderCategoriesDropdown();
+                filterProducts();
             } catch (err) {
                 alert('فشل الحفظ: ' + err.message);
                 document.getElementById('upload-status').innerText = 'فشل الحفظ ❌';
@@ -980,8 +1040,10 @@
                 if(error) {
                     alert('فشل الحذف: ' + error.message);
                 } else {
+                    products = products.filter(p => p.id != targetId);
+                    renderCategoriesDropdown();
+                    filterProducts();
                     alert('تم حذف المنتج نهائياً 🗑️');
-                    fetchProductsFromSupabase();
                 }
             }
         }
@@ -1024,7 +1086,8 @@
 
         function startAdsSlider(list) {
             if(adInterval) clearInterval(adInterval);
-            if(list.length === 0) return;
+            if(!list || list.length === 0) return;
+            currentAdIndex = 0;
             updateAdContent(list[currentAdIndex]);
             adInterval = setInterval(() => {
                 currentAdIndex = (currentAdIndex + 1) % list.length;
@@ -1034,6 +1097,7 @@
 
         function updateAdContent(product) {
             const container = document.getElementById('ads-content');
+            if (!container || !product) return;
             const displayImg = (product.parsedImages && product.parsedImages[0]) || product.parsedImage || FALLBACK_IMG;
             const isFav = favorites.includes(product.id);
 
@@ -1043,7 +1107,7 @@
                     <div class="text-right flex-1">
                         <div class="flex items-center justify-end gap-1.5">
                             <h3 class="font-black text-sm sm:text-lg text-[#111] leading-tight">${product.name}</h3>
-                            <span class="text-base">${isFav ? '❤️' : '🤍'}</span>
+                            <span id="ad-fav-heart" class="text-base">${isFav ? '❤️' : '🤍'}</span>
                         </div>
                         <p class="text-green-900 font-black text-sm sm:text-base mt-1">${Number(product.price).toLocaleString()} د.ع</p>
                         <span class="text-[11px] font-black text-gray-800 underline mt-1 block hover:text-black">اضغط للانتقال للمنتج ➔</span>
@@ -1171,7 +1235,7 @@
             content.innerHTML = `
                 <div class="relative">
                     <img id="modal-main-img" src="${allImgs[0]}" onerror="this.onerror=null; this.src='${FALLBACK_IMG}';" alt="${product.name}" class="w-full h-60 object-cover rounded-xl border-3 border-black shadow mb-2">
-                    <button onclick="toggleFavorite(${product.id}); openProductModal(${product.id});" class="absolute top-3 left-3 bg-white p-3 rounded-full border-2 border-black text-xl hover:scale-110 shadow cursor-pointer transition-transform">${isFav ? '❤️' : '🤍'}</button>
+                    <button id="modal-fav-btn-${product.id}" onclick="toggleFavorite(${product.id})" class="absolute top-3 left-3 bg-white p-3 rounded-full border-2 border-black text-xl hover:scale-110 shadow cursor-pointer transition-transform">${isFav ? '❤️' : '🤍'}</button>
                 </div>
                 ${galleryHtml}
                 <span class="bg-[#111] text-[#f4ebd0] text-xs px-2.5 py-1 rounded-md font-black inline-block mt-2">${product.parsedCategory}</span>
@@ -1359,6 +1423,29 @@
             updateCartUI();
         }
 
+        // تحديث أيقونة المفضلات فوراً بدون إعادة بناء الصفحة
+        function updateFavUIOnly() {
+            document.getElementById('fav-count').innerText = favorites.length;
+            
+            // تحديث القلوب في كروت المنتجات المعروضة
+            document.querySelectorAll('[id^="card-fav-btn-"]').forEach(btn => {
+                const id = Number(btn.id.replace('card-fav-btn-', ''));
+                btn.innerText = favorites.includes(id) ? '❤️' : '🤍';
+            });
+
+            // تحديث القلب في المودال إن كان مفتوحاً
+            document.querySelectorAll('[id^="modal-fav-btn-"]').forEach(btn => {
+                const id = Number(btn.id.replace('modal-fav-btn-', ''));
+                btn.innerText = favorites.includes(id) ? '❤️' : '🤍';
+            });
+
+            // تحديث شريط الإعلانات
+            const adHeart = document.getElementById('ad-fav-heart');
+            if (adHeart && products[currentAdIndex]) {
+                adHeart.innerText = favorites.includes(products[currentAdIndex].id) ? '❤️' : '🤍';
+            }
+        }
+
         function toggleFavorite(id) {
             const targetId = Number(id);
             if(favorites.includes(targetId)) {
@@ -1366,14 +1453,25 @@
             } else {
                 favorites.push(targetId);
             }
-            document.getElementById('fav-count').innerText = favorites.length;
-            filterProducts();
+            
+            localStorage.setItem('jf_favs', JSON.stringify(favorites));
+            updateFavUIOnly();
+
+            const loggedEmail = localStorage.getItem('jf_email');
+            if (loggedEmail) {
+                saveFavoritesToCloud(loggedEmail);
+            }
+
+            if (showingFavoritesOnly) {
+                filterProducts();
+            }
         }
 
         function toggleFavoritesTab() {
-            const favProducts = products.filter(p => favorites.includes(p.id));
-            renderProducts(favProducts);
+            showingFavoritesOnly = true;
+            document.getElementById('selected-cat-label').innerText = '⭐ المفضلات المحفوظة';
             toggleMenu();
+            filterProducts();
         }
 
         function checkAdminEmailInput() {
@@ -1406,7 +1504,8 @@
             localStorage.setItem('jf_email', email);
             localStorage.setItem('jf_name', name);
             checkAdminStatus(email, name);
-            alert('تم تسجيل الدخول بنجاح! ✅');
+            syncFavoritesWithCloud(email);
+            alert('تم تسجيل الدخول ومزامنة المفضلات بنجاح! ✅');
             filterProducts();
         }
 
@@ -1442,11 +1541,12 @@
             grid.innerHTML = '';
             const isAdmin = localStorage.getItem('jf_email') && localStorage.getItem('jf_email').toLowerCase() === ADMIN_EMAIL.toLowerCase();
 
-            if(list.length === 0) {
+            if(!list || list.length === 0) {
                 grid.innerHTML = '<p class="col-span-full text-center font-black text-sm sm:text-xl py-16 text-gray-700">لا توجد منتجات مطابقة لهذا الصنف حالياً.</p>';
                 return;
             }
 
+            let cardsHtml = '';
             list.forEach(p => {
                 const isFav = favorites.includes(p.id);
                 const displayImg = (p.parsedImages && p.parsedImages[0]) || p.parsedImage || FALLBACK_IMG;
@@ -1461,12 +1561,12 @@
                     `;
                 }
 
-                grid.innerHTML += `
+                cardsHtml += `
                     <div class="vintage-box p-2.5 sm:p-4 flex flex-col justify-between cursor-pointer" onclick="openProductModal(${p.id})" id="product-card-${p.id}">
                         <div>
                             <div class="relative overflow-hidden rounded-lg">
                                 <img src="${displayImg}" onerror="this.onerror=null; this.src='${FALLBACK_IMG}';" alt="${p.name}" loading="lazy" class="w-full h-32 sm:h-48 object-cover border-2 border-[#111] mb-2 shadow transition-transform duration-300 hover:scale-105">
-                                <button onclick="event.stopPropagation(); toggleFavorite(${p.id}); filterProducts();" class="absolute top-1.5 left-1.5 bg-white p-1.5 rounded-full border border-[#111] text-xs hover:scale-125 transition-transform shadow cursor-pointer">${isFav ? '❤️' : '🤍'}</button>
+                                <button id="card-fav-btn-${p.id}" onclick="event.stopPropagation(); toggleFavorite(${p.id});" class="absolute top-1.5 left-1.5 bg-white p-1.5 rounded-full border border-[#111] text-xs hover:scale-125 transition-transform shadow cursor-pointer">${isFav ? '❤️' : '🤍'}</button>
                             </div>
                             <span class="bg-[#111] text-[#f4ebd0] text-[9px] px-1.5 py-0.5 rounded font-black inline-block mt-1">${p.parsedCategory}</span>
                             <h4 class="font-black text-xs sm:text-base mt-1 text-[#111] leading-tight">${p.name}</h4>
@@ -1481,30 +1581,43 @@
                     </div>
                 `;
             });
+            grid.innerHTML = cardsHtml;
         }
 
+        // فلترة خفيفة وسريعة بدون تعليق
         function filterProducts() {
             const query = document.getElementById('search-input').value.toLowerCase().trim();
             
-            const filtered = products.filter(p => {
+            let list = products;
+            if (showingFavoritesOnly) {
+                list = list.filter(p => favorites.includes(p.id));
+            }
+
+            const filtered = list.filter(p => {
                 const productName = (p.name || '').toLowerCase();
                 const productDesc = (p.cleanDesc || '').toLowerCase();
                 const productCat = (p.parsedCategory || '').trim();
                 
-                const matchQuery = productName.includes(query) || productDesc.includes(query);
-                const matchCat = (currentCategory === 'all' || productCat === currentCategory.trim());
+                const matchQuery = !query || productName.includes(query) || productDesc.includes(query);
+                const matchCat = showingFavoritesOnly || (currentCategory === 'all' || productCat === currentCategory.trim());
                 
                 return matchQuery && matchCat;
             });
             
             renderProducts(filtered);
 
-            if(filtered.length > 0 && query === '' && currentCategory === 'all') {
-                document.getElementById('ads-banner').classList.remove('hidden');
-                startAdsSlider(filtered);
+            // إدارة بانر الإعلانات بدون تكرار المؤقت
+            const banner = document.getElementById('ads-banner');
+            if(!showingFavoritesOnly && filtered.length > 0 && query === '' && currentCategory === 'all') {
+                if (banner.classList.contains('hidden')) {
+                    banner.classList.remove('hidden');
+                    startAdsSlider(filtered);
+                }
             } else {
-                document.getElementById('ads-banner').classList.add('hidden');
-                if(adInterval) clearInterval(adInterval);
+                if (!banner.classList.contains('hidden')) {
+                    banner.classList.add('hidden');
+                    if(adInterval) clearInterval(adInterval);
+                }
             }
         }
 
@@ -1568,6 +1681,13 @@
         }
 
         window.onload = function() {
+            try {
+                const storedFavs = localStorage.getItem('jf_favs');
+                if (storedFavs) favorites = JSON.parse(storedFavs);
+            } catch(e) {}
+
+            document.getElementById('fav-count').innerText = favorites.length;
+
             const savedEmail = localStorage.getItem('jf_email');
             const savedName = localStorage.getItem('jf_name');
             if(savedEmail && savedName) {
@@ -1575,7 +1695,9 @@
                 document.getElementById('user-name').value = savedName;
                 checkAdminEmailInput();
                 checkAdminStatus(savedEmail, savedName);
+                syncFavoritesWithCloud(savedEmail);
             }
+            
             fetchProductsFromSupabase();
             initRealtimePresence();
             recordAndFetchTotalVisits();
