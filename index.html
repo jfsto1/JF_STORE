@@ -28,23 +28,15 @@
             box-shadow: 5px 5px 0px #111111;
             background-color: #fffdf6;
             border-radius: 14px;
-            transition: transform 0.2s ease, box-shadow 0.2s ease;
+            transition: transform 0.18s ease, box-shadow 0.18s ease;
         }
 
         .vintage-box:hover {
-            transform: translateY(-4px) scale(1.01);
+            transform: translateY(-3px);
             box-shadow: 7px 7px 0px #111111;
         }
 
-        .rubber-banner-frame {
-            border: 4px solid #111111;
-            box-shadow: 7px 7px 0px #111111;
-            background-color: #fcf6e6;
-            background-image: radial-gradient(#111111 0.75px, transparent 0.75px);
-            background-size: 14px 14px;
-            border-radius: 20px;
-        }
-
+        /* أزرار تفاعلية بنقرة ميكانيكية ملموسة */
         .vintage-btn { 
             background-color: #111111; 
             color: #f4ebd0; 
@@ -52,14 +44,20 @@
             box-shadow: 3.5px 3.5px 0px #d4a373;
             font-weight: 900;
             border-radius: 10px;
-            transition: all 0.2s ease;
+            transition: transform 0.1s ease, box-shadow 0.1s ease, background-color 0.2s ease;
             cursor: pointer;
+            user-select: none;
         }
 
         .vintage-btn:hover { 
             background-color: #2b2b2b; 
-            transform: translate(-2px, -2px) scale(1.02); 
+            transform: translate(-1.5px, -1.5px); 
             box-shadow: 5px 5px 0px #111111;
+        }
+
+        .vintage-btn:active {
+            transform: translate(2.5px, 2.5px) !important;
+            box-shadow: 1px 1px 0px #111111 !important;
         }
 
         .vintage-btn:disabled {
@@ -97,21 +95,31 @@
             100% { transform: translateX(50%); }
         }
 
-        /* دوائر الستوري الكلاسيكية */
-        .story-avatar-ring {
-            background: linear-gradient(45deg, #111111, #d4a373, #111111);
-            padding: 3px;
+        /* كبسولة الستوريات الفخمة شبه الشفافة */
+        .stories-frosted-capsule {
+            background: rgba(255, 253, 246, 0.78);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 3px solid #111111;
+            box-shadow: 5px 5px 0px #111111;
+            border-radius: 20px;
+        }
+
+        /* حواف ستوريات الإنستغرام RGB المتوهجة */
+        .story-instagram-ring {
+            background: linear-gradient(45deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888);
+            padding: 3.5px;
             border-radius: 50%;
-            border: 2.5px solid #111;
-            box-shadow: 3px 3px 0px #111;
-            transition: transform 0.2s ease;
+            box-shadow: 0 4px 12px rgba(220, 39, 67, 0.35);
+            transition: transform 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275), box-shadow 0.25s ease;
         }
 
-        .story-avatar-ring:hover {
-            transform: scale(1.08) rotate(3deg);
+        .story-instagram-ring:hover {
+            transform: scale(1.09);
+            box-shadow: 0 6px 18px rgba(220, 39, 67, 0.55);
         }
 
-        /* كروت العرض التفاعلية 3D المصححة هندسياً لمنع التمطط والتشويه */
+        /* كرت العرض 3D الفخم الانسيابي الجديد (بدون قص وبدون حواف حادة) */
         .spotlight-3d-wrapper {
             position: relative;
             transform-style: flat;
@@ -120,18 +128,53 @@
         }
 
         .spotlight-3d-card {
+            border-radius: 26px;
+            background: radial-gradient(circle at 50% 30%, #ffffff 0%, #fffbf0 70%, #f4ebd0 100%);
+            border: 3px solid rgba(17, 17, 17, 0.95);
+            box-shadow: 0 16px 36px -10px rgba(17, 17, 17, 0.2), 5px 5px 0px #111111;
             backface-visibility: hidden;
             -webkit-backface-visibility: hidden;
             transform-origin: center center;
             will-change: transform, box-shadow;
             transition: box-shadow 0.2s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* لمعة الإضاءة الزجاجية الناعمة على الكرت */
+        .spotlight-3d-card::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(115deg, transparent 40%, rgba(255, 255, 255, 0.45) 50%, transparent 60%);
+            pointer-events: none;
+            opacity: 0.6;
         }
 
         .floating-layer-img {
             backface-visibility: hidden;
             -webkit-backface-visibility: hidden;
             will-change: transform;
-            transition: transform 0.15s ease-out;
+            transition: transform 0.2s cubic-bezier(0.2, 0.8, 0.2, 1);
+            filter: drop-shadow(0 10px 14px rgba(0, 0, 0, 0.15));
+        }
+
+        /* شريط الحافز والطلب السريع */
+        .scarcity-pill {
+            background-color: #fef2f2;
+            color: #991b1b;
+            border: 1.5px solid #f87171;
+            box-shadow: 1.5px 1.5px 0px #991b1b;
+            font-size: 10px;
+            font-weight: 900;
+            padding: 2px 8px;
+            border-radius: 6px;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
         }
 
         @keyframes rubberHoseWiggle {
@@ -204,12 +247,12 @@
         }
 
         @keyframes modalFlipIn {
-            0% { opacity: 0; transform: scale(0.85) translateY(15px); }
+            0% { opacity: 0; transform: scale(0.88) translateY(12px); }
             100% { opacity: 1; transform: scale(1) translateY(0); }
         }
 
         .modal-animate-content {
-            animation: modalFlipIn 0.25s ease-out forwards;
+            animation: modalFlipIn 0.22s ease-out forwards;
         }
 
         @keyframes fadeInOut {
@@ -331,7 +374,7 @@
     </header>
 
     <!-- زر السلة العائم -->
-    <button onclick="toggleCart()" class="cart-float-btn fixed bottom-6 right-6 z-40 w-16 h-16 bg-[#111111] text-[#f4ebd0] rounded-full border-4 border-[#f4ebd0] shadow-2xl flex flex-col items-center justify-center font-black hover:scale-115 cursor-pointer transition-all duration-300">
+    <button onclick="toggleCart()" class="cart-float-btn fixed bottom-6 right-6 z-40 w-16 h-16 bg-[#111111] text-[#f4ebd0] rounded-full border-4 border-[#f4ebd0] shadow-2xl flex flex-col items-center justify-center font-black hover:scale-110 cursor-pointer transition-all duration-300">
         <span class="text-xl">🛒</span>
         <span id="cart-count" class="absolute -top-1 -right-1 bg-red-600 text-white text-xs w-6 h-6 rounded-full flex items-center justify-center border-2 border-black font-black">0</span>
     </button>
@@ -420,9 +463,20 @@
     <!-- محتوى المتجر الرئيسي -->
     <main class="flex-1 max-w-7xl mx-auto px-2 sm:px-4 py-4 w-full">
         
-        <!-- شريط قصص المتجر (Stories Bar) -->
-        <div id="stories-section" class="mb-5 hidden">
-            <div class="flex items-center gap-4 overflow-x-auto pb-3 pt-1 px-1 scrollbar-none" id="stories-container"></div>
+        <!-- شريط قصص المتجر (Stories Bar) الفخم مع الكبسولة الشفافة والعنوان التوضيحي -->
+        <div id="stories-section" class="mb-6 hidden">
+            <div class="stories-frosted-capsule p-3 sm:p-4">
+                <div class="flex items-center justify-between pb-2 mb-2 border-b-2 border-black/15">
+                    <div class="flex items-center gap-2">
+                        <span class="w-2.5 h-2.5 rounded-full bg-red-600 animate-ping"></span>
+                        <h3 class="font-black text-xs sm:text-sm text-[#111] flex items-center gap-1.5">
+                            <span>🎬</span> تجارب وعروض المنتجات بالفيديو (اضغط للمشاهدة)
+                        </h3>
+                    </div>
+                    <span class="text-[10px] font-bold text-gray-700 bg-white/70 px-2 py-0.5 rounded-full border border-black/20">تحديثات حية 🔥</span>
+                </div>
+                <div class="flex items-center gap-3.5 sm:gap-5 overflow-x-auto pb-1 pt-1 px-1 scrollbar-none" id="stories-container"></div>
+            </div>
         </div>
 
         <!-- بانر الإعلانات المخصص -->
@@ -835,6 +889,18 @@
 
         let storyProgressInterval = null;
 
+        // دالة توليد عبارة الحافز والطلب السريع الذكية
+        function getUrgencyBadge(productId) {
+            const badges = [
+                '⚡ متبقي 3 قطع فقط بالمخزن!',
+                '🔥 تم طلب قطعتين اليوم!',
+                '⚡ كمية محدودة جداً!',
+                '🔥 الأكثر مشاهدة الآن!'
+            ];
+            const index = Math.abs((Number(productId) || 1) % badges.length);
+            return `<div class="scarcity-pill mt-1.5">${badges[index]}</div>`;
+        }
+
         // خوارزمية التدوير الزمني الذكي (أحدث 3 + تدوير الباقي كل 12 ساعة)
         function applySmartProductDistribution(items) {
             if (!items || items.length <= 3) return items;
@@ -880,7 +946,7 @@
             }, 32000);
         }
 
-        // محرك الحركة 3D المصحح هندسياً للحاسبة والموبايل لمنع التمطط والتشويه
+        // محرك الحركة 3D الفخم والانسيابي المصحح (بدون تشويه ولا تمطط)
         let isScrollTicking = false;
         function update3DScrollCards() {
             const wrappers = document.querySelectorAll('.spotlight-3d-wrapper');
@@ -891,47 +957,46 @@
                 if (!card) return;
 
                 const rect = wrapper.getBoundingClientRect();
-                if (rect.bottom >= -150 && rect.top <= windowHeight + 150) {
+                if (rect.bottom >= -120 && rect.top <= windowHeight + 120) {
                     const cardCenter = rect.top + rect.height / 2;
                     const screenCenter = windowHeight / 2;
-                    // نسبة التقدم من -1 إلى +1
-                    const progress = Math.max(-1, Math.min(1, (cardCenter - screenCenter) / (windowHeight / 1.1)));
-                    const closeness = 1 - Math.abs(progress); // 1 في منتصف الشاشة، 0 عند الأطراف
+                    const progress = Math.max(-1, Math.min(1, (cardCenter - screenCenter) / (windowHeight / 1.15)));
+                    const closeness = 1 - Math.abs(progress);
 
                     const styleType = wrapper.getAttribute('data-style');
 
                     if (styleType === '1') {
-                        // النمط 1: تكبير ودوران محوري سلس
-                        const scale = 0.96 + (closeness * 0.08); // بين 0.96 و 1.04
-                        const rot = progress * -4.5; // ميلان محوري ناعم بدون تشويه
+                        // نمط تكبير محوري فخم مع ميلان سلس
+                        const scale = 0.96 + (closeness * 0.08);
+                        const rot = progress * -4;
                         card.style.transform = `translate3d(0, 0, 0) scale(${scale}) rotate(${rot}deg)`;
-                        const shadow = Math.round(5 + closeness * 6);
-                        card.style.boxShadow = `${shadow}px ${shadow}px 0px #111`;
+                        const shadowBlur = Math.round(18 + closeness * 16);
+                        card.style.boxShadow = `0 ${shadowBlur}px 38px -10px rgba(17, 17, 17, 0.28), 5px 5px 0px #111111`;
                     } else if (styleType === '2') {
-                        // النمط 2: انزلاق وميلان أفقي ثلاثي الأبعاد
+                        // نمط انزلاق ثلاثي الأبعاد مع طبقات عمق للصورة
                         const scale = 0.97 + (closeness * 0.06);
-                        const transY = progress * -14;
-                        const rot = progress * 3.5;
+                        const transY = progress * -12;
+                        const rot = progress * 3;
                         card.style.transform = `translate3d(0, ${transY}px, 0) scale(${scale}) rotate(${rot}deg)`;
-                        const shadowY = Math.round(5 + closeness * 7);
-                        card.style.boxShadow = `6px ${shadowY}px 0px #111`;
+                        const shadowBlur = Math.round(16 + closeness * 18);
+                        card.style.boxShadow = `0 ${shadowBlur}px 36px -8px rgba(17, 17, 17, 0.25), 5px 5px 0px #111111`;
                     } else if (styleType === '3') {
-                        // النمط 3: الطبقات العائمة (بروز صورة المنتج للأمام)
+                        // نمط الطبقات العائمة (صورة المنتج تبرز بنعومة)
                         const scale = 0.96 + (closeness * 0.07);
                         card.style.transform = `translate3d(0, 0, 0) scale(${scale})`;
                         const layerImg = wrapper.querySelector('.floating-layer-img');
                         if (layerImg) {
-                            const floatY = progress * -12;
+                            const floatY = progress * -14;
                             const imgScale = 1 + (closeness * 0.05);
                             layerImg.style.transform = `translate3d(0, ${floatY}px, 0) scale(${imgScale})`;
                         }
                     } else if (styleType === '4') {
-                        // النمط 4: الانبثاق ثلاثي الأبعاد
-                        const scale = 0.95 + (closeness * 0.09);
-                        const rot = (1 - closeness) * (progress > 0 ? 3 : -3);
+                        // نمط البروز المتوازن
+                        const scale = 0.95 + (closeness * 0.08);
+                        const rot = (1 - closeness) * (progress > 0 ? 2.5 : -2.5);
                         card.style.transform = `translate3d(0, 0, 0) scale(${scale}) rotate(${rot}deg)`;
-                        const shadow = Math.round(4 + closeness * 8);
-                        card.style.boxShadow = `${shadow}px ${shadow}px 0px #111`;
+                        const shadowBlur = Math.round(15 + closeness * 20);
+                        card.style.boxShadow = `0 ${shadowBlur}px 40px -10px rgba(17, 17, 17, 0.3), 5px 5px 0px #111111`;
                     }
                 }
             });
@@ -961,7 +1026,7 @@
                         if (onlineEl) onlineEl.innerText = `${totalOnline} متسوق 🟢`;
                     })
                     .subscribe(async (status) => {
-                        if (status === 'SUIBRIDED' || status === 'SUBSCRIBED') {
+                        if (status === 'SUBSCRIBED') {
                             await presenceChannel.track({ online_at: new Date().toISOString() });
                         }
                     });
@@ -1122,7 +1187,7 @@
             return (data || []).map(parseSingleProduct);
         }
 
-        // شريط القصص (Stories)
+        // شريط القصص (Stories) بحواف الإنستغرام RGB المتوهجة والكبسولة الشفافة
         function renderStoriesBar() {
             const container = document.getElementById('stories-container');
             const section = document.getElementById('stories-section');
@@ -1142,10 +1207,12 @@
                 const thumb = (prod.parsedImages && prod.parsedImages[0]) || prod.parsedImage || FALLBACK_IMG;
                 html += `
                     <div class="flex flex-col items-center flex-shrink-0 cursor-pointer group" onclick="openStoryViewer(${prod.id})">
-                        <div class="story-avatar-ring w-16 h-16 sm:w-20 sm:h-20 flex items-center justify-center p-0.5 bg-[#f4ebd0]">
-                            <img src="${thumb}" onerror="this.onerror=null; this.src='${FALLBACK_IMG}';" class="w-full h-full rounded-full object-cover border-2 border-black">
+                        <div class="story-instagram-ring w-16 h-16 sm:w-20 sm:h-20 flex items-center justify-center">
+                            <div class="w-full h-full rounded-full p-[2px] bg-[#fffdf6]">
+                                <img src="${thumb}" onerror="this.onerror=null; this.src='${FALLBACK_IMG}';" class="w-full h-full rounded-full object-cover">
+                            </div>
                         </div>
-                        <span class="text-[11px] font-black text-[#111] mt-1 text-center truncate w-16 sm:w-20 group-hover:underline">${prod.name}</span>
+                        <span class="text-[11px] font-black text-[#111] mt-1.5 text-center truncate w-16 sm:w-20 group-hover:underline">${prod.name}</span>
                     </div>
                 `;
             });
@@ -1384,7 +1451,7 @@
             }
         });
 
-        // رفع وحفظ المنتج
+        // رفع وحفظ المنتج بالسحابة
         async function saveProductToSupabase() {
             const saveBtn = document.getElementById('save-btn');
             saveBtn.disabled = true;
@@ -1704,7 +1771,10 @@
                     <button id="modal-fav-btn-${product.id}" onclick="toggleFavorite(${product.id})" class="absolute top-3 left-3 bg-white p-3 rounded-full border-2 border-black text-xl hover:scale-110 shadow cursor-pointer transition-transform">${isFav ? '❤️' : '🤍'}</button>
                 </div>
                 ${galleryHtml}
-                <span class="bg-[#111] text-[#f4ebd0] text-xs px-2.5 py-1 rounded-md font-black inline-block mt-2">${product.parsedCategory}</span>
+                <div class="flex items-center justify-between mt-2">
+                    <span class="bg-[#111] text-[#f4ebd0] text-xs px-2.5 py-1 rounded-md font-black inline-block">${product.parsedCategory}</span>
+                    ${getUrgencyBadge(product.id)}
+                </div>
                 <h3 class="font-black text-xl mt-1 text-[#111]">${product.name}</h3>
                 <p class="text-green-900 font-black text-xl mt-1">${Number(product.price).toLocaleString()} د.ع</p>
                 
@@ -1998,7 +2068,7 @@
             filterProducts();
         }
 
-        // بناء كروت المنتجات مع التوزيع المستمر للـ 3D بعد كل 7 كروت بدون كتابات مشوهة
+        // بناء كروت المنتجات مع التوزيع المستمر للـ 3D الفخم النقي
         function renderProducts(list) {
             const grid = document.getElementById('products-grid');
             grid.innerHTML = '';
@@ -2038,6 +2108,7 @@
                             </div>
                             <span class="bg-[#111] text-[#f4ebd0] text-[9px] px-1.5 py-0.5 rounded font-black inline-block mt-1">${p.parsedCategory}</span>
                             <h4 class="font-black text-xs sm:text-base mt-1 text-[#111] leading-tight">${p.name}</h4>
+                            ${getUrgencyBadge(p.id)}
                         </div>
                         <div>
                             <div class="mt-2.5 flex flex-col gap-1 pt-2 border-t border-dashed border-black">
@@ -2049,7 +2120,7 @@
                     </div>
                 `;
 
-                // حقن كروت العرض التفاعلية 3D كل 7 كروت (خالية من الكتابات الزائدة وتدور بنعومة)
+                // حقن كروت العرض 3D الفخمة الانسيابية بدون حواف مقصوصة وبدون عبارات نكرة كل 7 كروت
                 if ((idx + 1) % 7 === 0 && (idx + 1) < list.length) {
                     spotlightCount++;
                     const currentStyle = ((spotlightCount - 1) % 4) + 1;
@@ -2057,18 +2128,21 @@
                     const spotImg = (spotlightItem.parsedImages && spotlightItem.parsedImages[0]) || spotlightItem.parsedImage || FALLBACK_IMG;
 
                     cardsHtml += `
-                        <div class="col-span-full my-6 spotlight-3d-wrapper" data-style="${currentStyle}">
-                            <div class="spotlight-3d-card rubber-banner-frame p-4 sm:p-6 bg-[#fffdf6] flex flex-col sm:flex-row items-center justify-between gap-5 cursor-pointer" onclick="openProductModal(${spotlightItem.id})">
-                                <div class="w-full sm:w-1/2 relative overflow-hidden rounded-xl border-3 border-black shadow-lg bg-[#fcf6e6] p-1 flex items-center justify-center">
-                                    <img src="${spotImg}" onerror="this.onerror=null; this.src='${FALLBACK_IMG}';" class="floating-layer-img w-full h-52 sm:h-64 object-cover rounded-lg border-2 border-black shadow">
+                        <div class="col-span-full my-7 spotlight-3d-wrapper" data-style="${currentStyle}">
+                            <div class="spotlight-3d-card p-5 sm:p-7 flex flex-col sm:flex-row items-center justify-between gap-6 cursor-pointer" onclick="openProductModal(${spotlightItem.id})">
+                                <div class="w-full sm:w-1/2 relative overflow-hidden rounded-2xl flex items-center justify-center p-2 bg-gradient-to-b from-white/60 to-transparent">
+                                    <img src="${spotImg}" onerror="this.onerror=null; this.src='${FALLBACK_IMG}';" class="floating-layer-img w-full h-52 sm:h-64 object-cover rounded-xl border-2 border-black/80">
                                 </div>
-                                <div class="w-full sm:w-1/2 text-right space-y-2">
-                                    <span class="bg-[#111] text-[#f4ebd0] text-xs px-2.5 py-1 rounded font-black inline-block">${spotlightItem.parsedCategory}</span>
+                                <div class="w-full sm:w-1/2 text-right space-y-2.5">
+                                    <div class="flex items-center gap-2">
+                                        <span class="bg-[#111] text-[#f4ebd0] text-xs px-2.5 py-1 rounded font-black inline-block">${spotlightItem.parsedCategory}</span>
+                                        ${getUrgencyBadge(spotlightItem.id)}
+                                    </div>
                                     <h3 class="text-base sm:text-2xl font-black text-[#111] leading-tight">${spotlightItem.name}</h3>
-                                    <p class="text-xs font-bold text-gray-700 line-clamp-2">${spotlightItem.cleanDesc || 'تسوق الآن من متجر JF Store واستمتع بأفضل العروض'}</p>
-                                    <div class="text-green-900 font-black text-lg sm:text-2xl pt-1">${Number(spotlightItem.price).toLocaleString()} د.ع</div>
+                                    <p class="text-xs font-bold text-gray-700 line-clamp-2 leading-relaxed">${spotlightItem.cleanDesc || 'اكتشف أفضل المواصفات وأحدث التجهيزات مع JF Store.'}</p>
+                                    <div class="text-green-900 font-black text-xl sm:text-2xl pt-1">${Number(spotlightItem.price).toLocaleString()} د.ع</div>
                                     <button class="vintage-btn py-2.5 px-6 text-xs sm:text-sm bg-green-700 text-white hover:bg-green-800 w-full sm:w-auto mt-2">
-                                        اطلب العرض الخاص الآن 🛒
+                                        اطلب الآن 🛒
                                     </button>
                                 </div>
                             </div>
