@@ -90,7 +90,7 @@
         .marquee-content {
             display: inline-block;
             white-space: nowrap;
-            animation: marquee 25s linear infinite;
+            animation: marquee 24s linear infinite;
         }
 
         @keyframes marquee {
@@ -112,16 +112,22 @@
             transform: scale(1.08) rotate(3deg);
         }
 
-        /* كرت العرض 3D التفاعلي عند التمرير */
+        /* كروت العرض 3D التفاعلية مع السكرول */
         .spotlight-3d-wrapper {
-            perspective: 1000px;
-            transition: all 0.4s cubic-bezier(0.25, 1, 0.5, 1);
+            perspective: 1200px;
+            transform-style: preserve-3d;
         }
 
         .spotlight-3d-card {
             transform-style: preserve-3d;
-            transition: transform 0.35s ease-out, box-shadow 0.35s ease-out;
+            will-change: transform, box-shadow;
+            transition: box-shadow 0.2s ease;
+        }
+
+        .floating-layer-img {
+            transform-style: preserve-3d;
             will-change: transform;
+            transition: transform 0.15s ease-out;
         }
 
         @keyframes rubberHoseWiggle {
@@ -233,7 +239,6 @@
             box-shadow: 1px 1px 0px #111111;
         }
 
-        /* إشعار الشراء الحي الهادئ */
         #social-toast {
             transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), opacity 0.4s ease;
         }
@@ -241,7 +246,7 @@
 </head>
 <body class="min-h-screen flex flex-col relative pb-20">
 
-    <!-- ستكرات كرتونية جانبية كلاسيكية -->
+    <!-- ستكرات جانبية كلاسيكية -->
     <div class="fixed top-1/3 -right-1 sm:-right-2 z-30 pointer-events-none rubber-sticker-right">
         <svg class="w-16 h-20 sm:w-24 sm:h-28 filter drop-shadow-[2px_2px_0px_rgba(0,0,0,1)]" viewBox="0 0 100 120" fill="none" xmlns="http://www.w3.org/2000/svg">
             <path d="M30 60 C30 35, 70 35, 70 60 C70 90, 30 90, 30 60 Z" fill="#fffdf6" stroke="#111" stroke-width="4"/>
@@ -280,7 +285,9 @@
             <span class="text-[#d4a373]">★</span>
             <span class="text-black">🚚 شحن سريع 24-48 ساعة لكافة المحافظات</span>
             <span class="text-[#d4a373]">★</span>
-            <span class="text-black">🛡️ الدفع الآمن عند الاستلام وتفحص الطلب</span>
+            <span class="text-black">🛡️ دفع آمن عند الاستلام</span>
+            <span class="text-[#d4a373]">★</span>
+            <span class="text-black">📦 فحص أمام المندوب</span>
             <span class="text-[#d4a373]">★</span>
             <span class="text-black">✨ بضاعة جديدة يومياً في JF STORE 🖤</span>
             <span class="text-[#d4a373]">★</span>
@@ -288,7 +295,9 @@
             <span class="text-[#d4a373]">★</span>
             <span class="text-black">🚚 شحن سريع 24-48 ساعة لكافة المحافظات</span>
             <span class="text-[#d4a373]">★</span>
-            <span class="text-black">🛡️ الدفع الآمن عند الاستلام وتفحص الطلب</span>
+            <span class="text-black">🛡️ دفع آمن عند الاستلام</span>
+            <span class="text-[#d4a373]">★</span>
+            <span class="text-black">📦 فحص أمام المندوب</span>
             <span class="text-[#d4a373]">★</span>
             <span class="text-black">✨ بضاعة جديدة يومياً في JF STORE 🖤</span>
         </div>
@@ -824,8 +833,6 @@
         const ADMIN_EMAIL = "mrskull33442@gmail.com";
         const ADMIN_PASS = "aloxgame4";
 
-        // مؤقت ومتحكم الستوري
-        let storyTimer = null;
         let storyProgressInterval = null;
 
         // خوارزمية التدوير الزمني الذكي (أحدث 3 + تدوير الباقي كل 12 ساعة)
@@ -835,10 +842,8 @@
             const topThree = items.slice(0, 3);
             const remaining = items.slice(3);
 
-            // مفتاح زمني يتغير كل 12 ساعة
             const twelveHourBlock = Math.floor(Date.now() / (1000 * 60 * 60 * 12));
             
-            // خلط ناعم متكرر يعتمد على البلوك الزمني
             const shuffledRemaining = [...remaining].sort((a, b) => {
                 const seedA = Math.sin((a.id || 1) + twelveHourBlock) * 10000;
                 const seedB = Math.sin((b.id || 1) + twelveHourBlock) * 10000;
@@ -872,30 +877,73 @@
                         toast.classList.add('translate-y-32', 'opacity-0');
                     }, 4000);
                 }
-            }, 32000); // تظهر بهدوء كل 32 ثانية
+            }, 32000);
         }
 
-        // إعداد مراقب الحركة 3D عند التمرير (3D Scroll Spotlight Observer)
-        function initSpotlightScrollObserver() {
-            const observer = new IntersectionObserver((entries) => {
-                entries.forEach(entry => {
-                    const card = entry.target.querySelector('.spotlight-3d-card');
-                    if (!card) return;
+        // محرك الـ 3D التفاعلي المربوط بمليمترات إصبع الزبون بالسكرول (Scroll-Linked GPU Engine)
+        let isScrollTicking = false;
+        function update3DScrollCards() {
+            const wrappers = document.querySelectorAll('.spotlight-3d-wrapper');
+            const windowHeight = window.innerHeight;
 
-                    if (entry.isIntersecting) {
-                        // حركة تكبير وبروز 3D انسيابية
-                        card.style.transform = 'scale(1.04) rotateX(0deg) translateY(-4px)';
-                        card.style.boxShadow = '10px 10px 0px #111';
-                    } else {
-                        // وضعية الانتظار والميلان
-                        card.style.transform = 'scale(0.96) rotateX(7deg) translateY(0px)';
-                        card.style.boxShadow = '4px 4px 0px #111';
+            wrappers.forEach(wrapper => {
+                const card = wrapper.querySelector('.spotlight-3d-card');
+                if (!card) return;
+
+                const rect = wrapper.getBoundingClientRect();
+                // فحص إذا كان الكرت داخل أو قريب من الشاشة
+                if (rect.bottom >= -100 && rect.top <= windowHeight + 100) {
+                    // حساب تقدم الكرت بالنسبة لمركز الشاشة من -1 إلى +1
+                    const cardCenter = rect.top + rect.height / 2;
+                    const screenCenter = windowHeight / 2;
+                    const progress = Math.max(-1, Math.min(1, (cardCenter - screenCenter) / (windowHeight / 1.1)));
+                    
+                    const styleType = wrapper.getAttribute('data-style');
+
+                    if (styleType === '1') {
+                        // النمط 1: Zoom In + 3D Rotation (يكبر ويدور بسلاسة باتجاه الشاشة)
+                        const scale = 1.05 - Math.abs(progress) * 0.14;
+                        const rotY = progress * -16;
+                        const rotX = progress * 10;
+                        card.style.transform = `scale3d(${scale}, ${scale}, 1) rotateY(${rotY}deg) rotateX(${rotX}deg)`;
+                        const shadowOffset = Math.max(4, 10 - Math.abs(progress) * 6);
+                        card.style.boxShadow = `${shadowOffset}px ${shadowOffset}px 0px #111`;
+                    } else if (styleType === '2') {
+                        // النمط 2: 3D Perspective Tilt & Shift (انعطاف مجسم من الجوانب)
+                        const scale = 1.03 - Math.abs(progress) * 0.1;
+                        const rotX = progress * 15;
+                        const transY = progress * -20;
+                        card.style.transform = `scale3d(${scale}, ${scale}, 1) rotateX(${rotX}deg) translateY(${transY}px)`;
+                        card.style.boxShadow = `6px ${Math.max(4, 12 - Math.abs(progress) * 8)}px 0px #111`;
+                    } else if (styleType === '3') {
+                        // النمط 3: Floating Depth (صورة المنتج تطفو للأمام فوق الخلفية)
+                        const scale = 1.02 - Math.abs(progress) * 0.08;
+                        card.style.transform = `scale3d(${scale}, ${scale}, 1)`;
+                        const layerImg = wrapper.querySelector('.floating-layer-img');
+                        if (layerImg) {
+                            const floatZ = Math.max(0, (1 - Math.abs(progress)) * 26);
+                            const floatY = progress * -15;
+                            layerImg.style.transform = `translate3d(0, ${floatY}px, ${floatZ}px) scale(${1 + (1 - Math.abs(progress)) * 0.06})`;
+                        }
+                    } else if (styleType === '4') {
+                        // النمط 4: Pop-Out 3D (انبثاق ثلاثي الأبعاد مع سحبة الشاشة)
+                        const popFactor = 1 - Math.abs(progress);
+                        const scale = 0.94 + Math.max(0, popFactor) * 0.12;
+                        const rotZ = progress * 4;
+                        card.style.transform = `scale3d(${scale}, ${scale}, 1) rotateZ(${rotZ}deg)`;
+                        card.style.boxShadow = `${8 * popFactor + 3}px ${8 * popFactor + 3}px 0px #111`;
                     }
-                });
-            }, { threshold: [0.15, 0.5, 0.85] });
-
-            document.querySelectorAll('.spotlight-3d-wrapper').forEach(el => observer.observe(el));
+                }
+            });
+            isScrollTicking = false;
         }
+
+        window.addEventListener('scroll', () => {
+            if (!isScrollTicking) {
+                window.requestAnimationFrame(update3DScrollCards);
+                isScrollTicking = true;
+            }
+        }, { passive: true });
 
         // نظام الزوار المباشر (Online Now)
         function initRealtimePresence() {
@@ -1074,13 +1122,12 @@
             return (data || []).map(parseSingleProduct);
         }
 
-        // عرض وإدارة شريط القصص (Stories)
+        // شريط القصص (Stories)
         function renderStoriesBar() {
             const container = document.getElementById('stories-container');
             const section = document.getElementById('stories-section');
             if (!container || !section) return;
 
-            // تصفية المنتجات التي تحتوي على مقطع فيديو ستوري
             const storyProducts = rawProducts.filter(p => p.parsedVideo && p.parsedVideo.trim() !== '');
 
             if (storyProducts.length === 0) {
@@ -1105,7 +1152,6 @@
             container.innerHTML = html;
         }
 
-        // فتح مشغل الستوري التفاعلي
         function openStoryViewer(prodId) {
             const prod = products.find(p => p.id == prodId);
             if (!prod || !prod.parsedVideo) return;
@@ -1157,7 +1203,6 @@
             modal.classList.add('hidden');
         }
 
-        // أدوات تحكم الأدمن في الستوري
         function openAdminStoryModal(prodId) {
             const prod = products.find(p => p.id == prodId);
             if (!prod) return;
@@ -1302,7 +1347,6 @@
 
                 if (data) {
                     rawProducts = parseProductsRawData(data);
-                    // تطبيق التوزيع الذكي للظهور
                     products = applySmartProductDistribution(rawProducts);
                     renderCategoriesDropdown();
                     renderStoriesBar();
@@ -1340,7 +1384,7 @@
             }
         });
 
-        // نشر متوازي فائق السرعة
+        // رفع وحفظ المنتج
         async function saveProductToSupabase() {
             const saveBtn = document.getElementById('save-btn');
             saveBtn.disabled = true;
@@ -1845,7 +1889,6 @@
             updateCartUI();
         }
 
-        // تحديث أيقونة المفضلات فوراً
         function updateFavUIOnly() {
             document.getElementById('fav-count').innerText = favorites.length;
             
@@ -1955,7 +1998,7 @@
             filterProducts();
         }
 
-        // بناء وعرض كروت المتجر مع كرت العرض 3D المميز وزر الستوري السريع للأدمن
+        // بناء كروت المنتجات مع التوزيع المستمر للـ 3D بعد كل 7 كروت
         function renderProducts(list) {
             const grid = document.getElementById('products-grid');
             grid.innerHTML = '';
@@ -1967,6 +2010,8 @@
             }
 
             let cardsHtml = '';
+            let spotlightCount = 0;
+
             list.forEach((p, idx) => {
                 const isFav = favorites.includes(p.id);
                 const displayImg = (p.parsedImages && p.parsedImages[0]) || p.parsedImage || FALLBACK_IMG;
@@ -1984,7 +2029,6 @@
                     `;
                 }
 
-                // كرت المنتج الاعتيادي
                 cardsHtml += `
                     <div class="vintage-box p-2.5 sm:p-4 flex flex-col justify-between cursor-pointer" onclick="openProductModal(${p.id})" id="product-card-${p.id}">
                         <div>
@@ -2005,22 +2049,33 @@
                     </div>
                 `;
 
-                // حقن كرت العرض ثلاثي الأبعاد المميز بعد كل 6 منتجات (Spotlight 3D Card)
-                if ((idx + 1) === 6 && list.length > 5) {
-                    const spotlightItem = list[0]; // عرض المنتج الأول كمنتج مميز بالزووم 3D
+                // حقن كروت العرض 3D المستمرة كل 7 كروت منتجات اعتيادية بتناوب الأنماط الأربعة
+                if ((idx + 1) % 7 === 0 && (idx + 1) < list.length) {
+                    spotlightCount++;
+                    const currentStyle = ((spotlightCount - 1) % 4) + 1; // نمط 1، 2، 3، أو 4
+                    const spotlightItem = list[idx];
+                    const spotImg = (spotlightItem.parsedImages && spotlightItem.parsedImages[0]) || spotlightItem.parsedImage || FALLBACK_IMG;
+
+                    const styleTitles = [
+                        '✨ العرض الماسي التفاعلي 3D ✨',
+                        '🔥 الأكثر طلباً هذا الأسبوع 🔥',
+                        '👑 التميز الكلاسيكي الحصري 👑',
+                        '⚡ فرصة اليوم الخاصة ⚡'
+                    ];
+
                     cardsHtml += `
-                        <div class="col-span-full my-6 spotlight-3d-wrapper">
+                        <div class="col-span-full my-6 spotlight-3d-wrapper" data-style="${currentStyle}">
                             <div class="spotlight-3d-card rubber-banner-frame p-4 sm:p-6 bg-[#fffdf6] flex flex-col sm:flex-row items-center justify-between gap-5 cursor-pointer" onclick="openProductModal(${spotlightItem.id})">
-                                <div class="w-full sm:w-1/2 relative overflow-hidden rounded-xl border-3 border-black shadow-lg">
-                                    <img src="${(spotlightItem.parsedImages && spotlightItem.parsedImages[0]) || spotlightItem.parsedImage || FALLBACK_IMG}" class="w-full h-48 sm:h-64 object-cover">
-                                    <div class="absolute top-2 right-2 bg-black text-[#f4ebd0] text-[10px] font-black px-2.5 py-1 rounded-md border border-white">
-                                        ✨ المنتج المميز اليوم ✨
+                                <div class="w-full sm:w-1/2 relative overflow-hidden rounded-xl border-3 border-black shadow-lg bg-[#fcf6e6] p-1 flex items-center justify-center">
+                                    <img src="${spotImg}" onerror="this.onerror=null; this.src='${FALLBACK_IMG}';" class="floating-layer-img w-full h-52 sm:h-64 object-cover rounded-lg border-2 border-black shadow">
+                                    <div class="absolute top-2 right-2 bg-black text-[#f4ebd0] text-[10px] font-black px-2.5 py-1 rounded-md border border-white z-10">
+                                        ${styleTitles[currentStyle - 1]}
                                     </div>
                                 </div>
                                 <div class="w-full sm:w-1/2 text-right space-y-2">
                                     <span class="bg-[#111] text-[#f4ebd0] text-xs px-2.5 py-1 rounded font-black inline-block">${spotlightItem.parsedCategory}</span>
                                     <h3 class="text-base sm:text-2xl font-black text-[#111] leading-tight">${spotlightItem.name}</h3>
-                                    <p class="text-xs font-bold text-gray-700 line-clamp-2">${spotlightItem.cleanDesc || 'اكتشف أفضل المواصفات مع متجر JF Store'}</p>
+                                    <p class="text-xs font-bold text-gray-700 line-clamp-2">${spotlightItem.cleanDesc || 'تسوق الآن من متجر JF Store واستمتع بأفضل العروض'}</p>
                                     <div class="text-green-900 font-black text-lg sm:text-2xl pt-1">${Number(spotlightItem.price).toLocaleString()} د.ع</div>
                                     <button class="vintage-btn py-2.5 px-6 text-xs sm:text-sm bg-green-700 text-white hover:bg-green-800 w-full sm:w-auto mt-2">
                                         اطلب العرض الخاص الآن 🛒
@@ -2033,10 +2088,10 @@
             });
 
             grid.innerHTML = cardsHtml;
-            initSpotlightScrollObserver();
+            // تحديث فوري للمواقع ثلاثية الأبعاد
+            setTimeout(update3DScrollCards, 50);
         }
 
-        // فلترة خفيفة وسريعة بدون تعليق
         function filterProducts() {
             const query = document.getElementById('search-input').value.toLowerCase().trim();
             
@@ -2124,7 +2179,7 @@
             msg += `💰 *إجمالي المنتجات:* ${subtotal.toLocaleString()} د.ع\n`;
             msg += `🚚 *سعر التوصيل:* 5,000 د.ع\n`;
             msg += `🔴 *التكلفة النهائية:* ${finalTotal.toLocaleString()} د.ع\n`;
-            msg += `🛡️ *طريقة الدفع:* الدفع عند الاستلام\n\n`;
+            msg += `🛡️ *طريقة الدفع:* دفع آمن عند الاستلام (فحص أمام المندوب)\n\n`;
             msg += `يرجى تأكيد الطلب وشكراً!`;
 
             const url = `https://wa.me/9647717938654?text=${encodeURIComponent(msg)}`;
