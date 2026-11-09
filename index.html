@@ -1005,23 +1005,36 @@
         }
 
         // رفع الصور سحابياً مجاناً للأبد عبر ImgBB
-        async function uploadFileToStorage(file) {
-            try {
-                const formData = new FormData();
-                formData.append("image", file);
-                const res = await fetch(`https://api.imgbb.com/1/upload?key=${IMGBB_API_KEY}`, {
-                    method: "POST",
-                    body: formData
-                });
-                const resData = await res.json();
-                if (resData.success) {
-                    return resData.data.url;
-                } else {
-                    return await convertFileToBase64(file);
-                }
-            } catch (e) {
-                return await convertFileToBase64(file);
-            }
+// رفع الصور سحابياً مجاناً للأبد عبر ImgBB بطريقة مضمونة 100% للموبايل والكمبيوتر
+        function uploadFileToStorage(file) {
+            return new Promise((resolve, reject) => {
+                const reader = new FileReader();
+                reader.readAsDataURL(file);
+                reader.onload = async () => {
+                    try {
+                        // استخراج كود الصورة الصافي بدون فوارز منقوطة وإرساله لـ ImgBB
+                        const base64Data = reader.result.split(',')[1];
+                        const formData = new FormData();
+                        formData.append("key", IMGBB_API_KEY);
+                        formData.append("image", base64Data);
+
+                        const res = await fetch("https://api.imgbb.com/1/upload", {
+                            method: "POST",
+                            body: formData
+                        });
+                        const resData = await res.json();
+                        if (resData && resData.success && resData.data && resData.data.url) {
+                            resolve(resData.data.url);
+                        } else {
+                            const msg = resData?.error?.message || "تعذر رفع الصورة إلى ImgBB";
+                            reject(new Error(msg));
+                        }
+                    } catch (err) {
+                        reject(err);
+                    }
+                };
+                reader.onerror = () => reject(new Error("تعذر قراءة ملف الصورة من جهازك"));
+            });
         }
 
         function convertFileToBase64(file) {
