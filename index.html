@@ -1288,28 +1288,40 @@
         }
 
         // جلب المنتجات المباشر عبر REST API فائق السرعة
+// جلب جميع المنتجات بالكامل بدون التقيد بحد الـ 300
         async function fetchProductsFromFirestore() {
             const loader = document.getElementById('jf-main-loader');
             try {
-                const res = await fetch(`${FIRESTORE_BASE}/products?pageSize=1000`);
-                if (!res.ok) throw new Error("تعذر جلب البيانات من السيرفر");
+                let allDocs = [];
+                let pageToken = '';
 
-                const json = await res.json();
+                // تكرار الجلب لسحب كل الصفحات والمنتجات بالكامل
+                do {
+                    const url = `${FIRESTORE_BASE}/products?pageSize=300${pageToken ? '&pageToken=' + encodeURIComponent(pageToken) : ''}`;
+                    const res = await fetch(url);
+                    if (!res.ok) throw new Error("تعذر جلب البيانات من السيرفر");
+
+                    const json = await res.json();
+                    if (json.documents && json.documents.length > 0) {
+                        allDocs = allDocs.concat(json.documents);
+                    }
+                    pageToken = json.nextPageToken || '';
+                } while (pageToken);
+
                 const data = [];
-
-                if (json.documents && json.documents.length > 0) {
-                    json.documents.forEach(doc => {
-                        const fields = doc.fields || {};
-                        const docId = doc.name.split('/').pop();
-                        data.push({
-                            id: fields.id?.stringValue || docId,
-                            name: fields.name?.stringValue || '',
-                            price: Number(fields.price?.stringValue || fields.price?.integerValue || fields.price?.doubleValue || 0),
-                            desc: fields.desc?.stringValue || '',
-                            created_at: fields.created_at?.stringValue || ''
-                        });
+                allDocs.forEach(doc => {
+                    const fields = doc.fields || {};
+                    const docId = doc.name.split('/').pop();
+                    data.push({
+                        id: fields.id?.stringValue || docId,
+                        name: fields.name?.stringValue || '',
+                        price: Number(fields.price?.stringValue || fields.price?.integerValue || fields.price?.doubleValue || 0),
+                        desc: fields.desc?.stringValue || '',
+                        created_at: fields.created_at?.stringValue || ''
                     });
+                });
 
+                if (data.length > 0) {
                     rawProducts = parseProductsRawData(data);
                     products = applySmartProductDistribution(rawProducts);
                     renderCategoriesDropdown();
