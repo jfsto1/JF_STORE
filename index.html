@@ -537,10 +537,8 @@
                 </div>
 
                 <div class="vintage-box p-2.5 bg-white">
-                    <label class="block text-[10px] sm:text-xs font-black mb-1">🎥 فيديو (اختياري):</label>
-                    <input type="file" id="video-file" accept="video/*" class="w-full text-[10px] sm:text-xs font-bold cursor-pointer">
-                </div>
-
+<label class="block text-[10px] sm:text-xs font-black mb-1">🎬 رابط فيديو الستوري (اختياري)</label>
+<input type="text" id="video-file" placeholder="ألصق رابط الفيديو هنا..." class="w-full text-[10px] sm:text-xs font-bold p-1 border border-black rounded bg-white">
                 <div class="vintage-box p-2.5 bg-white flex items-center justify-center">
                     <span id="upload-status" class="text-[10px] sm:text-xs font-black text-gray-600">جاهز للنشر 🚀</span>
                 </div>
@@ -1394,7 +1392,7 @@ formData.append("key", "d4dc7128b9c1682fe31edcf399cf06dd");
 
             const desc = document.getElementById('new-desc').value.trim();
             const imageFiles = document.getElementById('image-files').files;
-            const videoFile = document.getElementById('video-file').files[0];
+ const videoInputUrl = document.getElementById('video-file').value.trim();
 
             if(!name || isNaN(price)) {
                 alert('يرجى إدخال اسم المنتج والسعر بشكل صحيح!');
@@ -1421,9 +1419,9 @@ formData.append("key", "d4dc7128b9c1682fe31edcf399cf06dd");
                     imagesArray = await Promise.all(uploadPromises);
                 }
 
-                if (videoFile) {
-                    videoUrl = await convertFileToBase64(videoFile);
-                }
+if (videoInputUrl) {
+                videoUrl = videoInputUrl;
+            }
             } catch (err) {
 alert('خطأ في معالجة الصور: ' + (err.message || err));
                 document.getElementById('upload-status').innerText = 'فشل الرفع ❌';
