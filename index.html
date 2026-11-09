@@ -6,8 +6,41 @@
     <title>JF Store - متجر</title>
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Supabase JS Client CDN -->
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    
+    <!-- Firebase SDK Modular (Firestore مجاني 100% بدون كارت) -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+        import { 
+            getFirestore, 
+            collection, 
+            getDocs, 
+            doc, 
+            setDoc, 
+            updateDoc, 
+            deleteDoc, 
+            getDoc,
+            query,
+            orderBy
+        } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyCEq490I2eUPEDXJPRtKesx5T5uo6Xl6Us",
+            authDomain: "jfstore-5ce92.firebaseapp.com",
+            projectId: "jfstore-5ce92",
+            storageBucket: "jfstore-5ce92.firebasestorage.app",
+            messagingSenderId: "969506063395",
+            appId: "1:969506063395:web:59ab37ae841a70b8281d96",
+            measurementId: "G-0BE9RBQ9RF"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        window.db = getFirestore(app);
+        window.fs = { collection, getDocs, doc, setDoc, updateDoc, deleteDoc, getDoc, query, orderBy };
+
+        // تشغيل قراءة البيانات فور اكتمال تحميل محرك فايربيس
+        window.dispatchEvent(new Event('firebase-ready'));
+    </script>
+
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700;900&family=Shrikhand&display=swap" rel="stylesheet">
     <style>
         body { 
@@ -36,7 +69,6 @@
             box-shadow: 7px 7px 0px #111111;
         }
 
-        /* أزرار تفاعلية بنقرة ميكانيكية ملموسة */
         .vintage-btn { 
             background-color: #111111; 
             color: #f4ebd0; 
@@ -74,7 +106,6 @@
             box-shadow: inset 2px 2px 0px rgba(0,0,0,0.12);
         }
 
-        /* شريط الماركي الكلاسيكي */
         .marquee-container {
             overflow: hidden;
             white-space: nowrap;
@@ -95,7 +126,6 @@
             100% { transform: translateX(50%); }
         }
 
-        /* كبسولة الستوريات الفخمة شبه الشفافة */
         .stories-frosted-capsule {
             background: rgba(255, 253, 246, 0.78);
             backdrop-filter: blur(12px);
@@ -105,7 +135,6 @@
             border-radius: 20px;
         }
 
-        /* حواف ستوريات الإنستغرام RGB المتوهجة */
         .story-instagram-ring {
             background: linear-gradient(45deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888);
             padding: 3.5px;
@@ -119,7 +148,6 @@
             box-shadow: 0 6px 18px rgba(220, 39, 67, 0.55);
         }
 
-        /* كرت العرض 3D بتوهج سينمائي وتلاشٍ هادئ بدون سواد أو حواف مقصوصة */
         .spotlight-3d-wrapper {
             position: relative;
             transform-style: flat;
@@ -204,40 +232,24 @@
             50% { opacity: 1; transform: scale(1.15); }
         }
 
-        .jf-floating-cart {
-            animation: cartFloating 2.4s ease-in-out infinite;
-        }
-
-        .jf-animated-wing {
-            animation: wingFlapping 0.65s ease-in-out infinite;
-            transform-origin: 48px 75px;
-        }
-
-        .jf-glowing-text {
-            animation: neonLetterGlow 2s ease-in-out infinite;
-        }
-
-        .jf-speed-sparks {
-            animation: speedPulse 1.1s ease-in-out infinite;
-        }
+        .jf-floating-cart { animation: cartFloating 2.4s ease-in-out infinite; }
+        .jf-animated-wing { animation: wingFlapping 0.65s ease-in-out infinite; transform-origin: 48px 75px; }
+        .jf-glowing-text { animation: neonLetterGlow 2s ease-in-out infinite; }
+        .jf-speed-sparks { animation: speedPulse 1.1s ease-in-out infinite; }
 
         @keyframes menuPop {
             0% { opacity: 0; transform: scale(0.9) translateY(-10px); }
             100% { opacity: 1; transform: scale(1) translateY(0); }
         }
 
-        .custom-menu-anim {
-            animation: menuPop 0.2s ease-out forwards;
-        }
+        .custom-menu-anim { animation: menuPop 0.2s ease-out forwards; }
 
         @keyframes modalFlipIn {
             0% { opacity: 0; transform: scale(0.88) translateY(12px); }
             100% { opacity: 1; transform: scale(1) translateY(0); }
         }
 
-        .modal-animate-content {
-            animation: modalFlipIn 0.22s ease-out forwards;
-        }
+        .modal-animate-content { animation: modalFlipIn 0.22s ease-out forwards; }
 
         @keyframes fadeInOut {
             0% { opacity: 0; }
@@ -246,22 +258,15 @@
             100% { opacity: 0; }
         }
 
-        .fade-slide {
-            animation: fadeInOut 4s ease-in-out infinite;
-        }
+        .fade-slide { animation: fadeInOut 4s ease-in-out infinite; }
 
         @keyframes floatPulse {
             0%, 100% { transform: translateY(0); }
             50% { transform: translateY(-6px); }
         }
 
-        .cart-float-btn {
-            animation: floatPulse 2.8s ease-in-out infinite;
-        }
-
-        #side-menu {
-            transition: transform 0.3s ease-out;
-        }
+        .cart-float-btn { animation: floatPulse 2.8s ease-in-out infinite; }
+        #side-menu { transition: transform 0.3s ease-out; }
 
         .badge-circle {
             background-color: #111111;
@@ -309,19 +314,9 @@
         </svg>
     </div>
 
-    <!-- شريط الإعلانات التفاعلي المتحرك التراثي (Vintage Marquee Ticker) -->
+    <!-- شريط الإعلانات التفاعلي -->
     <div class="marquee-container py-2 select-none">
         <div class="marquee-content font-black text-xs sm:text-sm tracking-wider flex items-center gap-6">
-            <span class="text-black">🔥 خصومات وعروض حصرية</span>
-            <span class="text-[#d4a373]">★</span>
-            <span class="text-black">🚚 شحن سريع 24-48 ساعة لكافة المحافظات</span>
-            <span class="text-[#d4a373]">★</span>
-            <span class="text-black">🛡️ دفع آمن عند الاستلام</span>
-            <span class="text-[#d4a373]">★</span>
-            <span class="text-black">📦 فحص أمام المندوب</span>
-            <span class="text-[#d4a373]">★</span>
-            <span class="text-black">✨ بضاعة جديدة يومياً في JF STORE 🖤</span>
-            <span class="text-[#d4a373]">★</span>
             <span class="text-black">🔥 خصومات وعروض حصرية</span>
             <span class="text-[#d4a373]">★</span>
             <span class="text-black">🚚 شحن سريع 24-48 ساعة لكافة المحافظات</span>
@@ -363,7 +358,7 @@
         <span id="cart-count" class="absolute -top-1 -right-1 bg-red-600 text-white text-xs w-6 h-6 rounded-full flex items-center justify-center border-2 border-black font-black">0</span>
     </button>
 
-    <!-- إشعار الشراء الحي بالزاوية (Toast) -->
+    <!-- إشعار الشراء بالزاوية -->
     <div id="social-toast" class="fixed bottom-6 left-6 z-40 transform translate-y-32 opacity-0 pointer-events-none transition-all duration-500">
         <div class="vintage-box p-3 bg-[#fffdf6] border-3 border-black shadow-[5px_5px_0px_#111] flex items-center gap-3 max-w-xs">
             <div class="w-10 h-10 rounded-full bg-green-100 border-2 border-black flex items-center justify-center text-lg flex-shrink-0">🛒</div>
@@ -447,7 +442,7 @@
     <!-- محتوى المتجر الرئيسي -->
     <main class="flex-1 max-w-7xl mx-auto px-2 sm:px-4 py-4 w-full">
         
-        <!-- شريط قصص المتجر (Stories Bar) الفخم مع الكبسولة الشفافة والعنوان التوضيحي النقي -->
+        <!-- شريط القصص -->
         <div id="stories-section" class="mb-6 hidden">
             <div class="stories-frosted-capsule p-3 sm:p-4">
                 <div class="flex items-center pb-2 mb-2 border-b-2 border-black/15">
@@ -462,7 +457,7 @@
             </div>
         </div>
 
-        <!-- بانر الإعلانات المخصص -->
+        <!-- بانر الإعلانات -->
         <div id="ads-banner" class="vintage-box mb-6 p-4 relative overflow-visible flex items-center justify-center text-center hidden">
             <div class="absolute -top-4 right-6 bg-[#111111] text-[#f4ebd0] text-[11px] sm:text-xs font-black px-3 py-1 rounded-full border-2 border-[#fffdf6] shadow-md tracking-wider">
                 ✨ الاعلانات ✨
@@ -585,12 +580,12 @@
                 </div>
             </div>
             <div class="flex gap-3 mt-3">
-                <button type="button" id="save-btn" onclick="saveProductToSupabase()" class="vintage-btn px-6 py-2.5 text-xs sm:text-sm w-full sm:w-auto text-center">نشر في قاعدة البيانات 🚀</button>
+                <button type="button" id="save-btn" onclick="saveProductToFirestore()" class="vintage-btn px-6 py-2.5 text-xs sm:text-sm w-full sm:w-auto text-center">نشر في قاعدة البيانات 🚀</button>
                 <button type="button" id="cancel-edit-btn" onclick="cancelEdit()" class="vintage-btn bg-gray-500 text-white px-4 py-2.5 text-xs sm:text-sm hidden">إلغاء ✕</button>
             </div>
         </div>
 
-        <!-- لودر JF الكلاسيكي الفخم المستقل -->
+        <!-- لودر JF المستقل -->
         <div id="jf-main-loader" class="col-span-full py-16 flex flex-col items-center justify-center text-center">
             <div class="vintage-box p-6 sm:p-8 bg-[#fffdf6] max-w-sm sm:max-w-md w-full flex flex-col items-center justify-center border-4 border-black shadow-[8px_8px_0px_#111]">
                 
@@ -641,7 +636,7 @@
         <div id="products-grid" class="grid-container grid grid-cols-3 sm:grid-cols-2 lg:grid-cols-4 gap-2 sm:gap-6"></div>
     </main>
 
-    <!-- نافذة عرض الستوري التفاعلية (Story Viewer Modal) -->
+    <!-- نافذة عرض الستوري -->
     <div id="story-modal" class="fixed inset-0 bg-black/90 z-50 flex items-center justify-center p-3 hidden backdrop-blur-md">
         <div class="relative w-full max-w-sm h-[82vh] bg-black rounded-2xl overflow-hidden border-4 border-[#fffdf6] shadow-2xl flex flex-col">
             <div class="absolute top-2 inset-x-2 z-20 flex gap-1">
@@ -823,15 +818,8 @@
     </footer>
 
     <script>
-        const SUPABASE_URL = 'https://dgxksrdcguoijlmvqstw.supabase.co';
-        const SUPABASE_ANON_KEY = 'sb_publishable_TySRw16o2RLuSxAfsWZ3Sw_JLvpv3OB';
-        
-        const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-        const TABLE_NAME = 'products JPG';
-        const ORDERS_TABLE = 'store_orders';
-        const STATS_TABLE = 'site_stats';
-        const FAVORITES_TABLE = 'user_favorites';
-        const BUCKET_NAME = 'products-images';
+        // مفتاح استضافة الصور المجاني (ImgBB API Key الدائمي)
+        const IMGBB_API_KEY = '8e5efea40d21e428ba92e022f4b0059c';
 
         const FALLBACK_IMG = 'https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=500';
 
@@ -872,25 +860,23 @@
 
         let storyProgressInterval = null;
 
-        // خوارزمية التدوير الزمني الذكي (أحدث 3 + تدوير الباقي كل 12 ساعة)
+        // خوارزمية التدوير الذكي
         function applySmartProductDistribution(items) {
             if (!items || items.length <= 3) return items;
-
             const topThree = items.slice(0, 3);
             const remaining = items.slice(3);
-
             const twelveHourBlock = Math.floor(Date.now() / (1000 * 60 * 60 * 12));
             
             const shuffledRemaining = [...remaining].sort((a, b) => {
-                const seedA = Math.sin((a.id || 1) + twelveHourBlock) * 10000;
-                const seedB = Math.sin((b.id || 1) + twelveHourBlock) * 10000;
+                const seedA = Math.sin((Number(a.id) || 1) + twelveHourBlock) * 10000;
+                const seedB = Math.sin((Number(b.id) || 1) + twelveHourBlock) * 10000;
                 return (seedA - Math.floor(seedA)) - (seedB - Math.floor(seedB));
             });
 
             return [...topThree, ...shuffledRemaining];
         }
 
-        // إشعارات الشراء التفاعلية الهادئة (Social Proof Toasts)
+        // إشعارات الشراء
         const CITIES = ['بغداد', 'ميسان', 'البصرة', 'أربيل', 'النجف', 'كربلاء', 'ذي قار', 'بابل'];
         function startSocialProofToasts() {
             setInterval(() => {
@@ -917,7 +903,7 @@
             }, 32000);
         }
 
-        // محرك الحركة 3D بتوهج سينمائي وتلاشٍ هادئ بدون سواد أو حواف مقصوصة
+        // محرك الـ 3D Scroll
         let isScrollTicking = false;
         function update3DScrollCards() {
             const wrappers = document.querySelectorAll('.spotlight-3d-wrapper');
@@ -983,72 +969,40 @@
             }
         }, { passive: true });
 
-        // نظام الزوار المباشر (Online Now)
-        function initRealtimePresence() {
-            try {
-                const presenceChannel = supabaseClient.channel('jfstore-live-visitors');
-                presenceChannel
-                    .on('presence', { event: 'sync' }, () => {
-                        const state = presenceChannel.presenceState();
-                        let totalOnline = 0;
-                        for (const key in state) {
-                            totalOnline += state[key].length;
-                        }
-                        if (totalOnline < 1) totalOnline = 1;
-                        const onlineEl = document.getElementById('online-users-count');
-                        if (onlineEl) onlineEl.innerText = `${totalOnline} متسوق 🟢`;
-                    })
-                    .subscribe(async (status) => {
-                        if (status === 'SUBSCRIBED') {
-                            await presenceChannel.track({ online_at: new Date().toISOString() });
-                        }
-                    });
-            } catch(e) {
-                console.log("Realtime error:", e);
-            }
-        }
-
-        // عداد الزيارات التراكمي
+        // عداد الزيارات التراكمي في Firestore
         async function recordAndFetchTotalVisits() {
+            if (!window.db) return;
             try {
-                const { data, error } = await supabaseClient
-                    .from(STATS_TABLE)
-                    .select('total_visits')
-                    .eq('id', 1)
-                    .single();
+                const statsRef = window.fs.doc(window.db, "site_stats", "1");
+                const docSnap = await window.fs.getDoc(statsRef);
+                let currentCount = 1;
 
-                if (!error && data) {
-                    let currentCount = Number(data.total_visits) || 1;
-                    
-                    if (!sessionStorage.getItem('jf_visited_session')) {
-                        currentCount += 1;
-                        sessionStorage.setItem('jf_visited_session', 'true');
-                        await supabaseClient
-                            .from(STATS_TABLE)
-                            .update({ total_visits: currentCount })
-                            .eq('id', 1);
-                    }
-
-                    const totalEl = document.getElementById('total-visits-count');
-                    if (totalEl) totalEl.innerText = `${currentCount.toLocaleString()} زيارة`;
+                if (docSnap.exists()) {
+                    currentCount = Number(docSnap.data().total_visits) || 1;
                 }
+
+                if (!sessionStorage.getItem('jf_visited_session')) {
+                    currentCount += 1;
+                    sessionStorage.setItem('jf_visited_session', 'true');
+                    await window.fs.setDoc(statsRef, { total_visits: currentCount }, { merge: true });
+                }
+
+                const totalEl = document.getElementById('total-visits-count');
+                if (totalEl) totalEl.innerText = `${currentCount.toLocaleString()} زيارة`;
             } catch (err) {
                 console.log("خطأ في قراءة العداد:", err);
             }
         }
 
-        // مزامنة المفضلات مع السحابة بالإيميل
+        // مزامنة المفضلات مع Firestore
         async function syncFavoritesWithCloud(email) {
-            if (!email) return;
+            if (!email || !window.db) return;
             try {
-                const { data, error } = await supabaseClient
-                    .from(FAVORITES_TABLE)
-                    .select('favorites')
-                    .eq('email', email.toLowerCase())
-                    .single();
+                const favDocRef = window.fs.doc(window.db, "user_favorites", email.toLowerCase());
+                const docSnap = await window.fs.getDoc(favDocRef);
 
-                if (!error && data && data.favorites) {
-                    const cloudFavs = data.favorites.split(',').map(Number).filter(n => !isNaN(n));
+                if (docSnap.exists() && docSnap.data().favorites) {
+                    const cloudFavs = String(docSnap.data().favorites).split(',').map(s => s.trim()).filter(Boolean);
                     favorites = Array.from(new Set([...favorites, ...cloudFavs]));
                     localStorage.setItem('jf_favs', JSON.stringify(favorites));
                     updateFavUIOnly();
@@ -1061,52 +1015,32 @@
         }
 
         async function saveFavoritesToCloud(email) {
-            if (!email) return;
+            if (!email || !window.db) return;
             try {
                 const favsStr = favorites.join(',');
-                const { data } = await supabaseClient
-                    .from(FAVORITES_TABLE)
-                    .select('id')
-                    .eq('email', email.toLowerCase())
-                    .single();
-
-                if (data && data.id) {
-                    await supabaseClient
-                        .from(FAVORITES_TABLE)
-                        .update({ favorites: favsStr })
-                        .eq('email', email.toLowerCase());
-                } else {
-                    await supabaseClient
-                        .from(FAVORITES_TABLE)
-                        .insert([{ email: email.toLowerCase(), favorites: favsStr }]);
-                }
+                const favDocRef = window.fs.doc(window.db, "user_favorites", email.toLowerCase());
+                await window.fs.setDoc(favDocRef, { email: email.toLowerCase(), favorites: favsStr }, { merge: true });
             } catch (err) {
                 console.log("Cloud save error:", err);
             }
         }
 
-        // رفع الملفات للسحابة فائق السرعة
+        // رفع الصور سحابياً مجاناً للأبد عبر ImgBB بدون أي بطاقة بنكية
         async function uploadFileToStorage(file) {
             try {
-                const fileExt = file.name.split('.').pop();
-                const fileName = `${Date.now()}_${Math.random().toString(36).substring(2, 7)}.${fileExt}`;
-                const filePath = `${fileName}`;
-
-                let { error: uploadError } = await supabaseClient.storage
-                    .from(BUCKET_NAME)
-                    .upload(filePath, file, { cacheControl: '3600', upsert: true });
-
-                if (uploadError) {
-                    console.log("Storage upload error:", uploadError);
+                const formData = new FormData();
+                formData.append("image", file);
+                const res = await fetch(`https://api.imgbb.com/1/upload?key=${IMGBB_API_KEY}`, {
+                    method: "POST",
+                    body: formData
+                });
+                const resData = await res.json();
+                if (resData.success) {
+                    return resData.data.url;
+                } else {
                     return await convertFileToBase64(file);
                 }
-
-                const { data } = supabaseClient.storage
-                    .from(BUCKET_NAME)
-                    .getPublicUrl(filePath);
-
-                return data.publicUrl;
-            } catch(e) {
+            } catch (e) {
                 return await convertFileToBase64(file);
             }
         }
@@ -1160,7 +1094,6 @@
             return (data || []).map(parseSingleProduct);
         }
 
-        // شريط القصص (Stories) بحواف الإنستغرام RGB المتوهجة والكبسولة الشفافة
         function renderStoriesBar() {
             const container = document.getElementById('stories-container');
             const section = document.getElementById('stories-section');
@@ -1179,7 +1112,7 @@
             storyProducts.forEach(prod => {
                 const thumb = (prod.parsedImages && prod.parsedImages[0]) || prod.parsedImage || FALLBACK_IMG;
                 html += `
-                    <div class="flex flex-col items-center flex-shrink-0 cursor-pointer group" onclick="openStoryViewer(${prod.id})">
+                    <div class="flex flex-col items-center flex-shrink-0 cursor-pointer group" onclick="openStoryViewer('${prod.id}')">
                         <div class="story-instagram-ring w-16 h-16 sm:w-20 sm:h-20 flex items-center justify-center">
                             <div class="w-full h-full rounded-full p-[2px] bg-[#fffdf6]">
                                 <img src="${thumb}" onerror="this.onerror=null; this.src='${FALLBACK_IMG}';" class="w-full h-full rounded-full object-cover">
@@ -1193,7 +1126,7 @@
         }
 
         function openStoryViewer(prodId) {
-            const prod = products.find(p => p.id == prodId);
+            const prod = products.find(p => String(p.id) === String(prodId));
             if (!prod || !prod.parsedVideo) return;
 
             const modal = document.getElementById('story-modal');
@@ -1244,7 +1177,7 @@
         }
 
         function openAdminStoryModal(prodId) {
-            const prod = products.find(p => p.id == prodId);
+            const prod = products.find(p => String(p.id) === String(prodId));
             if (!prod) return;
 
             document.getElementById('admin-story-prod-id').value = prod.id;
@@ -1269,33 +1202,26 @@
                 return;
             }
 
-            const targetId = Number(prodId);
-            const prod = products.find(p => p.id == targetId);
+            const prod = products.find(p => String(p.id) === String(prodId));
             if (!prod) return;
 
             btn.disabled = true;
-            statusEl.innerText = 'جاري رفع الفيديو السحابي للستوري... ⏳';
+            statusEl.innerText = 'جاري رفع الفيديو للستوري... ⏳';
 
             try {
-                const videoUrl = await uploadFileToStorage(fileInput.files[0]);
+                const videoUrl = await convertFileToBase64(fileInput.files[0]);
                 const imgsJoined = (prod.parsedImages || [prod.parsedImage || FALLBACK_IMG]).join(';');
                 const packedDesc = `JFDATA|${prod.parsedCategory}|${imgsJoined}|${videoUrl}|${prod.parsedColors || ''}|${prod.cleanDesc || ''}`;
 
-                const { data, error } = await supabaseClient
-                    .from(TABLE_NAME)
-                    .update({ desc: packedDesc })
-                    .eq('id', targetId)
-                    .select();
+                const docRef = window.fs.doc(window.db, "products", String(prodId));
+                await window.fs.updateDoc(docRef, { desc: packedDesc });
 
-                if (error) throw error;
-
-                if (data && data[0]) {
-                    const updated = parseSingleProduct(data[0]);
-                    const idx = products.findIndex(p => p.id == targetId);
-                    if (idx !== -1) products[idx] = updated;
-                    const rIdx = rawProducts.findIndex(p => p.id == targetId);
-                    if (rIdx !== -1) rawProducts[rIdx] = updated;
-                }
+                prod.desc = packedDesc;
+                const updated = parseSingleProduct(prod);
+                const idx = products.findIndex(p => String(p.id) === String(prodId));
+                if (idx !== -1) products[idx] = updated;
+                const rIdx = rawProducts.findIndex(p => String(p.id) === String(prodId));
+                if (rIdx !== -1) rawProducts[rIdx] = updated;
 
                 alert('تم نشر الستوري للمنتج بنجاح! 📲🔥');
                 closeAdminStoryModal();
@@ -1311,29 +1237,22 @@
 
         async function removeStoryFromProduct(prodId) {
             if (!confirm('هل تريد حذف الستوري الخاص بهذا المنتج؟')) return;
-            const targetId = Number(prodId);
-            const prod = products.find(p => p.id == targetId);
+            const prod = products.find(p => String(p.id) === String(prodId));
             if (!prod) return;
 
             try {
                 const imgsJoined = (prod.parsedImages || [prod.parsedImage || FALLBACK_IMG]).join(';');
                 const packedDesc = `JFDATA|${prod.parsedCategory}|${imgsJoined}||${prod.parsedColors || ''}|${prod.cleanDesc || ''}`;
 
-                const { data, error } = await supabaseClient
-                    .from(TABLE_NAME)
-                    .update({ desc: packedDesc })
-                    .eq('id', targetId)
-                    .select();
+                const docRef = window.fs.doc(window.db, "products", String(prodId));
+                await window.fs.updateDoc(docRef, { desc: packedDesc });
 
-                if (error) throw error;
-
-                if (data && data[0]) {
-                    const updated = parseSingleProduct(data[0]);
-                    const idx = products.findIndex(p => p.id == targetId);
-                    if (idx !== -1) products[idx] = updated;
-                    const rIdx = rawProducts.findIndex(p => p.id == targetId);
-                    if (rIdx !== -1) rawProducts[rIdx] = updated;
-                }
+                prod.desc = packedDesc;
+                const updated = parseSingleProduct(prod);
+                const idx = products.findIndex(p => String(p.id) === String(prodId));
+                if (idx !== -1) products[idx] = updated;
+                const rIdx = rawProducts.findIndex(p => String(p.id) === String(prodId));
+                if (rIdx !== -1) rawProducts[rIdx] = updated;
 
                 alert('تمت إزالة الستوري بنجاح! 🗑️');
                 renderStoriesBar();
@@ -1375,22 +1294,26 @@
             dropdown.innerHTML = html;
         }
 
-        async function fetchProductsFromSupabase() {
+        // جلب المنتجات المباشر من Firestore
+        async function fetchProductsFromFirestore() {
             const loader = document.getElementById('jf-main-loader');
             try {
-                let { data, error } = await supabaseClient
-                    .from(TABLE_NAME)
-                    .select('*')
-                    .order('id', { ascending: false });
+                const productsCol = window.fs.collection(window.db, "products");
+                const snapshot = await window.fs.getDocs(productsCol);
                 
-                if (error) throw error;
+                const data = [];
+                snapshot.forEach(docSnap => {
+                    data.push({ id: docSnap.id, ...docSnap.data() });
+                });
 
-                if (data) {
+                if (data.length > 0) {
                     rawProducts = parseProductsRawData(data);
                     products = applySmartProductDistribution(rawProducts);
                     renderCategoriesDropdown();
                     renderStoriesBar();
                     filterProducts();
+                } else {
+                    renderProducts([]);
                 }
             } catch (err) {
                 console.log("خطأ بجلب المنتجات:", err.message);
@@ -1424,8 +1347,8 @@
             }
         });
 
-        // رفع وحفظ المنتج بالسحابة
-        async function saveProductToSupabase() {
+        // حفظ ونشر المنتج الجديد في Firestore مع رفع الصور إلى ImgBB المجاني
+        async function saveProductToFirestore() {
             const saveBtn = document.getElementById('save-btn');
             saveBtn.disabled = true;
 
@@ -1450,13 +1373,13 @@
                 return;
             }
 
-            document.getElementById('upload-status').innerText = 'جاري الرفع السحابي السريع... 🚀';
+            document.getElementById('upload-status').innerText = 'جاري رفع الصور ونشر المنتج... 🚀';
 
             let imagesArray = [FALLBACK_IMG];
             let videoUrl = '';
 
             if (editingId) {
-                const existingProd = products.find(p => p.id == editingId);
+                const existingProd = products.find(p => String(p.id) === String(editingId));
                 if (existingProd) {
                     imagesArray = existingProd.parsedImages || [existingProd.parsedImage];
                     videoUrl = existingProd.parsedVideo;
@@ -1470,7 +1393,7 @@
                 }
 
                 if (videoFile) {
-                    videoUrl = await uploadFileToStorage(videoFile);
+                    videoUrl = await convertFileToBase64(videoFile);
                 }
             } catch (err) {
                 alert('خطأ في معالجة الصور!');
@@ -1484,37 +1407,28 @@
 
             try {
                 if(editingId) {
-                    const targetId = Number(editingId);
-                    const { data, error } = await supabaseClient
-                        .from(TABLE_NAME)
-                        .update({ name, price, desc: packedDesc })
-                        .eq('id', targetId)
-                        .select();
+                    const docRef = window.fs.doc(window.db, "products", String(editingId));
+                    await window.fs.updateDoc(docRef, { name, price, desc: packedDesc });
                     
-                    if(error) throw error;
-                    
-                    if (data && data[0]) {
-                        const updated = parseSingleProduct(data[0]);
-                        const idx = products.findIndex(p => p.id == targetId);
-                        if (idx !== -1) products[idx] = updated;
-                        const rIdx = rawProducts.findIndex(p => p.id == targetId);
-                        if (rIdx !== -1) rawProducts[rIdx] = updated;
-                    }
+                    const updated = parseSingleProduct({ id: editingId, name, price, desc: packedDesc });
+                    const idx = products.findIndex(p => String(p.id) === String(editingId));
+                    if (idx !== -1) products[idx] = updated;
+                    const rIdx = rawProducts.findIndex(p => String(p.id) === String(editingId));
+                    if (rIdx !== -1) rawProducts[rIdx] = updated;
+
                     alert('تم تحديث المنتج بنجاح! ✏️');
                     cancelEdit();
                 } else {
-                    const { data, error } = await supabaseClient
-                        .from(TABLE_NAME)
-                        .insert([{ name, price, desc: packedDesc }])
-                        .select();
+                    const newId = String(Date.now());
+                    const newProdData = { name, price, desc: packedDesc, created_at: new Date().toISOString() };
                     
-                    if(error) throw error;
-                    
-                    if (data && data[0]) {
-                        const newProd = parseSingleProduct(data[0]);
-                        rawProducts.unshift(newProd);
-                        products.unshift(newProd);
-                    }
+                    const docRef = window.fs.doc(window.db, "products", newId);
+                    await window.fs.setDoc(docRef, newProdData);
+
+                    const newProd = parseSingleProduct({ id: newId, ...newProdData });
+                    rawProducts.unshift(newProd);
+                    products.unshift(newProd);
+
                     alert('تم نشر المنتج فورياً في المتجر! 🚀');
                     
                     document.getElementById('new-name').value = '';
@@ -1539,23 +1453,24 @@
 
         async function deleteProduct(id) {
             if(confirm('هل أنت متأكد من حذف هذا المنتج نهائياً؟')) {
-                const targetId = Number(id);
-                const { error } = await supabaseClient.from(TABLE_NAME).delete().eq('id', targetId);
-                if(error) {
-                    alert('فشل الحذف: ' + error.message);
-                } else {
-                    rawProducts = rawProducts.filter(p => p.id != targetId);
-                    products = products.filter(p => p.id != targetId);
+                try {
+                    const docRef = window.fs.doc(window.db, "products", String(id));
+                    await window.fs.deleteDoc(docRef);
+
+                    rawProducts = rawProducts.filter(p => String(p.id) !== String(id));
+                    products = products.filter(p => String(p.id) !== String(id));
                     renderCategoriesDropdown();
                     renderStoriesBar();
                     filterProducts();
                     alert('تم حذف المنتج نهائياً 🗑️');
+                } catch(error) {
+                    alert('فشل الحذف: ' + error.message);
                 }
             }
         }
 
         function editProduct(id) {
-            const prod = products.find(p => p.id == id);
+            const prod = products.find(p => String(p.id) === String(id));
             if(!prod) return;
 
             document.getElementById('editing-product-id').value = prod.id;
@@ -1653,7 +1568,7 @@
         }
 
         function openProductModal(id) {
-            const product = products.find(p => p.id == id);
+            const product = products.find(p => String(p.id) === String(id));
             if(!product) return;
 
             const modal = document.getElementById('product-modal');
@@ -1741,7 +1656,7 @@
             content.innerHTML = `
                 <div class="relative">
                     <img id="modal-main-img" src="${allImgs[0]}" onerror="this.onerror=null; this.src='${FALLBACK_IMG}';" alt="${product.name}" class="w-full h-60 object-cover rounded-xl border-3 border-black shadow mb-2">
-                    <button id="modal-fav-btn-${product.id}" onclick="toggleFavorite(${product.id})" class="absolute top-3 left-3 bg-white p-3 rounded-full border-2 border-black text-xl hover:scale-110 shadow cursor-pointer transition-transform">${isFav ? '❤️' : '🤍'}</button>
+                    <button id="modal-fav-btn-${product.id}" onclick="toggleFavorite('${product.id}')" class="absolute top-3 left-3 bg-white p-3 rounded-full border-2 border-black text-xl hover:scale-110 shadow cursor-pointer transition-transform">${isFav ? '❤️' : '🤍'}</button>
                 </div>
                 ${galleryHtml}
                 <div class="mt-2">
@@ -1772,7 +1687,7 @@
                 ${videoHtml}
 
                 <div class="mt-4 pt-3 border-t-2 border-black">
-                    <button onclick="addToCartWithOptions(${product.id})" class="vintage-btn w-full py-3.5 text-sm cursor-pointer bg-green-700 text-white hover:bg-green-800 shadow-lg text-center block">
+                    <button onclick="addToCartWithOptions('${product.id}')" class="vintage-btn w-full py-3.5 text-sm cursor-pointer bg-green-700 text-white hover:bg-green-800 shadow-lg text-center block">
                         أضف إلى السلة 🛒
                     </button>
                 </div>
@@ -1815,7 +1730,7 @@
         }
 
         function addToCartWithOptions(id) {
-            const product = products.find(p => p.id == id);
+            const product = products.find(p => String(p.id) === String(id));
             if(!product) return;
 
             const cat = (product.parsedCategory || '').trim();
@@ -1905,7 +1820,7 @@
                 let itemTotal = Number(item.price) * item.quantity;
                 subtotal += itemTotal;
                 container.innerHTML += `
-                    <div class="vintage-box p-2.5 bg-white space-y-1 cursor-pointer hover:bg-[#fcf6e6] transition-colors" onclick="openProductModalFromCart(${item.id})">
+                    <div class="vintage-box p-2.5 bg-white space-y-1 cursor-pointer hover:bg-[#fcf6e6] transition-colors" onclick="openProductModalFromCart('${item.id}')">
                         <div class="flex justify-between items-start">
                             <div>
                                 <p class="font-black text-xs text-[#111] hover:underline">${item.name} 🔍</p>
@@ -1935,12 +1850,12 @@
             document.getElementById('fav-count').innerText = favorites.length;
             
             document.querySelectorAll('[id^="card-fav-btn-"]').forEach(btn => {
-                const id = Number(btn.id.replace('card-fav-btn-', ''));
+                const id = btn.id.replace('card-fav-btn-', '');
                 btn.innerText = favorites.includes(id) ? '❤️' : '🤍';
             });
 
             document.querySelectorAll('[id^="modal-fav-btn-"]').forEach(btn => {
-                const id = Number(btn.id.replace('modal-fav-btn-', ''));
+                const id = btn.id.replace('modal-fav-btn-', '');
                 btn.innerText = favorites.includes(id) ? '❤️' : '🤍';
             });
 
@@ -1951,9 +1866,9 @@
         }
 
         function toggleFavorite(id) {
-            const targetId = Number(id);
+            const targetId = String(id);
             if(favorites.includes(targetId)) {
-                favorites = favorites.filter(fav => fav != targetId);
+                favorites = favorites.filter(fav => fav !== targetId);
             } else {
                 favorites.push(targetId);
             }
@@ -2040,7 +1955,6 @@
             filterProducts();
         }
 
-        // بناء كروت المنتجات مع التوزيع المستمر للـ 3D الهادئ المتوهج
         function renderProducts(list) {
             const grid = document.getElementById('products-grid');
             grid.innerHTML = '';
@@ -2055,7 +1969,7 @@
             let spotlightCount = 0;
 
             list.forEach((p, idx) => {
-                const isFav = favorites.includes(p.id);
+                const isFav = favorites.includes(String(p.id));
                 const displayImg = (p.parsedImages && p.parsedImages[0]) || p.parsedImage || FALLBACK_IMG;
 
                 let adminActionsHtml = '';
@@ -2063,20 +1977,20 @@
                     const hasStory = p.parsedVideo && p.parsedVideo.trim() !== '';
                     adminActionsHtml = `
                         <div class="mt-2 pt-2 border-t border-black flex flex-wrap gap-1" onclick="event.stopPropagation();">
-                            <button onclick="editProduct(${p.id})" class="vintage-btn bg-yellow-400 text-black px-2 py-1 text-[10px] cursor-pointer flex-1">✏️ تعديل</button>
-                            <button onclick="deleteProduct(${p.id})" class="vintage-btn bg-red-600 text-white px-2 py-1 text-[10px] cursor-pointer flex-1">🗑️ حذف</button>
-                            <button onclick="openAdminStoryModal(${p.id})" class="vintage-btn bg-purple-600 text-white px-2 py-1 text-[10px] cursor-pointer w-full mt-1">📲 نشر ستوري</button>
-                            ${hasStory ? `<button onclick="removeStoryFromProduct(${p.id})" class="vintage-btn bg-gray-700 text-white px-2 py-1 text-[10px] cursor-pointer w-full">✕ إزالة الستوري</button>` : ''}
+                            <button onclick="editProduct('${p.id}')" class="vintage-btn bg-yellow-400 text-black px-2 py-1 text-[10px] cursor-pointer flex-1">✏️ تعديل</button>
+                            <button onclick="deleteProduct('${p.id}')" class="vintage-btn bg-red-600 text-white px-2 py-1 text-[10px] cursor-pointer flex-1">🗑️ حذف</button>
+                            <button onclick="openAdminStoryModal('${p.id}')" class="vintage-btn bg-purple-600 text-white px-2 py-1 text-[10px] cursor-pointer w-full mt-1">📲 نشر ستوري</button>
+                            ${hasStory ? `<button onclick="removeStoryFromProduct('${p.id}')" class="vintage-btn bg-gray-700 text-white px-2 py-1 text-[10px] cursor-pointer w-full">✕ إزالة الستوري</button>` : ''}
                         </div>
                     `;
                 }
 
                 cardsHtml += `
-                    <div class="vintage-box p-2.5 sm:p-4 flex flex-col justify-between cursor-pointer" onclick="openProductModal(${p.id})" id="product-card-${p.id}">
+                    <div class="vintage-box p-2.5 sm:p-4 flex flex-col justify-between cursor-pointer" onclick="openProductModal('${p.id}')" id="product-card-${p.id}">
                         <div>
                             <div class="relative overflow-hidden rounded-lg">
                                 <img src="${displayImg}" onerror="this.onerror=null; this.src='${FALLBACK_IMG}';" alt="${p.name}" loading="lazy" class="w-full h-32 sm:h-48 object-cover border-2 border-[#111] mb-2 shadow transition-transform duration-300 hover:scale-105">
-                                <button id="card-fav-btn-${p.id}" onclick="event.stopPropagation(); toggleFavorite(${p.id});" class="absolute top-1.5 left-1.5 bg-white p-1.5 rounded-full border border-[#111] text-xs hover:scale-125 transition-transform shadow cursor-pointer">${isFav ? '❤️' : '🤍'}</button>
+                                <button id="card-fav-btn-${p.id}" onclick="event.stopPropagation(); toggleFavorite('${p.id}');" class="absolute top-1.5 left-1.5 bg-white p-1.5 rounded-full border border-[#111] text-xs hover:scale-125 transition-transform shadow cursor-pointer">${isFav ? '❤️' : '🤍'}</button>
                             </div>
                             <span class="bg-[#111] text-[#f4ebd0] text-[9px] px-1.5 py-0.5 rounded font-black inline-block mt-1">${p.parsedCategory}</span>
                             <h4 class="font-black text-xs sm:text-base mt-1 text-[#111] leading-tight">${p.name}</h4>
@@ -2084,14 +1998,13 @@
                         <div>
                             <div class="mt-2.5 flex flex-col gap-1 pt-2 border-t border-dashed border-black">
                                 <span class="font-black text-xs sm:text-lg text-green-900">${Number(p.price).toLocaleString()} د.ع</span>
-                                <button onclick="event.stopPropagation(); openProductModal(${p.id})" class="vintage-btn w-full py-1.5 text-[10px] sm:text-xs cursor-pointer text-center">اختر المواصفات 🛒</button>
+                                <button onclick="event.stopPropagation(); openProductModal('${p.id}')" class="vintage-btn w-full py-1.5 text-[10px] sm:text-xs cursor-pointer text-center">اختر المواصفات 🛒</button>
                             </div>
                             ${adminActionsHtml}
                         </div>
                     </div>
                 `;
 
-                // حقن كروت الـ 3D بتوهج سينمائي وتلاشٍ هادئ بدون سواد أو حواف مقصوصة كل 7 كروت
                 if ((idx + 1) % 7 === 0 && (idx + 1) < list.length) {
                     spotlightCount++;
                     const currentStyle = ((spotlightCount - 1) % 4) + 1;
@@ -2101,7 +2014,7 @@
                     cardsHtml += `
                         <div class="col-span-full my-8 spotlight-3d-wrapper" data-style="${currentStyle}">
                             <div class="ambient-glow-backdrop"></div>
-                            <div class="spotlight-3d-card p-5 sm:p-7 flex flex-col sm:flex-row items-center justify-between gap-6 cursor-pointer" onclick="openProductModal(${spotlightItem.id})">
+                            <div class="spotlight-3d-card p-5 sm:p-7 flex flex-col sm:flex-row items-center justify-between gap-6 cursor-pointer" onclick="openProductModal('${spotlightItem.id}')">
                                 <div class="w-full sm:w-1/2 relative overflow-hidden rounded-2xl flex items-center justify-center p-3">
                                     <img src="${spotImg}" onerror="this.onerror=null; this.src='${FALLBACK_IMG}';" class="floating-layer-img w-full h-52 sm:h-64 object-cover rounded-2xl">
                                 </div>
@@ -2129,7 +2042,7 @@
             
             let list = products;
             if (showingFavoritesOnly) {
-                list = list.filter(p => favorites.includes(p.id));
+                list = list.filter(p => favorites.includes(String(p.id)));
             }
 
             const filtered = list.filter(p => {
@@ -2186,7 +2099,8 @@
             let itemsSummary = cart.map((item, i) => `${i+1}. ${item.name} (${item.chosenOption}) - الكمية: ${item.quantity} - السعر: ${(Number(item.price)*item.quantity).toLocaleString()} د.ع`).join('\n');
 
             try {
-                await supabaseClient.from(ORDERS_TABLE).insert([{
+                const orderRef = window.fs.doc(window.fs.collection(window.db, "store_orders"));
+                await window.fs.setDoc(orderRef, {
                     customer_name: name,
                     phone: phone,
                     alt_phone: altPhone,
@@ -2194,10 +2108,11 @@
                     address: address,
                     notes: notes,
                     items: itemsSummary,
-                    total_price: finalTotal
-                }]);
+                    total_price: finalTotal,
+                    created_at: new Date().toISOString()
+                });
             } catch(e) {
-                console.log("خطأ بتسجيل الطلب بالسحابة:", e.message);
+                console.log("خطأ بتسجيل الطلب:", e.message);
             }
 
             let msg = `🛒 *طلب جديد عبر متجر JF Store* 🖤\n\n`;
@@ -2218,7 +2133,7 @@
             window.open(url, '_blank');
         }
 
-        window.onload = function() {
+        window.addEventListener('firebase-ready', () => {
             try {
                 const storedFavs = localStorage.getItem('jf_favs');
                 if (storedFavs) favorites = JSON.parse(storedFavs);
@@ -2236,11 +2151,10 @@
                 syncFavoritesWithCloud(savedEmail);
             }
             
-            fetchProductsFromSupabase();
-            initRealtimePresence();
+            fetchProductsFromFirestore();
             recordAndFetchTotalVisits();
             startSocialProofToasts();
-        }
+        });
     </script>
 </body>
 </html>
