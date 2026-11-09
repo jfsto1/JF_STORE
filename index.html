@@ -6,45 +6,6 @@
     <title>JF Store - متجر</title>
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
-    
-    <!-- Firebase SDK Modular (Firestore مجاني 100% بدون كارت) -->
-  <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-        import { 
-            initializeFirestore, 
-            collection, 
-            getDocs, 
-            doc, 
-            setDoc, 
-            updateDoc, 
-            deleteDoc, 
-            getDoc,
-            query,
-            orderBy
-        } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
-
-        const firebaseConfig = {
-            apiKey: "AIzaSyCEq490I2eUPEDXJPRtKesx5T5uo6Xl6Us",
-            authDomain: "jfstore-5ce92.firebaseapp.com",
-            projectId: "jfstore-5ce92",
-            storageBucket: "jfstore-5ce92.firebasestorage.app",
-            messagingSenderId: "969506063395",
-            appId: "1:969506063395:web:59ab37ae841a70b8281d96",
-            measurementId: "G-0BE9RBQ9RF"
-        };
-
-        const app = initializeApp(firebaseConfig);
-        
-        // إجبار الاتصال عبر Long Polling لحل مشكلة 404 والحجب
-        window.db = initializeFirestore(app, {
-            experimentalForceLongPolling: true
-        });
-
-        window.fs = { collection, getDocs, doc, setDoc, updateDoc, deleteDoc, getDoc, query, orderBy };
-
-        // تشغيل قراءة البيانات فور اكتمال تحميل محرك فايربيس
-        window.dispatchEvent(new Event('firebase-ready'));
-    </script>
 
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700;900&family=Shrikhand&display=swap" rel="stylesheet">
     <style>
@@ -823,9 +784,9 @@
     </footer>
 
     <script>
-        // مفتاح استضافة الصور المجاني (ImgBB API Key الدائمي)
+        // إعدادات Firestore المباشرة (REST API) المتوافقة مع جميع شبكات العراق
+        const FIRESTORE_BASE = 'https://firestore.googleapis.com/v1/projects/jfstore-5ce92/databases/(default)/documents';
         const IMGBB_API_KEY = '8e5efea40d21e428ba92e022f4b0059c';
-
         const FALLBACK_IMG = 'https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=500';
 
         const ALL_CATEGORIES_LIST = [
@@ -974,40 +935,47 @@
             }
         }, { passive: true });
 
-        // عداد الزيارات التراكمي في Firestore
+        // عداد الزيارات عبر REST المباشر
         async function recordAndFetchTotalVisits() {
-            if (!window.db) return;
             try {
-                const statsRef = window.fs.doc(window.db, "site_stats", "1");
-                const docSnap = await window.fs.getDoc(statsRef);
+                const url = `${FIRESTORE_BASE}/site_stats/1`;
+                const res = await fetch(url);
                 let currentCount = 1;
 
-                if (docSnap.exists()) {
-                    currentCount = Number(docSnap.data().total_visits) || 1;
+                if (res.ok) {
+                    const doc = await res.json();
+                    currentCount = Number(doc.fields?.total_visits?.stringValue || doc.fields?.total_visits?.integerValue || 1);
                 }
 
                 if (!sessionStorage.getItem('jf_visited_session')) {
                     currentCount += 1;
                     sessionStorage.setItem('jf_visited_session', 'true');
-                    await window.fs.setDoc(statsRef, { total_visits: currentCount }, { merge: true });
+                    await fetch(url, {
+                        method: 'PATCH',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            fields: { total_visits: { integerValue: currentCount } }
+                        })
+                    });
                 }
 
                 const totalEl = document.getElementById('total-visits-count');
                 if (totalEl) totalEl.innerText = `${currentCount.toLocaleString()} زيارة`;
             } catch (err) {
-                console.log("خطأ في قراءة العداد:", err);
+                console.log("Stats fetch error:", err);
             }
         }
 
-        // مزامنة المفضلات مع Firestore
+        // مزامنة المفضلات عبر REST المباشر
         async function syncFavoritesWithCloud(email) {
-            if (!email || !window.db) return;
+            if (!email) return;
             try {
-                const favDocRef = window.fs.doc(window.db, "user_favorites", email.toLowerCase());
-                const docSnap = await window.fs.getDoc(favDocRef);
-
-                if (docSnap.exists() && docSnap.data().favorites) {
-                    const cloudFavs = String(docSnap.data().favorites).split(',').map(s => s.trim()).filter(Boolean);
+                const url = `${FIRESTORE_BASE}/user_favorites/${encodeURIComponent(email.toLowerCase())}`;
+                const res = await fetch(url);
+                if (res.ok) {
+                    const doc = await res.json();
+                    const cloudFavsStr = doc.fields?.favorites?.stringValue || '';
+                    const cloudFavs = cloudFavsStr.split(',').map(s => s.trim()).filter(Boolean);
                     favorites = Array.from(new Set([...favorites, ...cloudFavs]));
                     localStorage.setItem('jf_favs', JSON.stringify(favorites));
                     updateFavUIOnly();
@@ -1015,22 +983,28 @@
                     saveFavoritesToCloud(email);
                 }
             } catch (err) {
-                console.log("Favorites sync error:", err);
+                console.log("Favorites error:", err);
             }
         }
 
         async function saveFavoritesToCloud(email) {
-            if (!email || !window.db) return;
+            if (!email) return;
             try {
-                const favsStr = favorites.join(',');
-                const favDocRef = window.fs.doc(window.db, "user_favorites", email.toLowerCase());
-                await window.fs.setDoc(favDocRef, { email: email.toLowerCase(), favorites: favsStr }, { merge: true });
-            } catch (err) {
-                console.log("Cloud save error:", err);
-            }
+                const url = `${FIRESTORE_BASE}/user_favorites/${encodeURIComponent(email.toLowerCase())}`;
+                await fetch(url, {
+                    method: 'PATCH',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        fields: {
+                            email: { stringValue: email.toLowerCase() },
+                            favorites: { stringValue: favorites.join(',') }
+                        }
+                    })
+                });
+            } catch (err) {}
         }
 
-        // رفع الصور سحابياً مجاناً للأبد عبر ImgBB بدون أي بطاقة بنكية
+        // رفع الصور سحابياً مجاناً للأبد عبر ImgBB
         async function uploadFileToStorage(file) {
             try {
                 const formData = new FormData();
@@ -1218,8 +1192,15 @@
                 const imgsJoined = (prod.parsedImages || [prod.parsedImage || FALLBACK_IMG]).join(';');
                 const packedDesc = `JFDATA|${prod.parsedCategory}|${imgsJoined}|${videoUrl}|${prod.parsedColors || ''}|${prod.cleanDesc || ''}`;
 
-                const docRef = window.fs.doc(window.db, "products", String(prodId));
-                await window.fs.updateDoc(docRef, { desc: packedDesc });
+                await fetch(`${FIRESTORE_BASE}/products/${prodId}`, {
+                    method: 'PATCH',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        fields: {
+                            desc: { stringValue: packedDesc }
+                        }
+                    })
+                });
 
                 prod.desc = packedDesc;
                 const updated = parseSingleProduct(prod);
@@ -1249,8 +1230,15 @@
                 const imgsJoined = (prod.parsedImages || [prod.parsedImage || FALLBACK_IMG]).join(';');
                 const packedDesc = `JFDATA|${prod.parsedCategory}|${imgsJoined}||${prod.parsedColors || ''}|${prod.cleanDesc || ''}`;
 
-                const docRef = window.fs.doc(window.db, "products", String(prodId));
-                await window.fs.updateDoc(docRef, { desc: packedDesc });
+                await fetch(`${FIRESTORE_BASE}/products/${prodId}`, {
+                    method: 'PATCH',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        fields: {
+                            desc: { stringValue: packedDesc }
+                        }
+                    })
+                });
 
                 prod.desc = packedDesc;
                 const updated = parseSingleProduct(prod);
@@ -1299,19 +1287,29 @@
             dropdown.innerHTML = html;
         }
 
-        // جلب المنتجات المباشر من Firestore
+        // جلب المنتجات المباشر عبر REST API فائق السرعة
         async function fetchProductsFromFirestore() {
             const loader = document.getElementById('jf-main-loader');
             try {
-                const productsCol = window.fs.collection(window.db, "products");
-                const snapshot = await window.fs.getDocs(productsCol);
-                
-                const data = [];
-                snapshot.forEach(docSnap => {
-                    data.push({ id: docSnap.id, ...docSnap.data() });
-                });
+                const res = await fetch(`${FIRESTORE_BASE}/products?pageSize=1000`);
+                if (!res.ok) throw new Error("تعذر جلب البيانات من السيرفر");
 
-                if (data.length > 0) {
+                const json = await res.json();
+                const data = [];
+
+                if (json.documents && json.documents.length > 0) {
+                    json.documents.forEach(doc => {
+                        const fields = doc.fields || {};
+                        const docId = doc.name.split('/').pop();
+                        data.push({
+                            id: fields.id?.stringValue || docId,
+                            name: fields.name?.stringValue || '',
+                            price: Number(fields.price?.stringValue || fields.price?.integerValue || fields.price?.doubleValue || 0),
+                            desc: fields.desc?.stringValue || '',
+                            created_at: fields.created_at?.stringValue || ''
+                        });
+                    });
+
                     rawProducts = parseProductsRawData(data);
                     products = applySmartProductDistribution(rawProducts);
                     renderCategoriesDropdown();
@@ -1352,7 +1350,7 @@
             }
         });
 
-        // حفظ ونشر المنتج الجديد في Firestore مع رفع الصور إلى ImgBB المجاني
+        // حفظ ونشر المنتج الجديد في Firestore مع رفع الصور لـ ImgBB
         async function saveProductToFirestore() {
             const saveBtn = document.getElementById('save-btn');
             saveBtn.disabled = true;
@@ -1411,10 +1409,26 @@
             const packedDesc = `JFDATA|${category}|${imagesJoined}|${videoUrl}|${colors}|${desc}`;
 
             try {
+                const targetId = editingId || String(Date.now());
+                const payload = {
+                    fields: {
+                        id: { stringValue: targetId },
+                        name: { stringValue: name },
+                        price: { stringValue: String(price) },
+                        desc: { stringValue: packedDesc },
+                        created_at: { stringValue: new Date().toISOString() }
+                    }
+                };
+
+                const res = await fetch(`${FIRESTORE_BASE}/products/${targetId}`, {
+                    method: 'PATCH',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+
+                if (!res.ok) throw new Error("تعذر حفظ المنتج");
+
                 if(editingId) {
-                    const docRef = window.fs.doc(window.db, "products", String(editingId));
-                    await window.fs.updateDoc(docRef, { name, price, desc: packedDesc });
-                    
                     const updated = parseSingleProduct({ id: editingId, name, price, desc: packedDesc });
                     const idx = products.findIndex(p => String(p.id) === String(editingId));
                     if (idx !== -1) products[idx] = updated;
@@ -1424,13 +1438,7 @@
                     alert('تم تحديث المنتج بنجاح! ✏️');
                     cancelEdit();
                 } else {
-                    const newId = String(Date.now());
-                    const newProdData = { name, price, desc: packedDesc, created_at: new Date().toISOString() };
-                    
-                    const docRef = window.fs.doc(window.db, "products", newId);
-                    await window.fs.setDoc(docRef, newProdData);
-
-                    const newProd = parseSingleProduct({ id: newId, ...newProdData });
+                    const newProd = parseSingleProduct({ id: targetId, name, price, desc: packedDesc });
                     rawProducts.unshift(newProd);
                     products.unshift(newProd);
 
@@ -1459,8 +1467,7 @@
         async function deleteProduct(id) {
             if(confirm('هل أنت متأكد من حذف هذا المنتج نهائياً؟')) {
                 try {
-                    const docRef = window.fs.doc(window.db, "products", String(id));
-                    await window.fs.deleteDoc(docRef);
+                    await fetch(`${FIRESTORE_BASE}/products/${id}`, { method: 'DELETE' });
 
                     rawProducts = rawProducts.filter(p => String(p.id) !== String(id));
                     products = products.filter(p => String(p.id) !== String(id));
@@ -2104,17 +2111,23 @@
             let itemsSummary = cart.map((item, i) => `${i+1}. ${item.name} (${item.chosenOption}) - الكمية: ${item.quantity} - السعر: ${(Number(item.price)*item.quantity).toLocaleString()} د.ع`).join('\n');
 
             try {
-                const orderRef = window.fs.doc(window.fs.collection(window.db, "store_orders"));
-                await window.fs.setDoc(orderRef, {
-                    customer_name: name,
-                    phone: phone,
-                    alt_phone: altPhone,
-                    city: city,
-                    address: address,
-                    notes: notes,
-                    items: itemsSummary,
-                    total_price: finalTotal,
-                    created_at: new Date().toISOString()
+                const orderId = String(Date.now());
+                await fetch(`${FIRESTORE_BASE}/store_orders/${orderId}`, {
+                    method: 'PATCH',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        fields: {
+                            customer_name: { stringValue: name },
+                            phone: { stringValue: phone },
+                            alt_phone: { stringValue: altPhone || '' },
+                            city: { stringValue: city },
+                            address: { stringValue: address },
+                            notes: { stringValue: notes || '' },
+                            items: { stringValue: itemsSummary },
+                            total_price: { integerValue: finalTotal },
+                            created_at: { stringValue: new Date().toISOString() }
+                        }
+                    })
                 });
             } catch(e) {
                 console.log("خطأ بتسجيل الطلب:", e.message);
@@ -2138,7 +2151,7 @@
             window.open(url, '_blank');
         }
 
-        window.addEventListener('firebase-ready', () => {
+        window.onload = function() {
             try {
                 const storedFavs = localStorage.getItem('jf_favs');
                 if (storedFavs) favorites = JSON.parse(storedFavs);
@@ -2159,7 +2172,7 @@
             fetchProductsFromFirestore();
             recordAndFetchTotalVisits();
             startSocialProofToasts();
-        });
+        };
     </script>
 </body>
 </html>
