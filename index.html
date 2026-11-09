@@ -641,8 +641,8 @@
             <input type="hidden" id="admin-story-prod-id" value="">
 
             <div class="vintage-box p-3 bg-white">
-                <label class="block text-xs font-black mb-1">حدد فيديو الستوري من جهازك:</label>
-                <input type="file" id="admin-story-file-input" accept="video/*" class="w-full text-xs font-bold cursor-pointer">
+<label class="block text-xs font-black mb-1">🎬 رابط فيديو الستوري (mp4):</label>
+                    <input type="text" id="admin-story-file-input" placeholder="ألصق رابط مقطع الفيديو هنا..." class="w-full text-xs font-bold p-2 border border-black rounded bg-white">
             </div>
 
             <div id="admin-story-status" class="text-xs font-black text-center text-gray-600">اختر المقطع واضغط نشر 🚀</div>
@@ -1188,19 +1188,19 @@ formData.append("key", "d4dc7128b9c1682fe31edcf399cf06dd");
             const statusEl = document.getElementById('admin-story-status');
             const btn = document.getElementById('confirm-story-upload-btn');
 
-            if (!fileInput.files || fileInput.files.length === 0) {
-                alert('يرجى تحديد مقطع فيديو من الاستوديو أولاً!');
-                return;
-            }
+const videoUrl = fileInput.value.trim();
+    if (!videoUrl) {
+        alert('يرجى لصق رابط مقطع الفيديو أولاً!');
+        return;
+    }
 
             const prod = products.find(p => String(p.id) === String(prodId));
             if (!prod) return;
 
             btn.disabled = true;
-            statusEl.innerText = 'جاري رفع الفيديو للستوري... ⏳';
+statusEl.innerText = 'جاري حفظ الستوري... ⏳';
 
-            try {
-                const videoUrl = await convertFileToBase64(fileInput.files[0]);
+    try {
                 const imgsJoined = (prod.parsedImages || [prod.parsedImage || FALLBACK_IMG]).join(';');
                 const packedDesc = `JFDATA|${prod.parsedCategory}|${imgsJoined}|${videoUrl}|${prod.parsedColors || ''}|${prod.cleanDesc || ''}`;
 
