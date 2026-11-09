@@ -1204,15 +1204,18 @@ statusEl.innerText = 'جاري حفظ الستوري... ⏳';
                 const imgsJoined = (prod.parsedImages || [prod.parsedImage || FALLBACK_IMG]).join(';');
                 const packedDesc = `JFDATA|${prod.parsedCategory}|${imgsJoined}|${videoUrl}|${prod.parsedColors || ''}|${prod.cleanDesc || ''}`;
 
-                await fetch(`${FIRESTORE_BASE}/products/${prodId}`, {
-                    method: 'PATCH',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        fields: {
-                            desc: { stringValue: packedDesc }
-                        }
-                    })
-                });
+await fetch(`${FIRESTORE_BASE}/products/${prodId}?updateMask.fieldPaths=desc`, {
+            method: 'PATCH',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                fields: {
+                    id: { stringValue: String(prod.id) },
+                    name: { stringValue: String(prod.name || '') },
+                    price: { stringValue: String(prod.price || 0) },
+                    desc: { stringValue: packedDesc }
+                }
+            })
+        });
 
                 prod.desc = packedDesc;
                 const updated = parseSingleProduct(prod);
@@ -1242,16 +1245,18 @@ statusEl.innerText = 'جاري حفظ الستوري... ⏳';
                 const imgsJoined = (prod.parsedImages || [prod.parsedImage || FALLBACK_IMG]).join(';');
                 const packedDesc = `JFDATA|${prod.parsedCategory}|${imgsJoined}||${prod.parsedColors || ''}|${prod.cleanDesc || ''}`;
 
-                await fetch(`${FIRESTORE_BASE}/products/${prodId}`, {
-                    method: 'PATCH',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        fields: {
-                            desc: { stringValue: packedDesc }
-                        }
-                    })
-                });
-
+     await fetch(`${FIRESTORE_BASE}/products/${prodId}?updateMask.fieldPaths=desc`, {
+            method: 'PATCH',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                fields: {
+                    id: { stringValue: String(prod.id) },
+                    name: { stringValue: String(prod.name || '') },
+                    price: { stringValue: String(prod.price || 0) },
+                    desc: { stringValue: packedDesc }
+                }
+            })
+        });
                 prod.desc = packedDesc;
                 const updated = parseSingleProduct(prod);
                 const idx = products.findIndex(p => String(p.id) === String(prodId));
