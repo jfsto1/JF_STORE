@@ -1007,23 +1007,36 @@
         // رفع الصور سحابياً مجاناً للأبد عبر ImgBB
 // رفع الصور سحابياً مجاناً للأبد عبر ImgBB بطريقة مضمونة 100% للموبايل والكمبيوتر
 // رفع الصور سحابياً ومباشرة إلى ImgBB
-        async function uploadFileToStorage(file) {
-            const IMGBB_KEY = '8e5efea40d21e428ba92e022f4b0059c';
-            const formData = new FormData();
-            formData.append("image", file);
+// رفع الصور سحابياً ومباشرة إلى ImgBB بطريقة Base64 المعتمدة
+        function uploadFileToStorage(file) {
+            return new Promise((resolve, reject) => {
+                const reader = new FileReader();
+                reader.readAsDataURL(file);
+                reader.onload = async () => {
+                    try {
+                        const base64Data = reader.result.split(',')[1];
+                        const formData = new FormData();
+                        formData.append("key", "8e5efea40d21e428ba92e022f4b0059c");
+                        formData.append("image", base64Data);
 
-            const res = await fetch(`https://api.imgbb.com/1/upload?key=${IMGBB_KEY}`, {
-                method: "POST",
-                body: formData
+                        const res = await fetch("https://api.imgbb.com/1/upload", {
+                            method: "POST",
+                            body: formData
+                        });
+
+                        const resData = await res.json();
+                        if (resData && resData.success && resData.data && resData.data.url) {
+                            resolve(resData.data.url);
+                        } else {
+                            const errMsg = resData?.error?.message || "تعذر رفع الصورة";
+                            reject(new Error(errMsg));
+                        }
+                    } catch (err) {
+                        reject(err);
+                    }
+                };
+                reader.onerror = () => reject(new Error("تعذر قراءة ملف الصورة"));
             });
-
-            const resData = await res.json();
-            if (resData && resData.success && resData.data && resData.data.url) {
-                return resData.data.url;
-            } else {
-                const msg = resData?.error?.message || "تعذر رفع الصورة إلى ImgBB";
-                throw new Error(msg);
-            }
         }
         function convertFileToBase64(file) {
             return new Promise((resolve) => {
@@ -1412,7 +1425,7 @@
                     videoUrl = await convertFileToBase64(videoFile);
                 }
             } catch (err) {
-                alert('خطأ في معالجة الصور!');
+alert('خطأ في معالجة الصور: ' + (err.message || err));
                 document.getElementById('upload-status').innerText = 'فشل الرفع ❌';
                 saveBtn.disabled = false;
                 return;
