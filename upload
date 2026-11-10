@@ -536,7 +536,7 @@
                     <input type="file" id="image-files" accept="image/*" multiple class="w-full text-[10px] sm:text-xs font-bold cursor-pointer">
                 </div>
 
-<div class="vintage-box p-2.5 bg-white">
+                <div class="vintage-box p-2.5 bg-white">
                     <label class="block text-[10px] sm:text-xs font-black mb-1">🎬 رابط فيديو الستوري (اختياري)</label>
                     <input type="text" id="video-file" placeholder="...ألصق رابط الفيديو هنا" class="w-full text-[10px] sm:text-xs font-bold p-1 border border-black rounded bg-white">
                 </div>
@@ -643,8 +643,8 @@
             <input type="hidden" id="admin-story-prod-id" value="">
 
             <div class="vintage-box p-3 bg-white">
-<label class="block text-xs font-black mb-1">🎬 رابط فيديو الستوري (mp4):</label>
-                    <input type="text" id="admin-story-file-input" placeholder="ألصق رابط مقطع الفيديو هنا..." class="w-full text-xs font-bold p-2 border border-black rounded bg-white">
+                <label class="block text-xs font-black mb-1">🎬 رابط فيديو الستوري (mp4):</label>
+                <input type="text" id="admin-story-file-input" placeholder="ألصق رابط مقطع الفيديو هنا..." class="w-full text-xs font-bold p-2 border border-black rounded bg-white">
             </div>
 
             <div id="admin-story-status" class="text-xs font-black text-center text-gray-600">اختر المقطع واضغط نشر 🚀</div>
@@ -786,7 +786,7 @@
     <script>
         // إعدادات Firestore المباشرة (REST API) المتوافقة مع جميع شبكات العراق
         const FIRESTORE_BASE = 'https://firestore.googleapis.com/v1/projects/jfstore-5ce92/databases/(default)/documents';
-        const IMGBB_API_KEY = '8e5efea40d21e428ba92e022f4b0059c';
+        const IMGBB_API_KEY = '34c2bd4f2da3bbf37e5f568be9f63a45';
         const FALLBACK_IMG = 'https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=500';
 
         const ALL_CATEGORIES_LIST = [
@@ -1004,40 +1004,77 @@
             } catch (err) {}
         }
 
-        // رفع الصور سحابياً مجاناً للأبد عبر ImgBB
-// رفع الصور سحابياً مجاناً للأبد عبر ImgBB بطريقة مضمونة 100% للموبايل والكمبيوتر
-// رفع الصور سحابياً ومباشرة إلى ImgBB
-// رفع الصور سحابياً ومباشرة إلى ImgBB بطريقة Base64 المعتمدة
-        function uploadFileToStorage(file) {
-            return new Promise((resolve, reject) => {
+        // دالة ضغط الصور داخل المتصفح قبل الرفع
+        function compressImageBeforeUpload(file) {
+            return new Promise((resolve) => {
                 const reader = new FileReader();
                 reader.readAsDataURL(file);
-                reader.onload = async () => {
-                    try {
-                        const base64Data = reader.result.split(',')[1];
-                        const formData = new FormData();
-formData.append("key", "d4dc7128b9c1682fe31edcf399cf06dd");
-                        formData.append("image", base64Data);
+                reader.onload = (e) => {
+                    const img = new Image();
+                    img.onload = () => {
+                        const canvas = document.createElement('canvas');
+                        let width = img.width;
+                        let height = img.height;
+                        const maxDim = 1200;
 
-                        const res = await fetch("https://api.imgbb.com/1/upload", {
-                            method: "POST",
-                            body: formData
-                        });
-
-                        const resData = await res.json();
-                        if (resData && resData.success && resData.data && resData.data.url) {
-                            resolve(resData.data.url);
-                        } else {
-                            const errMsg = resData?.error?.message || "تعذر رفع الصورة";
-                            reject(new Error(errMsg));
+                        if (width > height && width > maxDim) {
+                            height = Math.round((height * maxDim) / width);
+                            width = maxDim;
+                        } else if (height > maxDim) {
+                            width = Math.round((width * maxDim) / height);
+                            height = maxDim;
                         }
-                    } catch (err) {
-                        reject(err);
-                    }
+
+                        canvas.width = width;
+                        canvas.height = height;
+                        const ctx = canvas.getContext('2d');
+                        ctx.drawImage(img, 0, 0, width, height);
+
+                        const base64Data = canvas.toDataURL('image/jpeg', 0.82).split(',')[1];
+                        resolve(base64Data);
+                    };
+                    img.onerror = () => {
+                        const fallbackReader = new FileReader();
+                        fallbackReader.readAsDataURL(file);
+                        fallbackReader.onload = () => resolve(fallbackReader.result.split(',')[1]);
+                    };
+                    img.src = e.target.result;
                 };
-                reader.onerror = () => reject(new Error("تعذر قراءة ملف الصورة"));
+                reader.onerror = () => {
+                    const fallbackReader = new FileReader();
+                    fallbackReader.readAsDataURL(file);
+                    fallbackReader.onload = () => resolve(fallbackReader.result.split(',')[1]);
+                };
             });
         }
+
+        // رفع الصور سحابياً عبر ImgBB مع الضغط المسبق والحماية من الـ Rate Limit
+        function uploadFileToStorage(file) {
+            return new Promise(async (resolve, reject) => {
+                try {
+                    const base64Data = await compressImageBeforeUpload(file);
+                    const formData = new FormData();
+                    formData.append("key", IMGBB_API_KEY);
+                    formData.append("image", base64Data);
+
+                    const res = await fetch("https://api.imgbb.com/1/upload", {
+                        method: "POST",
+                        body: formData
+                    });
+
+                    const resData = await res.json();
+                    if (resData && resData.success && resData.data && resData.data.url) {
+                        resolve(resData.data.url);
+                    } else {
+                        const errMsg = resData?.error?.message || "تعذر رفع الصورة";
+                        reject(new Error(errMsg));
+                    }
+                } catch (err) {
+                    reject(err);
+                }
+            });
+        }
+
         function convertFileToBase64(file) {
             return new Promise((resolve) => {
                 const reader = new FileReader();
@@ -1190,34 +1227,34 @@ formData.append("key", "d4dc7128b9c1682fe31edcf399cf06dd");
             const statusEl = document.getElementById('admin-story-status');
             const btn = document.getElementById('confirm-story-upload-btn');
 
-const videoUrl = fileInput.value.trim();
-    if (!videoUrl) {
-        alert('يرجى لصق رابط مقطع الفيديو أولاً!');
-        return;
-    }
+            const videoUrl = fileInput.value.trim();
+            if (!videoUrl) {
+                alert('يرجى لصق رابط مقطع الفيديو أولاً!');
+                return;
+            }
 
             const prod = products.find(p => String(p.id) === String(prodId));
             if (!prod) return;
 
             btn.disabled = true;
-statusEl.innerText = 'جاري حفظ الستوري... ⏳';
+            statusEl.innerText = 'جاري حفظ الستوري... ⏳';
 
-    try {
+            try {
                 const imgsJoined = (prod.parsedImages || [prod.parsedImage || FALLBACK_IMG]).join(';');
                 const packedDesc = `JFDATA|${prod.parsedCategory}|${imgsJoined}|${videoUrl}|${prod.parsedColors || ''}|${prod.cleanDesc || ''}`;
 
-await fetch(`${FIRESTORE_BASE}/products/${prodId}?updateMask.fieldPaths=desc`, {
-            method: 'PATCH',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-                fields: {
-                    id: { stringValue: String(prod.id) },
-                    name: { stringValue: String(prod.name || '') },
-                    price: { stringValue: String(prod.price || 0) },
-                    desc: { stringValue: packedDesc }
-                }
-            })
-        });
+                await fetch(`${FIRESTORE_BASE}/products/${prodId}?updateMask.fieldPaths=desc`, {
+                    method: 'PATCH',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        fields: {
+                            id: { stringValue: String(prod.id) },
+                            name: { stringValue: String(prod.name || '') },
+                            price: { stringValue: String(prod.price || 0) },
+                            desc: { stringValue: packedDesc }
+                        }
+                    })
+                });
 
                 prod.desc = packedDesc;
                 const updated = parseSingleProduct(prod);
@@ -1247,18 +1284,18 @@ await fetch(`${FIRESTORE_BASE}/products/${prodId}?updateMask.fieldPaths=desc`, {
                 const imgsJoined = (prod.parsedImages || [prod.parsedImage || FALLBACK_IMG]).join(';');
                 const packedDesc = `JFDATA|${prod.parsedCategory}|${imgsJoined}||${prod.parsedColors || ''}|${prod.cleanDesc || ''}`;
 
-     await fetch(`${FIRESTORE_BASE}/products/${prodId}?updateMask.fieldPaths=desc`, {
-            method: 'PATCH',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-                fields: {
-                    id: { stringValue: String(prod.id) },
-                    name: { stringValue: String(prod.name || '') },
-                    price: { stringValue: String(prod.price || 0) },
-                    desc: { stringValue: packedDesc }
-                }
-            })
-        });
+                await fetch(`${FIRESTORE_BASE}/products/${prodId}?updateMask.fieldPaths=desc`, {
+                    method: 'PATCH',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        fields: {
+                            id: { stringValue: String(prod.id) },
+                            name: { stringValue: String(prod.name || '') },
+                            price: { stringValue: String(prod.price || 0) },
+                            desc: { stringValue: packedDesc }
+                        }
+                    })
+                });
                 prod.desc = packedDesc;
                 const updated = parseSingleProduct(prod);
                 const idx = products.findIndex(p => String(p.id) === String(prodId));
@@ -1307,14 +1344,12 @@ await fetch(`${FIRESTORE_BASE}/products/${prodId}?updateMask.fieldPaths=desc`, {
         }
 
         // جلب المنتجات المباشر عبر REST API فائق السرعة
-// جلب جميع المنتجات بالكامل بدون التقيد بحد الـ 300
         async function fetchProductsFromFirestore() {
             const loader = document.getElementById('jf-main-loader');
             try {
                 let allDocs = [];
                 let pageToken = '';
 
-                // تكرار الجلب لسحب كل الصفحات والمنتجات بالكامل
                 do {
                     const url = `${FIRESTORE_BASE}/products?pageSize=300${pageToken ? '&pageToken=' + encodeURIComponent(pageToken) : ''}`;
                     const res = await fetch(url);
@@ -1381,7 +1416,7 @@ await fetch(`${FIRESTORE_BASE}/products/${prodId}?updateMask.fieldPaths=desc`, {
             }
         });
 
-        // حفظ ونشر المنتج الجديد في Firestore مع رفع الصور لـ ImgBB
+        // حفظ ونشر المنتج الجديد في Firestore مع رفع الصور
         async function saveProductToFirestore() {
             const saveBtn = document.getElementById('save-btn');
             saveBtn.disabled = true;
@@ -1399,7 +1434,7 @@ await fetch(`${FIRESTORE_BASE}/products/${prodId}?updateMask.fieldPaths=desc`, {
 
             const desc = document.getElementById('new-desc').value.trim();
             const imageFiles = document.getElementById('image-files').files;
- const videoInputUrl = document.getElementById('video-file').value.trim();
+            const videoInputUrl = document.getElementById('video-file').value.trim();
 
             if(!name || isNaN(price)) {
                 alert('يرجى إدخال اسم المنتج والسعر بشكل صحيح!');
@@ -1407,7 +1442,7 @@ await fetch(`${FIRESTORE_BASE}/products/${prodId}?updateMask.fieldPaths=desc`, {
                 return;
             }
 
-            document.getElementById('upload-status').innerText = 'جاري رفع الصور ونشر المنتج... 🚀';
+            document.getElementById('upload-status').innerText = 'جاري معالجة ورفع الصور... 🚀';
 
             let imagesArray = [FALLBACK_IMG];
             let videoUrl = '';
@@ -1422,15 +1457,19 @@ await fetch(`${FIRESTORE_BASE}/products/${prodId}?updateMask.fieldPaths=desc`, {
 
             try {
                 if (imageFiles && imageFiles.length > 0) {
-                    const uploadPromises = Array.from(imageFiles).map(file => uploadFileToStorage(file));
-                    imagesArray = await Promise.all(uploadPromises);
+                    imagesArray = [];
+                    for (let i = 0; i < imageFiles.length; i++) {
+                        document.getElementById('upload-status').innerText = `🚀 جاري رفع الصورة (${i + 1} من ${imageFiles.length})...`;
+                        const uploadedUrl = await uploadFileToStorage(imageFiles[i]);
+                        imagesArray.push(uploadedUrl);
+                    }
                 }
 
-if (videoInputUrl) {
-                videoUrl = videoInputUrl;
-            }
+                if (videoInputUrl) {
+                    videoUrl = videoInputUrl;
+                }
             } catch (err) {
-alert('خطأ في معالجة الصور: ' + (err.message || err));
+                alert('خطأ في معالجة الصور: ' + (err.message || err));
                 document.getElementById('upload-status').innerText = 'فشل الرفع ❌';
                 saveBtn.disabled = false;
                 return;
@@ -1563,7 +1602,7 @@ alert('خطأ في معالجة الصور: ' + (err.message || err));
             const container = document.getElementById('ads-content');
             if (!container || !product) return;
             const displayImg = (product.parsedImages && product.parsedImages[0]) || product.parsedImage || FALLBACK_IMG;
-            const isFav = favorites.includes(product.id);
+            const isFav = Array.isArray(favorites) && favorites.includes(String(product.id));
 
             container.innerHTML = `
                 <div class="flex items-center justify-between w-full h-full px-4 gap-3">
@@ -1617,7 +1656,7 @@ alert('خطأ في معالجة الصور: ' + (err.message || err));
             const modal = document.getElementById('product-modal');
             const modalBox = document.getElementById('modal-container-box');
             const content = document.getElementById('modal-content');
-            const isFav = favorites.includes(product.id);
+            const isFav = Array.isArray(favorites) && favorites.includes(String(product.id));
 
             let optionsHtml = '';
             const cat = (product.parsedCategory || '').trim();
@@ -1894,22 +1933,24 @@ alert('خطأ في معالجة الصور: ' + (err.message || err));
             
             document.querySelectorAll('[id^="card-fav-btn-"]').forEach(btn => {
                 const id = btn.id.replace('card-fav-btn-', '');
-                btn.innerText = favorites.includes(id) ? '❤️' : '🤍';
+                btn.innerText = (Array.isArray(favorites) && favorites.includes(id)) ? '❤️' : '🤍';
             });
 
             document.querySelectorAll('[id^="modal-fav-btn-"]').forEach(btn => {
                 const id = btn.id.replace('modal-fav-btn-', '');
-                btn.innerText = favorites.includes(id) ? '❤️' : '🤍';
+                btn.innerText = (Array.isArray(favorites) && favorites.includes(id)) ? '❤️' : '🤍';
             });
 
             const adHeart = document.getElementById('ad-fav-heart');
             if (adHeart && products[currentAdIndex]) {
-                adHeart.innerText = favorites.includes(products[currentAdIndex].id) ? '❤️' : '🤍';
+                adHeart.innerText = (Array.isArray(favorites) && favorites.includes(String(products[currentAdIndex].id))) ? '❤️' : '🤍';
             }
         }
 
         function toggleFavorite(id) {
             const targetId = String(id);
+            if (!Array.isArray(favorites)) favorites = [];
+
             if(favorites.includes(targetId)) {
                 favorites = favorites.filter(fav => fav !== targetId);
             } else {
@@ -2012,7 +2053,7 @@ alert('خطأ في معالجة الصور: ' + (err.message || err));
             let spotlightCount = 0;
 
             list.forEach((p, idx) => {
-                const isFav = favorites.includes(String(p.id));
+                const isFav = Array.isArray(favorites) && favorites.includes(String(p.id));
                 const displayImg = (p.parsedImages && p.parsedImages[0]) || p.parsedImage || FALLBACK_IMG;
 
                 let adminActionsHtml = '';
@@ -2085,7 +2126,7 @@ alert('خطأ في معالجة الصور: ' + (err.message || err));
             
             let list = products;
             if (showingFavoritesOnly) {
-                list = list.filter(p => favorites.includes(String(p.id)));
+                list = list.filter(p => Array.isArray(favorites) && favorites.includes(String(p.id)));
             }
 
             const filtered = list.filter(p => {
@@ -2186,7 +2227,10 @@ alert('خطأ في معالجة الصور: ' + (err.message || err));
             try {
                 const storedFavs = localStorage.getItem('jf_favs');
                 if (storedFavs) favorites = JSON.parse(storedFavs);
-            } catch(e) {}
+                if (!Array.isArray(favorites)) favorites = [];
+            } catch(e) {
+                favorites = [];
+            }
 
             document.getElementById('fav-count').innerText = favorites.length;
 
